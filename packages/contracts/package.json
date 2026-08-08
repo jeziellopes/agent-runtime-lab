@@ -1,0 +1,16 @@
+{
+  "name": "@arl/contracts",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Shared interfaces. The thesis lives here.",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@arl/events": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  }
+}
