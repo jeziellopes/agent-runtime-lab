@@ -161,5 +161,4 @@ After that: no features. Only fixes to things that break the contract suite.
 
 ## Licence
 
-MIT. The `LICENSE` file is not written yet — the copyright holder was never
-named, and a licence attributing work to a guess is worse than a missing one.
+MIT. See [`LICENSE`](LICENSE).
