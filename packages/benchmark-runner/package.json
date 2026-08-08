@@ -1,0 +1,17 @@
+{
+  "name": "@arl/benchmark-runner",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Scenario execution and metric collection.",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@arl/contracts": "workspace:*",
+    "@arl/events": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "dist"
+  },
+  "include": [
+    "01-simple-execution",
+    "02-streaming",
+    "03-tool-calling",
+    "04-multi-step-workflow",
+    "05-concurrent-executions",
+    "06-long-context",
+    "07-multiple-sessions",
+    "index.ts",
+    "types.ts"
+  ],
+  "references": [
+    {
+      "path": "../packages/contracts"
+    }
+  ],
+  "exclude": ["dist"]
+}

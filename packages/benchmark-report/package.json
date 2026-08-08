@@ -1,0 +1,13 @@
+{
+  "name": "@arl/benchmark-report",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Result generation: JSON, markdown and the published comparison.",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "devDependencies": {
+    "@types/node": "catalog:"
+  }
+}

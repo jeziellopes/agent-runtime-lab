@@ -1,0 +1,20 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "dist"
+  },
+  "include": ["simple-agent", "tool-agent", "multi-step-agent", "index.ts"],
+  "references": [
+    {
+      "path": "../packages/contracts"
+    },
+    {
+      "path": "../packages/graph-runtime"
+    },
+    {
+      "path": "../packages/tools"
+    }
+  ],
+  "exclude": ["dist"]
+}
