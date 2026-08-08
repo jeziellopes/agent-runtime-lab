@@ -1,0 +1,17 @@
+{
+  "name": "@arl/contract-tests",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "The framework-agnostic equivalence suite. The hard part.",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@arl/contracts": "workspace:*",
+    "@arl/events": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  }
+}
