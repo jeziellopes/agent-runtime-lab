@@ -1,0 +1,15 @@
+# Secrets — never committed. .env.example carries the key names only.
+.env
+.env.*
+!.env.example
+
+node_modules/
+dist/
+*.tsbuildinfo
+coverage/
+
+# Raw benchmark output. results/<cell>/metrics.json and report.md are committed
+# artifacts; scratch runs are not.
+results/**/raw/
+
+.DS_Store

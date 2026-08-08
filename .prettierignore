@@ -1,0 +1,7 @@
+dist/
+coverage/
+node_modules/
+pnpm-lock.yaml
+results/
+packages/llm/fixtures/
+packages/tools/fixtures/
