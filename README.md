@@ -73,6 +73,27 @@ assertion it exists to replace.
 That ordering is why this scaffold has a populated `packages/contracts` and
 `packages/contract-tests` and two adapters that answer `501`.
 
+## The seven layers
+
+Doc comments in the source mark which layer a file belongs to (`L2.`, `L4.` and
+so on). The numbering is this:
+
+| Layer | Owns                                                             | Where                              |
+| ----- | ---------------------------------------------------------------- | ---------------------------------- |
+| L1    | HTTP: routing, parsing, serialization, SSE transport, auth seam  | `adapters/nestjs`, `adapters/hono` |
+| L2    | Execution lifecycle, event emission, execution state             | `packages/runtime-core`            |
+| L3    | The execution model — agent definitions, context, workflow start | `packages/agent-engine`            |
+| L4    | Graph execution — nodes, edges, state transitions                | `packages/graph-runtime`           |
+| L5    | Tools, registered rather than imported                           | `packages/tools`                   |
+| L6    | Conversation history, execution state, persistent context        | `packages/memory`                  |
+| L7    | Model providers behind one interface; replay is the default      | `packages/llm`                     |
+
+L1 may not contain agent logic, prompts, workflow definitions or tool
+implementations — that constraint is what makes the four cells comparable. The
+remaining four packages are cross-cutting: `contracts` and `events` are the
+shared vocabulary, `contract-tests` is the equivalence gate, and
+`benchmark-runner` / `benchmark-report` sit outside the stack entirely.
+
 ## Build order
 
 1. `packages/contracts` — done: the domain model, the seven-state lifecycle and
