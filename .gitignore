@@ -1,4 +1,4 @@
-# Secrets — never committed. .env.example carries the key names only.
+# Secrets: never committed. .env.example carries the key names only.
 .env
 .env.*
 !.env.example
