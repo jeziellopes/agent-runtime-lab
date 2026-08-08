@@ -1,0 +1,19 @@
+{
+  "name": "@arl/graph-runtime",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Workflow execution. Wraps @langchain/langgraph at L2 and nothing above it.",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@arl/contracts": "workspace:*",
+    "@arl/events": "workspace:*",
+    "@langchain/langgraph": "1.4.9",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  }
+}

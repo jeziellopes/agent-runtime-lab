@@ -1,0 +1,16 @@
+{
+  "name": "@arl/memory",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "State persistence. In-memory only; every other backend is a named interface.",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@arl/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  }
+}

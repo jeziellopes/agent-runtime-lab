@@ -1,0 +1,19 @@
+{
+  "name": "@arl/runtime-core",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Runtime orchestration and execution state.",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@arl/agent-engine": "workspace:*",
+    "@arl/contracts": "workspace:*",
+    "@arl/events": "workspace:*",
+    "@arl/memory": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  }
+}

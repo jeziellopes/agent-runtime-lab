@@ -1,0 +1,16 @@
+{
+  "name": "@arl/llm",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Model providers, including the deterministic replay provider.",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@arl/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  }
+}
