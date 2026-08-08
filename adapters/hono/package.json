@@ -1,0 +1,22 @@
+{
+  "name": "@arl/adapter-hono",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Hono adapter: functional Web-Standards composition. The other cells' framework.",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@arl/contracts": "workspace:*",
+    "@arl/events": "workspace:*",
+    "@arl/runtime-core": "workspace:*",
+    "@hono/node-server": "2.1.0",
+    "@hono/zod-validator": "0.9.0",
+    "hono": "4.13.1",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  }
+}

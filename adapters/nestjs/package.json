@@ -1,0 +1,23 @@
+{
+  "name": "@arl/adapter-nestjs",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "NestJS adapter: decorator-driven DI container. One of two cells' framework.",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@arl/contracts": "workspace:*",
+    "@arl/events": "workspace:*",
+    "@arl/runtime-core": "workspace:*",
+    "@nestjs/common": "11.1.28",
+    "@nestjs/core": "11.1.28",
+    "@nestjs/platform-express": "11.1.28",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  }
+}
