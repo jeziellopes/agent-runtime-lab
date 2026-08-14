@@ -5,6 +5,9 @@ import type { LLMMode, RuntimeConfig } from '@arl/contracts'
  * configuration is framework-independent and identical across all four cells.
  *
  * `llmMode` defaults to `replay`. Day-to-day development needs no API key.
+ *
+ * `deterministic` defaults to `false`, so a benchmark run reports real ids,
+ * real timestamps and real metrics unless the contract suite asks otherwise.
  */
 export function loadRuntimeConfig(
   env: NodeJS.ProcessEnv = process.env
@@ -16,7 +19,8 @@ export function loadRuntimeConfig(
     maxIterations: integer(env.MAX_ITERATIONS, 10),
     timeoutMs: integer(env.TIMEOUT_MS, 30_000),
     llmMode,
-    maxRetries: integer(env.MAX_RETRIES, 3)
+    maxRetries: integer(env.MAX_RETRIES, 3),
+    deterministic: env.DETERMINISTIC === 'true'
   }
 }
 

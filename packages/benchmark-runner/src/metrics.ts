@@ -1,21 +1,18 @@
+import type { RuntimeMetrics } from '@arl/contracts'
+
 import type { Distribution } from './statistics.js'
 
-/** The four families collected per run. */
+/**
+ * The four families collected per run. Three are observed here; the runtime
+ * family travels on the response, because a client cannot see inside an
+ * execution and a wall clock cannot resolve the difference.
+ */
 export interface ApplicationMetrics {
   startupTime: number
   requestLatency: number
   responseTime: number
   errorCount: number
   activeRequests: number
-}
-
-export interface RuntimeMetrics {
-  executionDuration: number
-  graphDuration: number
-  nodeDuration: number
-  toolCalls: number
-  llmCalls: number
-  eventsGenerated: number
 }
 
 export interface LLMMetrics {

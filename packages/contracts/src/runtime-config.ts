@@ -12,4 +12,11 @@ export interface RuntimeConfig {
   timeoutMs: number
   llmMode: LLMMode
   maxRetries: number
+
+  /**
+   * Execution ids come from a per-process counter, event timestamps are the
+   * epoch, retry does not sleep, and `ExecutionResult.metrics` is omitted. What
+   * makes byte-identity across cells assertable without masking a field.
+   */
+  deterministic: boolean
 }

@@ -4,6 +4,7 @@ import type { AgentDefinition } from './agent-definition.js'
 import type { Execution } from './execution.js'
 import type { ExecutionStatus } from './execution-status.js'
 import type { TokenUsage } from './llm-provider.js'
+import type { RuntimeMetrics } from './runtime-metrics.js'
 
 export interface ExecutionRequest {
   agentId: string
@@ -12,11 +13,20 @@ export interface ExecutionRequest {
   metadata?: Record<string, unknown>
 }
 
+/**
+ * `metrics` is what the runtime accounted for. A client subtracts it from its
+ * own clock to get adapter overhead, which is otherwise unobservable: the
+ * execution's `Date` fields resolve to a millisecond and the quantity is
+ * smaller than that.
+ *
+ * Omitted under `RuntimeConfig.deterministic`, so no golden carries a timing.
+ */
 export interface ExecutionResult {
   executionId: string
   status: ExecutionStatus
   output: unknown
   usage?: TokenUsage
+  metrics?: RuntimeMetrics
 }
 
 /**

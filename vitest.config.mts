@@ -14,9 +14,11 @@ export default defineConfig({
       // Opt-in per file, at 100%. The list is what must be fully covered, not
       // the whole tree.
       include: [
+        'packages/contracts/src/agent-summary.ts',
+        'packages/contracts/src/cells.ts',
+        'packages/contracts/src/errors.ts',
         'packages/contracts/src/execution-status.ts',
         'packages/events/src/event-type.ts',
-        'packages/contracts/src/cells.ts',
         'packages/contract-tests/src/suite.ts'
       ],
       thresholds: {

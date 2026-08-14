@@ -5,12 +5,19 @@ export interface Message {
   content: string
 }
 
+/**
+ * `nodeId` and `attempt` correlate a call with a replay fixture, so the replay
+ * provider is a pure function of the request and holds no cursor. Live
+ * providers ignore both, and a caller that does not correlate stays valid.
+ */
 export interface LLMRequest {
   messages: Message[]
   model: string
   maxTokens?: number
   temperature?: number
   signal?: AbortSignal
+  nodeId?: string
+  attempt?: number
 }
 
 export interface LLMResponse {

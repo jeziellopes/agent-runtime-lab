@@ -12,11 +12,11 @@ import type { MemoryStore } from '@arl/contracts'
  * iterations.
  */
 export class InMemoryStore implements MemoryStore {
-  save(_key: string, _value: unknown): Promise<void> {
+  save(_namespace: string, _key: string, _value: unknown): Promise<void> {
     throw new Error('InMemoryStore.save is not implemented')
   }
 
-  get(_key: string): Promise<unknown | null> {
+  get(_namespace: string, _key: string): Promise<unknown | null> {
     throw new Error('InMemoryStore.get is not implemented')
   }
 

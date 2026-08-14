@@ -3,7 +3,6 @@ export type {
   ApplicationMetrics,
   LLMMetrics,
   ResourceMetrics,
-  RuntimeMetrics,
   ScenarioResult
 } from './metrics.js'
 export { readResults, writeResults } from './results-store.js'

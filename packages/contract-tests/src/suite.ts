@@ -51,7 +51,8 @@ export const CONTRACT_ASSERTIONS = [
   'error.body.shape',
   'error.midstream.is.event.not.status',
   'cancel.aborts.provider.call',
-  'headers.case.insensitive'
+  'headers.case.insensitive',
+  'deterministic.omits.metrics'
 ] as const
 
 export type ContractAssertion = (typeof CONTRACT_ASSERTIONS)[number]
