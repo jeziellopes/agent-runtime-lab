@@ -63,4 +63,8 @@ describe('SSE frame parsing', () => {
       false
     )
   })
+
+  it('calls an empty stream not monotonic, having dropped everything', () => {
+    expect(idsAreMonotonic([])).toBe(false)
+  })
 })

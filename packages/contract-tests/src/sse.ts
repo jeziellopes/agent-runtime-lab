@@ -56,9 +56,16 @@ function prefixed(line: string | undefined, prefix: string): string {
   return line.slice(prefix.length)
 }
 
-/** Ids start at 1 and step by exactly one, so a dropped frame is detectable. */
+/**
+ * Ids start at 1 and step by exactly one, so a dropped frame is detectable.
+ *
+ * An empty stream is not monotonic. Vacuous truth here would report a cell that
+ * sent nothing as having dropped nothing, which is the opposite of the answer.
+ */
 export function idsAreMonotonic(frames: readonly ParsedFrame[]): boolean {
-  return frames.every((frame, index) => frame.id === index + 1)
+  return (
+    frames.length > 0 && frames.every((frame, index) => frame.id === index + 1)
+  )
 }
 
 export function eventTypes(frames: readonly ParsedFrame[]): RuntimeEventType[] {

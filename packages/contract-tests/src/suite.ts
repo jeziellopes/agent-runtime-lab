@@ -80,27 +80,57 @@ const TWELVE: readonly (typeof RUNTIME_EVENT_TYPES)[number][] = [
   'execution.cancelled'
 ]
 
-/** The rows of `specs/0004`'s table a black-box client can induce today. */
+/**
+ * Every row of `specs/0004`'s table. The four that no black-box client could
+ * otherwise reach are induced by the reserved prompts in `specs/0017`.
+ */
 const INDUCIBLE_ERRORS: readonly {
   readonly what: string
   readonly path: string
   readonly body: unknown
   readonly status: number
   readonly code: RuntimeErrorCode
+  readonly keys: readonly string[]
 }[] = [
   {
     what: 'an unknown agent id',
     path: '/agents/no-such-agent/execute',
     body: { input: { prompt: 'anything' } },
     status: 404,
-    code: 'agent_not_found'
+    code: 'agent_not_found',
+    keys: ['error', 'detail']
   },
   {
     what: 'a request with no prompt',
     path: '/agents/simple-agent/execute',
     body: {},
     status: 400,
-    code: 'invalid_request'
+    code: 'invalid_request',
+    keys: ['error', 'detail']
+  },
+  {
+    what: 'a provider that never answers',
+    path: '/agents/simple-agent/execute',
+    body: { input: { prompt: '__fail_provider__' } },
+    status: 503,
+    code: 'provider_error',
+    keys: ['error', 'detail']
+  },
+  {
+    what: 'a provider that rate limits every attempt',
+    path: '/agents/simple-agent/execute',
+    body: { input: { prompt: '__fail_rate_limit__' } },
+    status: 429,
+    code: 'rate_limited',
+    keys: ['error', 'detail', 'retryAfter']
+  },
+  {
+    what: 'an expression the calculator rejects',
+    path: '/agents/tool-agent/execute',
+    body: { input: { prompt: 'Calculate 1 / bananas' } },
+    status: 422,
+    code: 'tool_error',
+    keys: ['error', 'detail']
   }
 ]
 
@@ -291,6 +321,10 @@ const CHECKS: Readonly<Record<ContractAssertion, Check>> = {
       const frames = parseFrames((await stream(suite, expected)).raw)
 
       expect(
+        frames.length === expected.events.length,
+        `${expected.agentId}: ${String(frames.length)} frames, want ${String(expected.events.length)}`
+      )
+      expect(
         idsAreMonotonic(frames),
         `${expected.agentId}: ids ${frames.map(frame => frame.id).join(',')}`
       )
@@ -319,10 +353,6 @@ const CHECKS: Readonly<Record<ContractAssertion, Check>> = {
         `${row.what}: status ${String(response.status)}, want ${String(row.status)}`
       )
     }
-
-    throw new Error(
-      'the provider, rate-limit and tool rows of specs/0004 have no black-box trigger: no record pins the request that induces them'
-    )
   },
 
   'error.body.shape': async suite => {
@@ -331,8 +361,8 @@ const CHECKS: Readonly<Record<ContractAssertion, Check>> = {
       const body = parseJson<Record<string, unknown>>(response)
 
       expect(
-        keysEqual(body, ['error', 'detail']),
-        `${row.what}: keys ${Object.keys(body).sort().join(',')}, want error,detail`
+        keysEqual(body, row.keys),
+        `${row.what}: keys ${Object.keys(body).sort().join(',')}, want ${[...row.keys].sort().join(',')}`
       )
       expect(
         body.error === row.code,
@@ -342,12 +372,40 @@ const CHECKS: Readonly<Record<ContractAssertion, Check>> = {
         typeof body.detail === 'string' && body.detail.length > 0,
         `${row.what}: detail is absent or empty`
       )
+
+      if (row.status !== 429) {
+        continue
+      }
+
+      expect(
+        headerValue(response.headers, 'retry-after') === String(body.retryAfter),
+        `${row.what}: Retry-After header and retryAfter body disagree`
+      )
     }
   },
 
-  'error.midstream.is.event.not.status': () => {
-    throw new Error(
-      'no record pins a request that fails after the SSE headers are sent'
+  'error.midstream.is.event.not.status': async suite => {
+    const response = await request(
+      `${suite.base}/agents/simple-agent/stream`,
+      json({ input: { prompt: '__fail_midstream__' } })
+    )
+
+    expect(
+      response.status === 200,
+      `status ${String(response.status)}: a failure after the headers cannot change them`
+    )
+
+    const types = eventTypes(parseFrames(response.raw))
+    const tokens = types.filter(type => type === 'llm.token').length
+
+    expect(tokens === 3, `${String(tokens)} llm.token frames, want 3`)
+    expect(
+      types[types.length - 1] === 'execution.failed',
+      `stream ended with ${String(types[types.length - 1])}, want execution.failed`
+    )
+    expect(
+      types.filter(isTerminalEvent).length === 1,
+      'more than one terminal event'
     )
   },
 
@@ -372,10 +430,11 @@ const CHECKS: Readonly<Record<ContractAssertion, Check>> = {
 
   'headers.case.insensitive': async suite => {
     const response = await request(`${suite.base}/health`)
+    const upper = headerValue(response.headers, 'CONTENT-TYPE')
 
+    expect(upper !== undefined, 'the response carried no content-type at all')
     expect(
-      headerValue(response.headers, 'CONTENT-TYPE') ===
-        headerValue(response.headers, 'content-type'),
+      upper === headerValue(response.headers, 'content-type'),
       'header lookup is case-sensitive'
     )
   },
@@ -392,9 +451,13 @@ const CHECKS: Readonly<Record<ContractAssertion, Check>> = {
     const frames = parseFrames((await stream(suite, run('simple-agent'))).raw)
 
     for (const frame of frames) {
+      if (frame.data.type !== 'execution.completed') {
+        continue
+      }
+
       expect(
-        !isRecord(frame.data) || !('metrics' in frame.data),
-        `${frame.event} carried a metrics block under deterministic mode`
+        !('metrics' in frame.data.data),
+        'execution.completed carried a metrics block under deterministic mode'
       )
     }
   }
@@ -436,10 +499,6 @@ function expect(condition: boolean, detail: string): void {
 
 function keysEqual(body: object, want: readonly string[]): boolean {
   return Object.keys(body).sort().join(',') === [...want].sort().join(',')
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null
 }
 
 /** Names the offset, because "the bytes differ" is not a usable report. */
