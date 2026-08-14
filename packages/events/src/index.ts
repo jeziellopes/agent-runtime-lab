@@ -4,4 +4,9 @@ export {
   isTerminalEvent
 } from './event-type.js'
 export type { RuntimeEventType, TerminalEventType } from './event-type.js'
-export type { RuntimeEvent, SseFrame } from './runtime-event.js'
+export type {
+  RuntimeEvent,
+  RuntimeMetrics,
+  SseFrame,
+  TokenUsage
+} from './runtime-event.js'

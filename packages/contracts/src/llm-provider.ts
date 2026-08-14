@@ -1,3 +1,5 @@
+import type { TokenUsage } from '@arl/events'
+
 export type MessageRole = 'system' | 'user' | 'assistant' | 'tool'
 
 export interface Message {
@@ -30,11 +32,11 @@ export interface LLMChunk {
   done: boolean
 }
 
-export interface TokenUsage {
-  inputTokens: number
-  outputTokens: number
-  totalTokens: number
-}
+/**
+ * Defined in `@arl/events` and re-exported here, because `llm.completed`
+ * carries the same block and this package depends on that one.
+ */
+export type { TokenUsage }
 
 /**
  * L7. The replay provider is the default in every benchmark and every test;
