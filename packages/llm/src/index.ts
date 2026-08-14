@@ -1,5 +1,5 @@
 export { loadFixture } from './fixtures.js'
-export type { TokenStreamFixture } from './fixtures.js'
+export type { FixtureCall, FixtureFailure, ReplayFixture } from './fixtures.js'
 export { AnthropicProvider } from './providers/anthropic/anthropic-provider.js'
 export { OllamaProvider } from './providers/ollama/ollama-provider.js'
 export { OpenaiProvider } from './providers/openai/openai-provider.js'

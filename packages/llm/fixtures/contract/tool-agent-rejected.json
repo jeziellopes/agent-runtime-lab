@@ -1,0 +1,12 @@
+{
+  "agentId": "tool-agent",
+  "model": "authored",
+  "prompt": "Calculate 1 / bananas",
+  "calls": [
+    {
+      "node": "planner",
+      "tokens": ["I", " will", " use", " the", " calculator", " tool."],
+      "usage": { "inputTokens": 4, "outputTokens": 6, "totalTokens": 10 }
+    }
+  ]
+}

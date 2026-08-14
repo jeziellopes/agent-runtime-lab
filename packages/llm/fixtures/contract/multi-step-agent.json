@@ -1,0 +1,22 @@
+{
+  "agentId": "multi-step-agent",
+  "model": "authored",
+  "prompt": "Compare REST and GraphQL for a public API.",
+  "calls": [
+    {
+      "node": "planner",
+      "tokens": ["First", " compare", " both", " API", " styles", " carefully."],
+      "usage": { "inputTokens": 8, "outputTokens": 6, "totalTokens": 14 }
+    },
+    {
+      "node": "research",
+      "tokens": ["REST", " uses", " fixed", " endpoints", " and", " predictable", " caching."],
+      "usage": { "inputTokens": 8, "outputTokens": 7, "totalTokens": 15 }
+    },
+    {
+      "node": "analysis",
+      "tokens": ["GraphQL", " trades", " caching", " simplicity", " for", " query", " flexibility."],
+      "usage": { "inputTokens": 8, "outputTokens": 7, "totalTokens": 15 }
+    }
+  ]
+}

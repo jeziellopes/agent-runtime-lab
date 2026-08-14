@@ -1,0 +1,17 @@
+{
+  "agentId": "tool-agent",
+  "model": "authored",
+  "prompt": "Calculate 125 * 50",
+  "calls": [
+    {
+      "node": "planner",
+      "tokens": ["I", " will", " use", " the", " calculator", " tool."],
+      "usage": { "inputTokens": 4, "outputTokens": 6, "totalTokens": 10 }
+    },
+    {
+      "node": "response",
+      "tokens": ["125", " times", " 50", " equals", " 6250", " exactly."],
+      "usage": { "inputTokens": 4, "outputTokens": 6, "totalTokens": 10 }
+    }
+  ]
+}

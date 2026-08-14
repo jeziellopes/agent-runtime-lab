@@ -1,0 +1,18 @@
+{
+  "agentId": "simple-agent",
+  "model": "authored",
+  "prompt": "__fail_provider__",
+  "calls": [
+    {
+      "node": "llm",
+      "tokens": ["An", " API", " gateway", " routes", " requests", " to", " backend", " services."],
+      "usage": { "inputTokens": 1, "outputTokens": 8, "totalTokens": 9 },
+      "failures": [
+        { "category": "provider", "kind": "provider_error" },
+        { "category": "provider", "kind": "provider_error" },
+        { "category": "provider", "kind": "provider_error" },
+        { "category": "provider", "kind": "provider_error" }
+      ]
+    }
+  ]
+}

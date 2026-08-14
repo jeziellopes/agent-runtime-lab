@@ -1,0 +1,12 @@
+{
+  "agentId": "tool-agent",
+  "model": "authored",
+  "prompt": "What does API stand for?",
+  "calls": [
+    {
+      "node": "planner",
+      "tokens": ["API", " means", " application", " programming", " interface", " here."],
+      "usage": { "inputTokens": 5, "outputTokens": 6, "totalTokens": 11 }
+    }
+  ]
+}

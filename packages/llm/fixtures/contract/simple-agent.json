@@ -1,0 +1,12 @@
+{
+  "agentId": "simple-agent",
+  "model": "authored",
+  "prompt": "Explain what an API gateway is.",
+  "calls": [
+    {
+      "node": "llm",
+      "tokens": ["An", " API", " gateway", " routes", " requests", " to", " backend", " services."],
+      "usage": { "inputTokens": 6, "outputTokens": 8, "totalTokens": 14 }
+    }
+  ]
+}
