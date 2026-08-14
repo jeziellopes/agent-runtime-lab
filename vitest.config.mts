@@ -12,14 +12,19 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       // Opt-in per file, at 100%. The list is what must be fully covered, not
-      // the whole tree.
+      // the whole tree. A file belongs here only while it can be exercised
+      // without a running cell; `suite.ts` asserts against one, and its own
+      // coverage is what a suite run reports.
       include: [
         'packages/contracts/src/agent-summary.ts',
         'packages/contracts/src/cells.ts',
         'packages/contracts/src/errors.ts',
         'packages/contracts/src/execution-status.ts',
         'packages/events/src/event-type.ts',
-        'packages/contract-tests/src/suite.ts'
+        'packages/contract-tests/src/expected.ts',
+        'packages/contract-tests/src/goldens.ts',
+        'packages/contract-tests/src/headers.ts',
+        'packages/contract-tests/src/sse.ts'
       ],
       thresholds: {
         lines: 100,

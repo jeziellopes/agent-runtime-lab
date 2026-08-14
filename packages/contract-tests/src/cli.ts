@@ -1,4 +1,5 @@
 import { CELLS, findCell } from '@arl/contracts'
+
 import { runContractSuite } from './suite.js'
 
 import type { Cell, Framework, JsRuntime } from '@arl/contracts'
@@ -7,10 +8,11 @@ import type { Cell, Framework, JsRuntime } from '@arl/contracts'
  * `pnpm contract-test --all` and
  * `pnpm contract-test --framework hono --runtime bun`.
  *
- * Argument parsing is real; the suite it calls is not (see `suite.ts`).
+ * One line per check per cell, so `docker compose up` surfaces the verdict
+ * without a reader parsing JSON. Exits non-zero if any cell failed.
  */
 function selected(argv: readonly string[]): readonly Cell[] {
-  if (argv.includes('--all')) {
+  if (argv.includes('--all') || argv.length === 0) {
     return CELLS
   }
 
@@ -21,10 +23,25 @@ function selected(argv: readonly string[]): readonly Cell[] {
 }
 
 async function main(): Promise<void> {
+  let failed = false
+
   for (const cell of selected(process.argv.slice(2))) {
     const report = await runContractSuite(cell)
 
+    for (const check of report.checks) {
+      const mark = check.passed ? 'pass' : 'FAIL'
+      const detail = check.detail === undefined ? '' : ` -- ${check.detail}`
+
+      process.stdout.write(`${cell.id} ${mark} ${check.id}${detail}\n`)
+    }
+
     process.stdout.write(`${cell.id}: ${report.passed ? 'PASS' : 'FAIL'}\n`)
+
+    failed ||= !report.passed
+  }
+
+  if (failed) {
+    process.exitCode = 1
   }
 }
 
