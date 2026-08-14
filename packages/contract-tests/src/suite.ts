@@ -1,4 +1,4 @@
-import type { Cell } from './cells.js'
+import type { Cell } from '@arl/contracts'
 
 /**
  * FAKE: the assertions are enumerated; `runContractSuite` throws.

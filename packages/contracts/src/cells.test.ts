@@ -2,6 +2,12 @@ import { describe, expect, it } from 'vitest'
 
 import { CELLS, baseUrl, findCell } from './cells.js'
 
+/**
+ * The matrix lives in `contracts` rather than in the suite that first used it:
+ * the runner measures the same four cells, and these ports must agree with
+ * `scripts/start.mjs` and `docker-compose.yml`.
+ */
+
 describe('the four-cell matrix', () => {
   it('is 2 frameworks x 2 runtimes, fully crossed', () => {
     expect(CELLS).toHaveLength(4)

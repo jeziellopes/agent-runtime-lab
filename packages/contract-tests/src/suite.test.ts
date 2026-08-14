@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { CELLS } from './cells.js'
+import { CELLS } from '@arl/contracts'
 import { CONTRACT_ASSERTIONS, runContractSuite } from './suite.js'
 
 describe('the equivalence gate', () => {

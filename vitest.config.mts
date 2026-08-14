@@ -16,7 +16,7 @@ export default defineConfig({
       include: [
         'packages/contracts/src/execution-status.ts',
         'packages/events/src/event-type.ts',
-        'packages/contract-tests/src/cells.ts',
+        'packages/contracts/src/cells.ts',
         'packages/contract-tests/src/suite.ts'
       ],
       thresholds: {

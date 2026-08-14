@@ -4,6 +4,8 @@ export type {
   AgentGraph
 } from './agent-definition.js'
 export type { AgentNode, NodeResult } from './agent-node.js'
+export { CELLS, baseUrl, findCell } from './cells.js'
+export type { Cell, Framework, JsRuntime } from './cells.js'
 export {
   AgentError,
   AgentNotFoundError,

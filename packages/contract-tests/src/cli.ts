@@ -1,7 +1,7 @@
-import { CELLS, findCell } from './cells.js'
+import { CELLS, findCell } from '@arl/contracts'
 import { runContractSuite } from './suite.js'
 
-import type { Cell, Framework, JsRuntime } from './cells.js'
+import type { Cell, Framework, JsRuntime } from '@arl/contracts'
 
 /**
  * `pnpm contract-test --all` and
