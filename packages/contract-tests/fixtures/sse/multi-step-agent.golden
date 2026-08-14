@@ -1,0 +1,148 @@
+id: 1
+event: execution.created
+data: {"type":"execution.created","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"agentId":"multi-step-agent"}}
+
+id: 2
+event: execution.started
+data: {"type":"execution.started","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z"}
+
+id: 3
+event: node.started
+data: {"type":"node.started","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"planner"}}
+
+id: 4
+event: llm.started
+data: {"type":"llm.started","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"planner","model":"authored"}}
+
+id: 5
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":"First"}}
+
+id: 6
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" compare"}}
+
+id: 7
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" both"}}
+
+id: 8
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" API"}}
+
+id: 9
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" styles"}}
+
+id: 10
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" carefully."}}
+
+id: 11
+event: llm.completed
+data: {"type":"llm.completed","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"planner","usage":{"inputTokens":8,"outputTokens":6,"totalTokens":14}}}
+
+id: 12
+event: node.completed
+data: {"type":"node.completed","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"planner"}}
+
+id: 13
+event: node.started
+data: {"type":"node.started","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"research"}}
+
+id: 14
+event: llm.started
+data: {"type":"llm.started","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"research","model":"authored"}}
+
+id: 15
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":"REST"}}
+
+id: 16
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" uses"}}
+
+id: 17
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" fixed"}}
+
+id: 18
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" endpoints"}}
+
+id: 19
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" and"}}
+
+id: 20
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" predictable"}}
+
+id: 21
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" caching."}}
+
+id: 22
+event: llm.completed
+data: {"type":"llm.completed","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"research","usage":{"inputTokens":8,"outputTokens":7,"totalTokens":15}}}
+
+id: 23
+event: node.completed
+data: {"type":"node.completed","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"research"}}
+
+id: 24
+event: node.started
+data: {"type":"node.started","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"analysis"}}
+
+id: 25
+event: llm.started
+data: {"type":"llm.started","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"analysis","model":"authored"}}
+
+id: 26
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":"GraphQL"}}
+
+id: 27
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" trades"}}
+
+id: 28
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" caching"}}
+
+id: 29
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" simplicity"}}
+
+id: 30
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" for"}}
+
+id: 31
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" query"}}
+
+id: 32
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" flexibility."}}
+
+id: 33
+event: llm.completed
+data: {"type":"llm.completed","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"analysis","usage":{"inputTokens":8,"outputTokens":7,"totalTokens":15}}}
+
+id: 34
+event: node.completed
+data: {"type":"node.completed","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"analysis"}}
+
+id: 35
+event: node.started
+data: {"type":"node.started","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"response"}}
+
+id: 36
+event: node.completed
+data: {"type":"node.completed","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"response"}}
+
+id: 37
+event: execution.completed
+data: {"type":"execution.completed","executionId":"exec-35d568ff","timestamp":"1970-01-01T00:00:00.000Z","data":{"output":{"text":"GraphQL trades caching simplicity for query flexibility."}}}
+

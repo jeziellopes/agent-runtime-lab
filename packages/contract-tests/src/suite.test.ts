@@ -2,9 +2,10 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 import { CELLS } from '@arl/contracts'
+
+import type { Cell } from '@arl/contracts'
 import { describe, expect, it } from 'vitest'
 
-import { GoldenMissingError } from './goldens.js'
 import { CONTRACT_ASSERTIONS, runContractSuite } from './suite.js'
 
 describe('the equivalence gate', () => {
@@ -39,9 +40,26 @@ describe('the equivalence gate', () => {
     expect(CONTRACT_ASSERTIONS).toContain('deterministic.omits.metrics')
   })
 
-  it('cannot run: the goldens it compares against are not authored yet', async () => {
-    for (const cell of CELLS) {
-      await expect(runContractSuite(cell)).rejects.toThrow(GoldenMissingError)
+  it('reports one check per assertion, in declaration order', async () => {
+    const report = await runContractSuite(CELLS[0] as Cell)
+
+    expect(report.checks).toHaveLength(CONTRACT_ASSERTIONS.length)
+    expect(report.checks.map(check => check.id)).toEqual([
+      ...CONTRACT_ASSERTIONS
+    ])
+  })
+
+  it('fails against a cell that does not implement the contract', async () => {
+    const report = await runContractSuite(CELLS[0] as Cell)
+
+    expect(report.passed).toBe(false)
+  })
+
+  it('names what differed on every failed check, never a bare false', async () => {
+    const report = await runContractSuite(CELLS[0] as Cell)
+
+    for (const check of report.checks.filter(candidate => !candidate.passed)) {
+      expect(check.detail).toBeTruthy()
     }
   })
 })

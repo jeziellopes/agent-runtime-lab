@@ -1,0 +1,68 @@
+id: 1
+event: execution.created
+data: {"type":"execution.created","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"agentId":"simple-agent"}}
+
+id: 2
+event: execution.started
+data: {"type":"execution.started","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z"}
+
+id: 3
+event: node.started
+data: {"type":"node.started","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"llm"}}
+
+id: 4
+event: llm.started
+data: {"type":"llm.started","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"llm","model":"authored"}}
+
+id: 5
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":"An"}}
+
+id: 6
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" API"}}
+
+id: 7
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" gateway"}}
+
+id: 8
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" routes"}}
+
+id: 9
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" requests"}}
+
+id: 10
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" to"}}
+
+id: 11
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" backend"}}
+
+id: 12
+event: llm.token
+data: {"type":"llm.token","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"token":" services."}}
+
+id: 13
+event: llm.completed
+data: {"type":"llm.completed","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"llm","usage":{"inputTokens":6,"outputTokens":8,"totalTokens":14}}}
+
+id: 14
+event: node.completed
+data: {"type":"node.completed","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"llm"}}
+
+id: 15
+event: node.started
+data: {"type":"node.started","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"response"}}
+
+id: 16
+event: node.completed
+data: {"type":"node.completed","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"node":"response"}}
+
+id: 17
+event: execution.completed
+data: {"type":"execution.completed","executionId":"exec-d29f2d32","timestamp":"1970-01-01T00:00:00.000Z","data":{"output":{"text":"An API gateway routes requests to backend services."}}}
+
