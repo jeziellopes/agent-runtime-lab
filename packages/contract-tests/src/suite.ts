@@ -378,7 +378,8 @@ const CHECKS: Readonly<Record<ContractAssertion, Check>> = {
       }
 
       expect(
-        headerValue(response.headers, 'retry-after') === String(body.retryAfter),
+        headerValue(response.headers, 'retry-after') ===
+          String(body.retryAfter),
         `${row.what}: Retry-After header and retryAfter body disagree`
       )
     }
