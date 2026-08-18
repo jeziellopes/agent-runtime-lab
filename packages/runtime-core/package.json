@@ -12,7 +12,9 @@
     "@arl/contracts": "workspace:*",
     "@arl/events": "workspace:*",
     "@arl/graph-runtime": "workspace:*",
-    "@arl/memory": "workspace:*"
+    "@arl/llm": "workspace:*",
+    "@arl/memory": "workspace:*",
+    "@arl/tools": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:"

@@ -10,6 +10,8 @@
     { "path": "../graph-runtime" },
     { "path": "../contracts" },
     { "path": "../events" },
-    { "path": "../memory" }
+    { "path": "../llm" },
+    { "path": "../memory" },
+    { "path": "../tools" }
   ]
 }

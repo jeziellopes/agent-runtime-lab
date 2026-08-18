@@ -1,5 +1,6 @@
 export { AgentRuntimeCore } from './agent-runtime-core.js'
 export type { RuntimeCollaborators } from './agent-runtime-core.js'
+export { CONTRACT_FIXTURES, createRuntime } from './create-runtime.js'
 export { deriveExecutionId, randomExecutionId } from './execution-id.js'
 export { retrying } from './retrying-provider.js'
 export { loadRuntimeConfig } from './config.js'
