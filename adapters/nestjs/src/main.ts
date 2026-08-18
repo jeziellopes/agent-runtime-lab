@@ -1,23 +1,18 @@
 import 'reflect-metadata'
 
-import { NestFactory } from '@nestjs/core'
+import { REFERENCE_AGENTS } from '@arl/agents'
+import { createRuntime, loadRuntimeConfig } from '@arl/runtime-core'
 
-import { AppModule } from './modules/app.module.js'
-
-import type { NestExpressApplication } from '@nestjs/platform-express'
+import { createNestApp } from './app.js'
 
 /**
  * Cell 1 (Node) and cell 3 (Bun) run this exact compiled output. NestJS runs
  * on Bun with no flags, patches or workarounds.
  */
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger: false
-  })
-
-  // Express emits `x-powered-by` with different casing and in a different
-  // position under Node and under Bun. Disabling it removes the divergence.
-  app.disable('x-powered-by')
+  const app = await createNestApp(
+    createRuntime(loadRuntimeConfig(), REFERENCE_AGENTS)
+  )
 
   await app.listen(Number(process.env.PORT ?? 3000))
 }

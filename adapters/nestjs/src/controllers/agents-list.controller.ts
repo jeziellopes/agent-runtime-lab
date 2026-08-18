@@ -1,19 +1,17 @@
-import { Controller, Get, HttpCode, Inject } from '@nestjs/common'
+import { Controller, Get, Inject } from '@nestjs/common'
+import { toAgentSummary } from '@arl/contracts'
 
-import { notImplemented } from './not-implemented.js'
 import { RUNTIME } from '../providers/runtime.provider.js'
 
-import type { NotImplementedBody } from './not-implemented.js'
-import type { AgentRuntime } from '@arl/contracts'
+import type { AgentRuntime, AgentSummary } from '@arl/contracts'
 
-/** `GET /agents` -> `AgentDefinition[]`, via `runtime.listAgents()`. */
+/** `GET /agents` -> `AgentSummary[]`, via `runtime.listAgents()`. */
 @Controller()
 export class AgentsListController {
   constructor(@Inject(RUNTIME) private readonly runtime: AgentRuntime) {}
 
   @Get('agents')
-  @HttpCode(501)
-  list(): NotImplementedBody {
-    return notImplemented('GET /agents')
+  async list(): Promise<AgentSummary[]> {
+    return (await this.runtime.listAgents()).map(toAgentSummary)
   }
 }

@@ -8,6 +8,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
+    "@arl/agents": "workspace:*",
     "@arl/contracts": "workspace:*",
     "@arl/events": "workspace:*",
     "@arl/runtime-core": "workspace:*",

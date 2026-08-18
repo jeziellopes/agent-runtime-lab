@@ -1,11 +1,12 @@
-import { Body, Controller, HttpCode, Inject, Param, Post } from '@nestjs/common'
+import { Body, Controller, Inject, Param, Post, Res } from '@nestjs/common'
 
-import { notImplemented } from './not-implemented.js'
+import { ExecutionRequestPipe } from '../pipes/execution-request.pipe.js'
 import { RUNTIME } from '../providers/runtime.provider.js'
+import { writeFrame } from '../sse/frame-writer.js'
 
-import type { ExecuteBody } from './agent-execute.controller.js'
-import type { NotImplementedBody } from './not-implemented.js'
+import type { ExecutionBody } from '../pipes/execution-request.pipe.js'
 import type { AgentRuntime } from '@arl/contracts'
+import type { ServerResponse } from 'node:http'
 
 /**
  * `POST /agents/:id/stream` -> SSE `RuntimeEvent`, via `runtime.stream()`.
@@ -19,11 +20,40 @@ export class AgentStreamController {
   constructor(@Inject(RUNTIME) private readonly runtime: AgentRuntime) {}
 
   @Post('agents/:id/stream')
-  @HttpCode(501)
-  stream(
-    @Param('id') _agentId: string,
-    @Body() _body: ExecuteBody
-  ): NotImplementedBody {
-    return notImplemented('POST /agents/:id/stream')
+  async stream(
+    @Param('id') agentId: string,
+    @Body(ExecutionRequestPipe) body: ExecutionBody,
+    @Res() response: ServerResponse
+  ): Promise<void> {
+    /* Resolution fails here, before a byte is written, so it is still a status.
+       Everything after the first frame cannot be. */
+    const events = this.runtime.stream({ agentId, ...body })
+
+    let id = 0
+    let executionId: string | undefined
+
+    const disconnected = (): void => {
+      if (executionId !== undefined) {
+        void this.runtime.cancel(executionId)
+      }
+    }
+
+    response.writeHead(200, {
+      'content-type': 'text/event-stream',
+      'cache-control': 'no-cache'
+    })
+    response.flushHeaders()
+    response.on('close', disconnected)
+
+    try {
+      for await (const event of events) {
+        executionId = event.executionId
+        id += 1
+        writeFrame(response, id, event)
+      }
+    } finally {
+      response.off('close', disconnected)
+      response.end()
+    }
   }
 }

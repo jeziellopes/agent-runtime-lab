@@ -1,5 +1,6 @@
 import { Hono } from 'hono'
 
+import { errorHandler } from './error-mapping.js'
 import { auth } from './middleware/auth.js'
 import { agentExecuteRoutes } from './routes/agent-execute.js'
 import { agentStreamRoutes } from './routes/agent-stream.js'
@@ -21,6 +22,7 @@ export interface Deps {
  */
 export function createApp(deps: Deps): Hono {
   return new Hono()
+    .onError(errorHandler)
     .use(auth())
     .route('/', healthRoutes())
     .route('/', agentsListRoutes(deps))

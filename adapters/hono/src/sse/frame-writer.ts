@@ -1,5 +1,7 @@
 import type { RuntimeEvent } from '@arl/events'
 
+const ENCODER = new TextEncoder()
+
 /**
  * Framing is written here; `hono/streaming`'s `streamSSE` is not used. Both
  * adapters write their own frames.
@@ -13,6 +15,8 @@ import type { RuntimeEvent } from '@arl/events'
  *
  * No `retry:` field and no reconnection.
  */
-export function encodeFrame(_id: number, _event: RuntimeEvent): Uint8Array {
-  throw new Error('encodeFrame is not implemented')
+export function encodeFrame(id: number, event: RuntimeEvent): Uint8Array {
+  return ENCODER.encode(
+    `id: ${String(id)}\nevent: ${event.type}\ndata: ${JSON.stringify(event)}\n\n`
+  )
 }

@@ -16,6 +16,20 @@ export default defineConfig({
       // without a running cell; `suite.ts` asserts against one, and its own
       // coverage is what a suite run reports.
       include: [
+        'adapters/hono/src/http/app.ts',
+        'adapters/hono/src/http/error-mapping.ts',
+        'adapters/hono/src/http/middleware/auth.ts',
+        'adapters/hono/src/http/parse-request.ts',
+        'adapters/hono/src/http/routes/*.ts',
+        'adapters/hono/src/sse/frame-writer.ts',
+        'adapters/nestjs/src/app.ts',
+        'adapters/nestjs/src/controllers/*.ts',
+        'adapters/nestjs/src/errors/*.ts',
+        'adapters/nestjs/src/middleware/auth.middleware.ts',
+        'adapters/nestjs/src/modules/app.module.ts',
+        'adapters/nestjs/src/pipes/execution-request.pipe.ts',
+        'adapters/nestjs/src/providers/runtime.provider.ts',
+        'adapters/nestjs/src/sse/frame-writer.ts',
         'agents/index.ts',
         'agents/multi-step-agent/graph.ts',
         'agents/shared/nodes.ts',
@@ -29,6 +43,7 @@ export default defineConfig({
         'packages/agent-engine/src/agent-engine.ts',
         'packages/runtime-core/src/agent-runtime-core.ts',
         'packages/runtime-core/src/config.ts',
+        'packages/runtime-core/src/create-runtime.ts',
         'packages/runtime-core/src/event-stream.ts',
         'packages/runtime-core/src/execution-id.ts',
         'packages/runtime-core/src/execution-store.ts',

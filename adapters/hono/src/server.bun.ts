@@ -1,4 +1,5 @@
-import { AgentRuntimeCore, loadRuntimeConfig } from '@arl/runtime-core'
+import { REFERENCE_AGENTS } from '@arl/agents'
+import { createRuntime, loadRuntimeConfig } from '@arl/runtime-core'
 
 import { createApp } from './http/app.js'
 
@@ -8,7 +9,9 @@ import { createApp } from './http/app.js'
  *
  * Nothing in this file or anything it imports may use a Bun-only API.
  */
-const app = createApp({ runtime: new AgentRuntimeCore(loadRuntimeConfig()) })
+const app = createApp({
+  runtime: createRuntime(loadRuntimeConfig(), REFERENCE_AGENTS)
+})
 
 export default {
   fetch: app.fetch,

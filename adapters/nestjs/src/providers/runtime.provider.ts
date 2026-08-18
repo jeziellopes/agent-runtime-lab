@@ -1,5 +1,4 @@
-import { AgentRuntimeCore, loadRuntimeConfig } from '@arl/runtime-core'
-
+import type { AgentRuntime } from '@arl/contracts'
 import type { Provider } from '@nestjs/common'
 
 export const RUNTIME = 'AGENT_RUNTIME'
@@ -11,7 +10,6 @@ export const RUNTIME = 'AGENT_RUNTIME'
  * Nothing below this line may contain agent logic, prompts, graphs, tool
  * implementations or memory handling.
  */
-export const runtimeProvider: Provider = {
-  provide: RUNTIME,
-  useFactory: () => new AgentRuntimeCore(loadRuntimeConfig())
+export function runtimeProvider(runtime: AgentRuntime): Provider {
+  return { provide: RUNTIME, useValue: runtime }
 }

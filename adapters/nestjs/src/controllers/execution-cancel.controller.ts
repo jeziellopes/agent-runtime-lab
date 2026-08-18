@@ -1,9 +1,7 @@
 import { Controller, Delete, HttpCode, Inject, Param } from '@nestjs/common'
 
-import { notImplemented } from './not-implemented.js'
 import { RUNTIME } from '../providers/runtime.provider.js'
 
-import type { NotImplementedBody } from './not-implemented.js'
 import type { AgentRuntime } from '@arl/contracts'
 
 /**
@@ -12,14 +10,18 @@ import type { AgentRuntime } from '@arl/contracts'
  * On cancellation the graph halts, the in-flight LLM request is aborted and
  * token billing stops. Reporting `CANCELLED` while the provider call continues
  * is a contract failure.
+ *
+ * `204` for a running execution, an already-terminal one and an id that never
+ * existed alike: reporting the difference would leak execution existence
+ * through a status code.
  */
 @Controller()
 export class ExecutionCancelController {
   constructor(@Inject(RUNTIME) private readonly runtime: AgentRuntime) {}
 
   @Delete('executions/:id')
-  @HttpCode(501)
-  cancel(@Param('id') _executionId: string): NotImplementedBody {
-    return notImplemented('DELETE /executions/:id')
+  @HttpCode(204)
+  cancel(@Param('id') executionId: string): Promise<void> {
+    return this.runtime.cancel(executionId)
   }
 }

@@ -1,10 +1,9 @@
-import { Controller, Get, HttpCode, Inject, Param } from '@nestjs/common'
+import { Controller, Get, Inject, Param } from '@nestjs/common'
+import { ExecutionNotFoundError } from '@arl/contracts'
 
-import { notImplemented } from './not-implemented.js'
 import { RUNTIME } from '../providers/runtime.provider.js'
 
-import type { NotImplementedBody } from './not-implemented.js'
-import type { AgentRuntime } from '@arl/contracts'
+import type { AgentRuntime, Execution } from '@arl/contracts'
 
 /** `GET /executions/:id` -> `Execution`, via `runtime.getExecution()`. */
 @Controller()
@@ -12,8 +11,13 @@ export class ExecutionGetController {
   constructor(@Inject(RUNTIME) private readonly runtime: AgentRuntime) {}
 
   @Get('executions/:id')
-  @HttpCode(501)
-  get(@Param('id') _executionId: string): NotImplementedBody {
-    return notImplemented('GET /executions/:id')
+  async get(@Param('id') executionId: string): Promise<Execution> {
+    const execution = await this.runtime.getExecution(executionId)
+
+    if (execution === null) {
+      throw new ExecutionNotFoundError(`no execution ${executionId}`)
+    }
+
+    return execution
   }
 }

@@ -15,9 +15,11 @@ import type { RuntimeEvent } from '@arl/events'
  * The contract suite asserts these bytes with `od -c`.
  */
 export function writeFrame(
-  _response: ServerResponse,
-  _id: number,
-  _event: RuntimeEvent
+  response: ServerResponse,
+  id: number,
+  event: RuntimeEvent
 ): void {
-  throw new Error('writeFrame is not implemented')
+  response.write(
+    `id: ${String(id)}\nevent: ${event.type}\ndata: ${JSON.stringify(event)}\n\n`
+  )
 }

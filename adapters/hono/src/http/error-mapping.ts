@@ -1,5 +1,8 @@
+import { AgentError, RateLimitedError, RuntimeError } from '@arl/contracts'
+
 import type { RuntimeErrorCode } from '@arl/contracts'
 import type { Context } from 'hono'
+import type { ContentfulStatusCode } from 'hono/utils/http-status'
 
 /**
  * This adapter's own copy of the error mapping. The NestJS adapter keeps its
@@ -8,7 +11,9 @@ import type { Context } from 'hono'
  * Errors converge here: handlers throw, and nothing maps a status at a return
  * site.
  */
-export const ERROR_STATUS: Readonly<Record<RuntimeErrorCode, number>> = {
+export const ERROR_STATUS: Readonly<
+  Record<RuntimeErrorCode, ContentfulStatusCode>
+> = {
   agent_error: 422,
   agent_not_found: 404,
   agent_already_registered: 422,
@@ -25,6 +30,30 @@ export const ERROR_STATUS: Readonly<Record<RuntimeErrorCode, number>> = {
   invalid_request: 400
 }
 
-export function errorHandler(_error: Error, _context: Context): Response {
-  throw new Error('errorHandler is not implemented')
+export interface ErrorBody {
+  error: RuntimeErrorCode
+  detail: string
+  retryAfter?: number
+}
+
+/**
+ * The runtime normalises its own failures into a `RuntimeError` before they
+ * leave it, so anything else arriving here is a defect in this adapter. It
+ * surfaces under the runtime's most general identity rather than as a framework
+ * error page, because the body shape is contract and an HTML 500 is not one.
+ */
+export function errorHandler(error: Error, context: Context): Response {
+  const failure =
+    error instanceof RuntimeError ? error : new AgentError(error.message)
+  const body: ErrorBody = { error: failure.code, detail: failure.message }
+
+  if (failure instanceof RateLimitedError && failure.retryAfter !== undefined) {
+    return context.json(
+      { ...body, retryAfter: failure.retryAfter },
+      ERROR_STATUS[failure.code],
+      { 'retry-after': String(failure.retryAfter) }
+    )
+  }
+
+  return context.json(body, ERROR_STATUS[failure.code])
 }

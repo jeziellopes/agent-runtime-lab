@@ -6,6 +6,7 @@
   },
   "include": ["src"],
   "references": [
+    { "path": "../../agents" },
     { "path": "../../packages/contracts" },
     { "path": "../../packages/events" },
     { "path": "../../packages/runtime-core" }
