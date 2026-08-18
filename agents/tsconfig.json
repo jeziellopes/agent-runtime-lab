@@ -4,13 +4,35 @@
     "rootDir": ".",
     "outDir": "dist"
   },
-  "include": ["simple-agent", "tool-agent", "multi-step-agent", "index.ts"],
+  "include": [
+    "shared",
+    "simple-agent",
+    "tool-agent",
+    "multi-step-agent",
+    "index.ts",
+    "reference-agents.test.ts"
+  ],
   "references": [
+    {
+      "path": "../packages/agent-engine"
+    },
     {
       "path": "../packages/contracts"
     },
     {
+      "path": "../packages/llm"
+    },
+    {
+      "path": "../packages/memory"
+    },
+    {
+      "path": "../packages/events"
+    },
+    {
       "path": "../packages/graph-runtime"
+    },
+    {
+      "path": "../packages/runtime-core"
     },
     {
       "path": "../packages/tools"

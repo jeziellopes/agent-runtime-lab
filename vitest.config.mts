@@ -16,6 +16,11 @@ export default defineConfig({
       // without a running cell; `suite.ts` asserts against one, and its own
       // coverage is what a suite run reports.
       include: [
+        'agents/index.ts',
+        'agents/multi-step-agent/graph.ts',
+        'agents/shared/nodes.ts',
+        'agents/simple-agent/graph.ts',
+        'agents/tool-agent/graph.ts',
         'packages/contracts/src/agent-summary.ts',
         'packages/contracts/src/cells.ts',
         'packages/contracts/src/errors.ts',

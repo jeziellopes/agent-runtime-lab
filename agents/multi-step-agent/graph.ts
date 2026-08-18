@@ -1,14 +1,29 @@
-import type { AgentGraph } from '@arl/contracts'
+import { llmNode, messagesFor, promptOf, respondNode } from '../shared/nodes.js'
+import { STEPS, SYSTEM_PROMPT, USER_PROMPT_TEMPLATE } from './prompts.js'
 
-/**
- * Scenario 04: planner -> research -> analysis -> response.
- *
- * FAKE: the entry and the edges are the real shape; `nodes` is empty. A node
- * belongs here only if `@arl/graph-runtime` can compile and run it.
- */
+import type { AgentGraph, AgentNode, ExecutionContext } from '@arl/contracts'
+
+function reasoningNode(id: keyof typeof STEPS): AgentNode {
+  return llmNode(id, (context: ExecutionContext) =>
+    messagesFor(
+      SYSTEM_PROMPT,
+      USER_PROMPT_TEMPLATE.replace('{step}', STEPS[id]).replace(
+        '{prompt}',
+        promptOf(context)
+      )
+    )
+  )
+}
+
+/** Scenario 04: planner -> research -> analysis -> response. */
 export const graph: AgentGraph = {
   entry: 'planner',
-  nodes: [],
+  nodes: [
+    reasoningNode('planner'),
+    reasoningNode('research'),
+    reasoningNode('analysis'),
+    respondNode('response')
+  ],
   edges: [
     { from: 'planner', to: 'research' },
     { from: 'research', to: 'analysis' },

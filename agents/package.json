@@ -13,6 +13,11 @@
     "@arl/tools": "workspace:*"
   },
   "devDependencies": {
+    "@arl/agent-engine": "workspace:*",
+    "@arl/events": "workspace:*",
+    "@arl/llm": "workspace:*",
+    "@arl/memory": "workspace:*",
+    "@arl/runtime-core": "workspace:*",
     "@types/node": "catalog:"
   }
 }

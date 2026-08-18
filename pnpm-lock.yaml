@@ -128,6 +128,21 @@ importers:
         specifier: workspace:*
         version: link:../packages/tools
     devDependencies:
+      '@arl/agent-engine':
+        specifier: workspace:*
+        version: link:../packages/agent-engine
+      '@arl/events':
+        specifier: workspace:*
+        version: link:../packages/events
+      '@arl/llm':
+        specifier: workspace:*
+        version: link:../packages/llm
+      '@arl/memory':
+        specifier: workspace:*
+        version: link:../packages/memory
+      '@arl/runtime-core':
+        specifier: workspace:*
+        version: link:../packages/runtime-core
       '@types/node':
         specifier: 'catalog:'
         version: 24.13.3
