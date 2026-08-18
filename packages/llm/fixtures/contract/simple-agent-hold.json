@@ -1,0 +1,22 @@
+{
+  "agentId": "simple-agent",
+  "model": "authored",
+  "prompt": "__hold__",
+  "calls": [
+    {
+      "node": "llm",
+      "holdMs": 250,
+      "tokens": [
+        "An",
+        " API",
+        " gateway",
+        " routes",
+        " requests",
+        " to",
+        " backend",
+        " services."
+      ],
+      "usage": { "inputTokens": 1, "outputTokens": 8, "totalTokens": 9 }
+    }
+  ]
+}

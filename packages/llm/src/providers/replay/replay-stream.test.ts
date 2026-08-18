@@ -96,6 +96,39 @@ describe('a failure that lands mid-stream', () => {
   })
 })
 
+describe('a call that holds between tokens', () => {
+  const held: FixtureCall = { ...call, holdMs: 40 }
+
+  it('takes at least the declared wait per token', async () => {
+    const startedAt = performance.now()
+
+    await collect(replayTokens(held, undefined))
+
+    expect(performance.now() - startedAt).toBeGreaterThanOrEqual(
+      40 * call.tokens.length
+    )
+  })
+
+  it('delivers the same tokens it would have without the wait', async () => {
+    expect(await collect(replayTokens(held, undefined))).toEqual(
+      await collect(replayTokens(call, undefined))
+    )
+  })
+
+  it('stops waiting the moment the signal aborts', async () => {
+    const controller = new AbortController()
+    const startedAt = performance.now()
+    const stream = collect(
+      replayTokens({ ...call, holdMs: 5_000 }, undefined, controller.signal)
+    )
+
+    controller.abort()
+
+    expect(await stream).toEqual([])
+    expect(performance.now() - startedAt).toBeLessThan(1_000)
+  })
+})
+
 describe('cancellation', () => {
   it('yields nothing when the signal is already aborted', async () => {
     expect(

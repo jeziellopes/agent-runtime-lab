@@ -101,8 +101,8 @@ describe('the committed contract set', () => {
     expect(fixture.calls[0]?.tokens).toHaveLength(8)
   })
 
-  it('parses all eight files', () => {
-    expect(loadFixtureSet('contract').size).toBe(8)
+  it('parses all nine files', () => {
+    expect(loadFixtureSet('contract').size).toBe(9)
   })
 
   it('matches the pinned token counts on the benchmark path', () => {
@@ -296,6 +296,16 @@ describe('schema validation', () => {
       /failAfterTokens exceeds the call's 2 tokens/
     ],
     [
+      'a fractional holdMs',
+      withCall({ ...baseCall, holdMs: 1.5 }),
+      /holdMs must be a positive integer/
+    ],
+    [
+      'a holdMs of zero',
+      withCall({ ...baseCall, holdMs: 0 }),
+      /holdMs must be a positive integer/
+    ],
+    [
       'the same node twice',
       JSON.stringify({
         ...wellFormed,
@@ -326,6 +336,16 @@ describe('schema validation', () => {
     )
 
     expect(fixture.calls[0]?.failures?.[0]?.failAfterTokens).toBe(2)
+  })
+
+  it('carries a declared holdMs through, and omits the key otherwise', () => {
+    expect(
+      parseFixture('ok.json', withCall({ ...baseCall, holdMs: 250 })).calls[0]
+        ?.holdMs
+    ).toBe(250)
+    expect(
+      parseFixture('ok.json', withCall(baseCall)).calls[0]
+    ).not.toHaveProperty('holdMs')
   })
 
   it('carries retryAfterMs through unchanged', () => {
