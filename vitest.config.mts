@@ -21,6 +21,8 @@ export default defineConfig({
         'packages/contracts/src/errors.ts',
         'packages/contracts/src/execution-status.ts',
         'packages/events/src/event-type.ts',
+        'packages/agent-engine/src/agent-engine.ts',
+        'packages/agent-engine/src/agent-registry.ts',
         'packages/graph-runtime/src/event-queue.ts',
         'packages/graph-runtime/src/graph-runtime.ts',
         'packages/graph-runtime/src/validate.ts',
