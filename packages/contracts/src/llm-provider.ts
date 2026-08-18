@@ -8,9 +8,13 @@ export interface Message {
 }
 
 /**
- * `nodeId` and `attempt` correlate a call with a replay fixture, so the replay
- * provider is a pure function of the request and holds no cursor. Live
- * providers ignore both, and a caller that does not correlate stays valid.
+ * The four correlation fields select a replay fixture and its call, so the
+ * replay provider is a pure function of the request and holds no cursor. Live
+ * providers ignore all four, and a caller that does not correlate stays valid.
+ *
+ * `prompt` is the execution's input prompt verbatim, never the assembled
+ * messages: assembled content changes whenever a system prompt does, and a
+ * fixture author has no way to reproduce it by hand.
  */
 export interface LLMRequest {
   messages: Message[]
@@ -18,6 +22,8 @@ export interface LLMRequest {
   maxTokens?: number
   temperature?: number
   signal?: AbortSignal
+  agentId?: string
+  prompt?: string
   nodeId?: string
   attempt?: number
 }
