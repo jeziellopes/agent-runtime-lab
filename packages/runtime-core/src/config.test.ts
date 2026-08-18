@@ -5,7 +5,7 @@ import { loadRuntimeConfig } from './config.js'
 describe('loading the runtime config', () => {
   it('returns every default from an empty environment', () => {
     expect(loadRuntimeConfig({})).toEqual({
-      defaultModel: '',
+      defaultModel: 'authored',
       maxIterations: 10,
       timeoutMs: 30_000,
       llmMode: 'replay',
@@ -17,7 +17,7 @@ describe('loading the runtime config', () => {
   it('reads what the environment does set', () => {
     expect(
       loadRuntimeConfig({
-        MODEL_NAME: 'authored',
+        MODEL_NAME: 'claude-sonnet-5',
         MAX_ITERATIONS: '4',
         TIMEOUT_MS: '900',
         LLM_MODE: 'live',
@@ -25,7 +25,7 @@ describe('loading the runtime config', () => {
         DETERMINISTIC: 'true'
       })
     ).toEqual({
-      defaultModel: 'authored',
+      defaultModel: 'claude-sonnet-5',
       maxIterations: 4,
       timeoutMs: 900,
       llmMode: 'live',

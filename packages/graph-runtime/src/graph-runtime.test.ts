@@ -25,6 +25,7 @@ import type { EmittedEvent } from '@arl/events'
 
 const DEPS: GraphDeps = {
   provider: {} as LLMProvider,
+  model: 'authored',
   tools: {} as ToolRegistry,
   memory: {} as MemoryStore,
   signal: new AbortController().signal
@@ -42,13 +43,16 @@ function context(overrides: Partial<ExecutionContext> = {}): ExecutionContext {
 
 function node(
   id: string,
-  body: (deps: NodeDeps) => NodeResult | Promise<NodeResult> = () => ({
+  body: (
+    deps: NodeDeps,
+    context: ExecutionContext
+  ) => NodeResult | Promise<NodeResult> = () => ({
     stateUpdate: {}
   })
 ): AgentNode {
   return {
     id,
-    execute: (_context, deps) => Promise.resolve(body(deps))
+    execute: (context, deps) => Promise.resolve(body(deps, context))
   }
 }
 
@@ -204,7 +208,7 @@ describe('compile-time validation', () => {
     }
   )
 
-  it.each(['provider', 'tools', 'memory', 'signal'] as const)(
+  it.each(['provider', 'model', 'tools', 'memory', 'signal'] as const)(
     'refuses to run without deps.%s',
     async missing => {
       const compiled = compileGraph(linear(), { maxIterations: 5 })
@@ -302,6 +306,75 @@ describe('invoke', () => {
       'node.completed(b)'
     ])
     expect(state['output']).toBe('ab')
+  })
+
+  it('hands the drained run its own state without stepping again', async () => {
+    let ran = 0
+    const graph = graphOf(
+      [
+        node('a', () => {
+          ran += 1
+
+          return { stateUpdate: { output: 'a' } }
+        }),
+        node('b', () => {
+          ran += 1
+
+          return { stateUpdate: { output: 'ab' } }
+        })
+      ],
+      [{ from: 'a', to: 'b' }]
+    )
+    const run = compileGraph(graph, { maxIterations: 5 }).stream(
+      context(),
+      DEPS
+    )
+
+    await eventsOf(run)
+
+    await expect(run.state()).resolves.toMatchObject({ output: 'ab' })
+    expect(ran).toBe(2)
+  })
+
+  it('holds the state as of the last completed node when a route fails', async () => {
+    const graph = graphOf(
+      [
+        node('a', () => ({ stateUpdate: {}, nextNode: 'ghost' })),
+        node('b'),
+        node('c')
+      ],
+      [
+        { from: 'a', to: 'b', condition: 'onward' },
+        { from: 'a', to: 'c', condition: 'aside' }
+      ]
+    )
+    const run = compileGraph(graph, { maxIterations: 5 }).stream(
+      context(),
+      DEPS
+    )
+
+    await expect(eventsOf(run)).rejects.toBeInstanceOf(GraphRouteInvalidError)
+    await expect(run.state()).resolves.toMatchObject({ input: 'x' })
+  })
+})
+
+describe('what a node is handed', () => {
+  it('carries the configured model', async () => {
+    const seen: string[] = []
+    const graph = graphOf(
+      [
+        node('a', deps => {
+          seen.push(deps.model)
+
+          return { stateUpdate: {} }
+        })
+      ],
+      []
+    )
+
+    await compileGraph(graph, { maxIterations: 5 }).invoke(context(), DEPS)
+
+    expect(seen).toEqual(['authored'])
   })
 })
 

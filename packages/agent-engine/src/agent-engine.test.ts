@@ -27,6 +27,7 @@ import type { GraphDeps } from '@arl/graph-runtime'
 
 const DEPS: GraphDeps = {
   provider: {} as LLMProvider,
+  model: 'authored',
   tools: {} as ToolRegistry,
   memory: {} as MemoryStore,
   signal: new AbortController().signal

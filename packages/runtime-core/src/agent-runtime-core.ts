@@ -286,6 +286,7 @@ export class AgentRuntimeCore implements AgentRuntime {
         createRetryPolicy(this.config.maxRetries),
         ms => this.sleep(ms)
       ),
+      model: this.config.defaultModel,
       tools,
       memory,
       signal: running.controller.signal

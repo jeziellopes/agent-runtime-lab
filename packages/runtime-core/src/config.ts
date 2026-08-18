@@ -4,7 +4,8 @@ import type { LLMMode, RuntimeConfig } from '@arl/contracts'
  * The only module that reads `process.env`. Adapters must not read it: the
  * configuration is framework-independent and identical across all four cells.
  *
- * `llmMode` defaults to `replay`. Day-to-day development needs no API key.
+ * `llmMode` defaults to `replay`. Day-to-day development needs no API key, and
+ * `defaultModel` names what that mode replays rather than an empty placeholder.
  *
  * `deterministic` defaults to `false`, so a benchmark run reports real ids,
  * real timestamps and real metrics unless the contract suite asks otherwise.
@@ -15,7 +16,7 @@ export function loadRuntimeConfig(
   const llmMode: LLMMode = env.LLM_MODE === 'live' ? 'live' : 'replay'
 
   return {
-    defaultModel: env.MODEL_NAME ?? '',
+    defaultModel: env.MODEL_NAME ?? 'authored',
     maxIterations: integer(env.MAX_ITERATIONS, 10),
     timeoutMs: integer(env.TIMEOUT_MS, 30_000),
     llmMode,

@@ -13,6 +13,8 @@ import type { ToolRegistry } from './tool.js'
  */
 export interface NodeDeps {
   provider: LLMProvider
+  /** What the runtime is configured to ask for, not what the node prefers. */
+  model: string
   tools: ToolRegistry
   memory: MemoryStore
   /** The stream stamps the timestamp on publish, so a node never sets one. */

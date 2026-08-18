@@ -14,6 +14,7 @@ vi.mock('@arl/graph-runtime', async importActual => {
 
 const DEPS = {
   provider: {},
+  model: 'authored',
   tools: {},
   memory: {},
   signal: new AbortController().signal

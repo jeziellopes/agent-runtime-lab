@@ -172,7 +172,13 @@ function traverse(
 }
 
 function requireDeps(deps: GraphDeps): void {
-  for (const name of ['provider', 'tools', 'memory', 'signal'] as const) {
+  for (const name of [
+    'provider',
+    'model',
+    'tools',
+    'memory',
+    'signal'
+  ] as const) {
     if (deps[name] === undefined || deps[name] === null) {
       throw new GraphInvalidError(`a graph cannot run without deps.${name}`)
     }
