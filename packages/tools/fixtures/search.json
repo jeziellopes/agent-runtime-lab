@@ -1,9 +1,19 @@
 {
   "Find information about TypeScript": [
     {
-      "title": "",
-      "url": "",
-      "snippet": ""
+      "title": "TypeScript: JavaScript With Syntax For Types",
+      "url": "https://www.typescriptlang.org/",
+      "snippet": "TypeScript adds static types to JavaScript and compiles to plain JavaScript that runs anywhere JavaScript runs."
+    },
+    {
+      "title": "TypeScript Handbook: Everyday Types",
+      "url": "https://www.typescriptlang.org/docs/handbook/2/everyday-types.html",
+      "snippet": "The primitives, arrays, unions, type aliases and interfaces that make up most of the types written day to day."
+    },
+    {
+      "title": "TypeScript 5.0 Release Notes",
+      "url": "https://devblogs.microsoft.com/typescript/announcing-typescript-5-0/",
+      "snippet": "Decorators, const type parameters, and a smaller, faster compiler built on ECMAScript modules."
     }
   ]
 }

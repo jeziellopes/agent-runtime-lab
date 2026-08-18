@@ -1,3 +1,5 @@
+import { ToolError } from '@arl/contracts'
+
 import type { Tool, ToolRegistry } from '@arl/contracts'
 
 /**
@@ -5,15 +7,33 @@ import type { Tool, ToolRegistry } from '@arl/contracts'
  * import a tool directly.
  */
 export class InMemoryToolRegistry implements ToolRegistry {
-  register(_tool: Tool): void {
-    throw new Error('InMemoryToolRegistry.register is not implemented')
+  private readonly tools = new Map<string, Tool>()
+
+  /**
+   * Registration happens at boot, so a duplicate is a composition-root defect
+   * rather than a request-time one. The first tool stands: silently replacing
+   * it would make which cell wins depend on module evaluation order.
+   */
+  register(tool: Tool): void {
+    if (typeof tool.name !== 'string' || tool.name.length === 0) {
+      throw new ToolError('a tool must be registered under a non-empty name')
+    }
+
+    if (this.tools.has(tool.name)) {
+      throw new ToolError(`a tool named ${tool.name} is already registered`)
+    }
+
+    this.tools.set(tool.name, tool)
   }
 
-  get(_name: string): Tool | null {
-    throw new Error('InMemoryToolRegistry.get is not implemented')
+  get(name: string): Tool | null {
+    return this.tools.get(name) ?? null
   }
 
+  /** Sorted by name, so the order is the same in all four cells. */
   list(): readonly Tool[] {
-    throw new Error('InMemoryToolRegistry.list is not implemented')
+    return [...this.tools.values()].sort((left, right) =>
+      left.name.localeCompare(right.name)
+    )
   }
 }
