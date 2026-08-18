@@ -1,4 +1,4 @@
-import type { RuntimeEvent } from '@arl/events'
+import type { EmittedEvent } from '@arl/events'
 
 /**
  * The bridge between the graph engine, which drives itself, and `stream`, which
@@ -10,13 +10,13 @@ import type { RuntimeEvent } from '@arl/events'
  * and time to first token is one of the things being measured.
  */
 export interface EventQueue {
-  push(event: RuntimeEvent): void
+  push(event: EmittedEvent): void
   close(failure?: unknown): void
-  drain(): AsyncIterable<RuntimeEvent>
+  drain(): AsyncIterable<EmittedEvent>
 }
 
 export function createEventQueue(): EventQueue {
-  const buffered: RuntimeEvent[] = []
+  const buffered: EmittedEvent[] = []
   let wake: (() => void) | undefined
   let closed = false
   let failure: unknown

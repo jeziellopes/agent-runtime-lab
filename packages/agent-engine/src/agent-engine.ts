@@ -9,7 +9,7 @@ import type {
   ExecutionContext,
   ExecutionRequest
 } from '@arl/contracts'
-import type { RuntimeEvent } from '@arl/events'
+import type { EmittedEvent } from '@arl/events'
 import type { CompiledGraph, GraphDeps } from '@arl/graph-runtime'
 
 /**
@@ -35,7 +35,7 @@ export interface AgentEngine {
   stream(
     context: ExecutionContext,
     deps: GraphDeps
-  ): AsyncIterable<RuntimeEvent>
+  ): AsyncIterable<EmittedEvent>
 }
 
 export class DefaultAgentEngine implements AgentEngine {
@@ -112,7 +112,7 @@ export class DefaultAgentEngine implements AgentEngine {
   stream(
     context: ExecutionContext,
     deps: GraphDeps
-  ): AsyncIterable<RuntimeEvent> {
+  ): AsyncIterable<EmittedEvent> {
     return this.graphFor(context).stream(context, deps)
   }
 

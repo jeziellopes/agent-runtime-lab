@@ -21,7 +21,7 @@ import type {
   NodeResult,
   ToolRegistry
 } from '@arl/contracts'
-import type { RuntimeEvent } from '@arl/events'
+import type { EmittedEvent } from '@arl/events'
 
 const DEPS: GraphDeps = {
   provider: {} as LLMProvider,
@@ -61,9 +61,9 @@ function graphOf(
 }
 
 async function eventsOf(
-  iterable: AsyncIterable<RuntimeEvent>
-): Promise<RuntimeEvent[]> {
-  const events: RuntimeEvent[] = []
+  iterable: AsyncIterable<EmittedEvent>
+): Promise<EmittedEvent[]> {
+  const events: EmittedEvent[] = []
 
   for await (const event of iterable) {
     events.push(event)
@@ -73,11 +73,11 @@ async function eventsOf(
 }
 
 /** The union has no `data` on two of its twelve members. */
-function dataOf(event: RuntimeEvent): Record<string, unknown> {
+function dataOf(event: EmittedEvent): Record<string, unknown> {
   return 'data' in event ? (event.data as Record<string, unknown>) : {}
 }
 
-function shapeOf(events: RuntimeEvent[]): string[] {
+function shapeOf(events: EmittedEvent[]): string[] {
   return events.map(event => {
     const { node, branch } = dataOf(event) as { node?: string; branch?: string }
 
@@ -233,13 +233,11 @@ describe('the event stream', () => {
       deps.emit({
         type: 'llm.token',
         executionId: 'e1',
-        timestamp: new Date(),
         data: { token: 'one' }
       })
       deps.emit({
         type: 'llm.token',
         executionId: 'e1',
-        timestamp: new Date(),
         data: { token: 'two' }
       })
 

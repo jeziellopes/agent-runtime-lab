@@ -20,7 +20,7 @@ import type {
   NodeDeps,
   NodeResult
 } from '@arl/contracts'
-import type { RuntimeEvent } from '@arl/events'
+import type { EmittedEvent } from '@arl/events'
 import type {
   ExtractStateType,
   ExtractUpdateType,
@@ -50,7 +50,7 @@ export interface CompiledGraph {
   stream(
     context: ExecutionContext,
     deps: GraphDeps
-  ): AsyncIterable<RuntimeEvent>
+  ): AsyncIterable<EmittedEvent>
 }
 
 type State = ExtractStateType<typeof AgentState>
@@ -65,7 +65,7 @@ type Compiled = ReturnType<Builder['compile']>
 interface Invocation {
   context: ExecutionContext
   deps: GraphDeps
-  emit: (event: RuntimeEvent) => void
+  emit: (event: EmittedEvent) => void
   budget: { remaining: number }
 }
 
@@ -114,7 +114,7 @@ function traverse(
   deps: GraphDeps,
   options: CompileOptions
 ): {
-  events: AsyncIterable<RuntimeEvent>
+  events: AsyncIterable<EmittedEvent>
   state: () => Promise<Record<string, unknown>>
 } {
   requireDeps(deps)
@@ -275,11 +275,10 @@ function route(
   return taken
 }
 
-function started(context: ExecutionContext, node: string): RuntimeEvent {
+function started(context: ExecutionContext, node: string): EmittedEvent {
   return {
     type: 'node.started',
     executionId: context.executionId,
-    timestamp: new Date(),
     data: { node }
   }
 }
@@ -288,11 +287,10 @@ function completed(
   context: ExecutionContext,
   node: string,
   branch: string | undefined
-): RuntimeEvent {
+): EmittedEvent {
   return {
     type: 'node.completed',
     executionId: context.executionId,
-    timestamp: new Date(),
     data: { node, ...(branch === undefined ? {} : { branch }) }
   }
 }

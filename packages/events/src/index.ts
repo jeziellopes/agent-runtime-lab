@@ -5,6 +5,7 @@ export {
 } from './event-type.js'
 export type { RuntimeEventType, TerminalEventType } from './event-type.js'
 export type {
+  EmittedEvent,
   RuntimeEvent,
   RuntimeMetrics,
   SseFrame,

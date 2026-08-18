@@ -77,6 +77,17 @@ export type RuntimeEvent =
     })
   | RuntimeEventBase<'execution.cancelled'>
 
+type WithoutTimestamp<T> = T extends unknown ? Omit<T, 'timestamp'> : never
+
+/**
+ * What an emitter below L2 hands up: the event without its timestamp.
+ *
+ * The event stream stamps on publish, so nothing beneath it has to know whether
+ * the run is deterministic. The field's absence from this type is what enforces
+ * that: an emitter cannot set a value the stream would discard.
+ */
+export type EmittedEvent = WithoutTimestamp<RuntimeEvent>
+
 /**
  * One SSE frame. The wire format, byte for byte:
  *

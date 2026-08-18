@@ -1,4 +1,4 @@
-import type { RuntimeEvent } from '@arl/events'
+import type { EmittedEvent } from '@arl/events'
 
 import type { LLMProvider } from './llm-provider.js'
 import type { MemoryStore } from './memory-store.js'
@@ -15,6 +15,7 @@ export interface NodeDeps {
   provider: LLMProvider
   tools: ToolRegistry
   memory: MemoryStore
-  emit(event: RuntimeEvent): void
+  /** The stream stamps the timestamp on publish, so a node never sets one. */
+  emit(event: EmittedEvent): void
   signal: AbortSignal
 }

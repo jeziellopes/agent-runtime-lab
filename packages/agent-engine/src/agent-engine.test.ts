@@ -22,7 +22,7 @@ import type {
   NodeResult,
   ToolRegistry
 } from '@arl/contracts'
-import type { RuntimeEvent } from '@arl/events'
+import type { EmittedEvent } from '@arl/events'
 import type { GraphDeps } from '@arl/graph-runtime'
 
 const DEPS: GraphDeps = {
@@ -68,9 +68,9 @@ function engineWith(...definitions: AgentDefinition[]): DefaultAgentEngine {
 }
 
 async function eventsOf(
-  iterable: AsyncIterable<RuntimeEvent>
-): Promise<RuntimeEvent[]> {
-  const events: RuntimeEvent[] = []
+  iterable: AsyncIterable<EmittedEvent>
+): Promise<EmittedEvent[]> {
+  const events: EmittedEvent[] = []
 
   for await (const event of iterable) {
     events.push(event)
