@@ -4,7 +4,7 @@ import { isTerminalEvent } from '@arl/events'
 import { EXPECTED_RUNS, GOLDEN_RUNS } from './expected.js'
 import { loadGoldens } from './goldens.js'
 import { headerValue } from './headers.js'
-import { json, parseJson, request } from './http.js'
+import { json, parseJson, request, requestFrames } from './http.js'
 import { eventTypes, idsAreMonotonic, parseFrames } from './sse.js'
 
 import type { Cell, ExecutionResult, RuntimeErrorCode } from '@arl/contracts'
@@ -133,6 +133,9 @@ const INDUCIBLE_ERRORS: readonly {
     keys: ['error', 'detail']
   }
 ]
+
+/** Reserved, like the three `__fail_*__` prompts, and sent by nothing else. */
+const HOLD_PROMPT = '__hold__'
 
 interface Suite {
   readonly base: string
@@ -410,17 +413,58 @@ const CHECKS: Readonly<Record<ContractAssertion, Check>> = {
     )
   },
 
+  /**
+   * Cancels an execution that is still running, which the reserved `__hold__`
+   * prompt is what makes possible: the replay provider answers in microseconds
+   * otherwise, and nothing would be in flight when the DELETE arrived.
+   */
   'cancel.aborts.provider.call': async suite => {
-    const executed = parseJson<ExecutionResult>(
-      await execute(suite, 'simple-agent', run('simple-agent'))
+    let executionId: string | undefined
+    let cancelledAfter = 0
+
+    const response = await requestFrames(
+      `${suite.base}/agents/simple-agent/stream`,
+      json({ input: { prompt: HOLD_PROMPT } }),
+      async block => {
+        const frame = parseFrames(`${block}\n\n`)[0]
+
+        if (frame === undefined) {
+          return
+        }
+
+        if (executionId === undefined) {
+          executionId = frame.data.executionId
+        }
+
+        if (frame.event === 'llm.token' && cancelledAfter === 0) {
+          cancelledAfter += 1
+          await request(`${suite.base}/executions/${executionId}`, {
+            method: 'DELETE'
+          })
+        }
+      }
     )
 
-    await request(`${suite.base}/executions/${executed.executionId}`, {
-      method: 'DELETE'
-    })
+    expect(
+      response.status === 200,
+      `status ${String(response.status)}: cancelling cannot change headers already sent`
+    )
+
+    const types = eventTypes(parseFrames(response.raw))
+    const cancelled = types.indexOf('execution.cancelled')
+
+    expect(cancelled !== -1, `stream ended ${types.join(',')}, want a cancel`)
+    expect(
+      cancelled === types.length - 1,
+      `${String(types.length - 1 - cancelled)} frames follow execution.cancelled`
+    )
+    expect(
+      types.filter(isTerminalEvent).length === 1,
+      'more than one terminal event'
+    )
 
     const found = await request(
-      `${suite.base}/executions/${executed.executionId}`
+      `${suite.base}/executions/${String(executionId)}`
     )
 
     expect(
