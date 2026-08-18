@@ -359,6 +359,25 @@ describe('invoke', () => {
 })
 
 describe('what a node is handed', () => {
+  it('sees the state the node before it wrote, not the seed', async () => {
+    const seen: unknown[] = []
+    const graph = graphOf(
+      [
+        node('a', () => ({ stateUpdate: { output: 'from a' } })),
+        node('b', (_deps, given) => {
+          seen.push(given.state['output'])
+
+          return { stateUpdate: {} }
+        })
+      ],
+      [{ from: 'a', to: 'b' }]
+    )
+
+    await compileGraph(graph, { maxIterations: 5 }).invoke(context(), DEPS)
+
+    expect(seen).toEqual(['from a'])
+  })
+
   it('carries the configured model', async () => {
     const seen: string[] = []
     const graph = graphOf(

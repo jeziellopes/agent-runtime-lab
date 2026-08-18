@@ -187,7 +187,7 @@ function requireDeps(deps: GraphDeps): void {
 
 function step(graph: AgentGraph, node: AgentNode) {
   return async (
-    _state: State,
+    state: State,
     config: LangGraphRunnableConfig
   ): Promise<Command> => {
     const invocation = config.configurable?.['invocation'] as Invocation
@@ -208,7 +208,7 @@ function step(graph: AgentGraph, node: AgentNode) {
     invocation.budget.remaining -= 1
     invocation.emit(started(invocation.context, node.id))
 
-    const result = await execute(node, invocation)
+    const result = await execute(node, invocation, state)
     const edge = route(graph, node.id, result)
 
     invocation.emit(completed(invocation.context, node.id, edge?.condition))
@@ -217,17 +217,23 @@ function step(graph: AgentGraph, node: AgentNode) {
   }
 }
 
+/**
+ * The node reads the graph state as of this step, not the seed the engine built
+ * the context from. A workflow whose third node cannot see what its second node
+ * wrote is a sequence of unrelated calls.
+ */
 async function execute(
   node: AgentNode,
-  invocation: Invocation
+  invocation: Invocation,
+  state: State
 ): Promise<NodeResult> {
   let result: NodeResult
 
   try {
-    result = await node.execute(invocation.context, {
-      ...invocation.deps,
-      emit: invocation.emit
-    })
+    result = await node.execute(
+      { ...invocation.context, state: { ...state } },
+      { ...invocation.deps, emit: invocation.emit }
+    )
   } catch (failure) {
     /* A node's own error is never reclassified. Wrapping a ProviderError as
        agent_error would make it unretryable and silently defeat the runtime's
