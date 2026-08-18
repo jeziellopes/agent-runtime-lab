@@ -9,8 +9,7 @@ import type {
   ExecutionContext,
   ExecutionRequest
 } from '@arl/contracts'
-import type { EmittedEvent } from '@arl/events'
-import type { CompiledGraph, GraphDeps } from '@arl/graph-runtime'
+import type { CompiledGraph, GraphDeps, GraphRun } from '@arl/graph-runtime'
 
 /**
  * L3. An execution request resolves to an agent definition, which resolves to a
@@ -32,10 +31,7 @@ export interface AgentEngine {
     context: ExecutionContext,
     deps: GraphDeps
   ): Promise<Record<string, unknown>>
-  stream(
-    context: ExecutionContext,
-    deps: GraphDeps
-  ): AsyncIterable<EmittedEvent>
+  stream(context: ExecutionContext, deps: GraphDeps): GraphRun
 }
 
 export class DefaultAgentEngine implements AgentEngine {
@@ -109,10 +105,7 @@ export class DefaultAgentEngine implements AgentEngine {
    * a second definition of the event sequence between the graph and the golden
    * bytes.
    */
-  stream(
-    context: ExecutionContext,
-    deps: GraphDeps
-  ): AsyncIterable<EmittedEvent> {
+  stream(context: ExecutionContext, deps: GraphDeps): GraphRun {
     return this.graphFor(context).stream(context, deps)
   }
 

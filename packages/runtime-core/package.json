@@ -11,6 +11,7 @@
     "@arl/agent-engine": "workspace:*",
     "@arl/contracts": "workspace:*",
     "@arl/events": "workspace:*",
+    "@arl/graph-runtime": "workspace:*",
     "@arl/memory": "workspace:*"
   },
   "devDependencies": {

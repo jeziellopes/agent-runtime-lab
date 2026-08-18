@@ -42,15 +42,23 @@ export type GraphDeps = Omit<NodeDeps, 'emit'>
  * `configurable` rather than captured, so one compiled graph serves any number
  * of concurrent invocations and nothing needs evicting.
  */
+/**
+ * The events of one traversal, and the state that same traversal left.
+ *
+ * It is one object rather than two calls because they are one run: a caller
+ * that streamed the events and then asked for the state separately would
+ * execute every node twice.
+ */
+export interface GraphRun extends AsyncIterable<EmittedEvent> {
+  state(): Promise<Record<string, unknown>>
+}
+
 export interface CompiledGraph {
   invoke(
     context: ExecutionContext,
     deps: GraphDeps
   ): Promise<Record<string, unknown>>
-  stream(
-    context: ExecutionContext,
-    deps: GraphDeps
-  ): AsyncIterable<EmittedEvent>
+  stream(context: ExecutionContext, deps: GraphDeps): GraphRun
 }
 
 type State = ExtractStateType<typeof AgentState>
@@ -88,7 +96,12 @@ export function compileGraph(
 
   return {
     stream(context, deps) {
-      return traverse(compiled, context, deps, options).events
+      const run = traverse(compiled, context, deps, options)
+
+      return {
+        [Symbol.asyncIterator]: () => run.events[Symbol.asyncIterator](),
+        state: run.state
+      }
     },
 
     /**
@@ -97,9 +110,9 @@ export function compileGraph(
      * that structural rather than something two code paths have to agree on.
      */
     async invoke(context, deps) {
-      const run = traverse(compiled, context, deps, options)
+      const run = this.stream(context, deps)
 
-      for await (const _event of run.events) {
+      for await (const _event of run) {
         // The events are the stream's business; invoke wants only the state.
       }
 

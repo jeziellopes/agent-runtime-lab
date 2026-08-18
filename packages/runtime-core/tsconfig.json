@@ -7,6 +7,7 @@
   "include": ["src"],
   "references": [
     { "path": "../agent-engine" },
+    { "path": "../graph-runtime" },
     { "path": "../contracts" },
     { "path": "../events" },
     { "path": "../memory" }

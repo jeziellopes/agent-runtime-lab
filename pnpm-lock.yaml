@@ -246,6 +246,9 @@ importers:
       '@arl/events':
         specifier: workspace:*
         version: link:../events
+      '@arl/graph-runtime':
+        specifier: workspace:*
+        version: link:../graph-runtime
       '@arl/memory':
         specifier: workspace:*
         version: link:../memory
