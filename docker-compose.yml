@@ -1,5 +1,9 @@
 # `docker compose up` from a clean clone brings up all four cells and then
 # prints the contract suite result.
+#
+# Every cell runs deterministic: the suite compares golden SSE bytes, and those
+# are only literal while ids are derived and timestamps are the epoch. The
+# benchmark never sets it, and runs its cells separately.
 
 services:
   nestjs-node:
@@ -10,6 +14,7 @@ services:
       ENTRY: adapters/nestjs/dist/main.js
       PORT: 3000
       LLM_MODE: replay
+      DETERMINISTIC: 'true'
     ports:
       - '3000:3000'
     healthcheck:
@@ -25,6 +30,7 @@ services:
       ENTRY: adapters/hono/dist/server.js
       PORT: 3001
       LLM_MODE: replay
+      DETERMINISTIC: 'true'
     ports:
       - '3001:3001'
     healthcheck:
@@ -40,6 +46,7 @@ services:
       ENTRY: adapters/nestjs/dist/main.js
       PORT: 3002
       LLM_MODE: replay
+      DETERMINISTIC: 'true'
     ports:
       - '3002:3002'
     healthcheck:
@@ -55,6 +62,7 @@ services:
       ENTRY: adapters/hono/dist/server.bun.js
       PORT: 3003
       LLM_MODE: replay
+      DETERMINISTIC: 'true'
     ports:
       - '3003:3003'
     healthcheck:

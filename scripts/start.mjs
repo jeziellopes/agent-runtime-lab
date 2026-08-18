@@ -4,6 +4,10 @@ import { spawn } from 'node:child_process'
  * `pnpm start --framework nestjs --runtime node`. Every command names both a
  * framework and a JS runtime.
  *
+ * `--deterministic` is what the contract suite needs: it compares golden SSE
+ * bytes, and those are only literal while ids are derived and timestamps are
+ * the epoch. Leave it off to run a cell the way the benchmark does.
+ *
  * Ports match `packages/contract-tests/src/cells.ts` and `docker-compose.yml`.
  */
 const CELLS = {
@@ -44,5 +48,9 @@ if (!cell) {
 
 spawn(cell.command, [cell.entry], {
   stdio: 'inherit',
-  env: { ...process.env, PORT: String(cell.port) }
+  env: {
+    ...process.env,
+    PORT: String(cell.port),
+    ...(argv.includes('--deterministic') ? { DETERMINISTIC: 'true' } : {})
+  }
 }).on('exit', code => process.exit(code ?? 0))
