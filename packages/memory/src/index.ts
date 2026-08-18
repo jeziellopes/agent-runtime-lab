@@ -3,4 +3,5 @@ export type {
   RedisMemoryStore,
   VectorMemoryStore
 } from './backends.js'
-export { InMemoryStore } from './in-memory-store.js'
+export { MAX_NAMESPACES, InMemoryStore } from './in-memory-store.js'
+export { namespaceFor } from './namespace.js'

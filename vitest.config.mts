@@ -24,6 +24,8 @@ export default defineConfig({
         'packages/llm/src/fixtures.ts',
         'packages/llm/src/providers/replay/replay-provider.ts',
         'packages/llm/src/providers/replay/replay-stream.ts',
+        'packages/memory/src/in-memory-store.ts',
+        'packages/memory/src/namespace.ts',
         'packages/tools/src/calculator/calculator-tool.ts',
         'packages/tools/src/registry.ts',
         'packages/tools/src/search/search-tool.ts',
