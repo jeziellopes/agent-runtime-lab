@@ -9,9 +9,12 @@
   "types": "dist/index.d.ts",
   "dependencies": {
     "@arl/contracts": "workspace:*",
-    "@arl/events": "workspace:*"
+    "@arl/events": "workspace:*",
+    "@arl/scenarios": "workspace:*",
+    "autocannon": "^8.0.0"
   },
   "devDependencies": {
+    "@types/autocannon": "^7.12.7",
     "@types/node": "catalog:"
   }
 }
