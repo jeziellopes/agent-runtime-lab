@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { spawnCell, stopCell } from './process.js'
 import {
   buildConcurrencyRow,
+  buildLatencyRow,
   driveConcurrency,
   resolveMatrix,
   resolveScenarios,
@@ -178,6 +179,24 @@ describe('running the pipeline against a live cell', () => {
         total_time: expect.any(Object)
       })
     }, 30_000)
+
+    it('resolves the tool-agent fixture and reports the tool-calling metrics', async () => {
+      const results = await run({
+        scenario: 'tool-calling',
+        framework: 'hono',
+        runtime: 'bun'
+      })
+      const [row] = results[0]?.scenarios ?? []
+
+      expect(row?.status).toBe('ok')
+      expect(row?.errorCount).toBe(0)
+      expect(row?.scenarioMetrics).toEqual({
+        total_duration: expect.any(Object),
+        tool_execution_time: expect.any(Object),
+        event_count: expect.any(Object),
+        error_rate: 0
+      })
+    }, 30_000)
   })
 
   describe('a cell running deterministic', () => {
@@ -281,5 +300,48 @@ describe('buildConcurrencyRow', () => {
         metricNames: ['not_a_real_metric']
       })
     ).toThrow(expect.objectContaining({ code: 'results_incomplete' }))
+  })
+})
+
+describe('buildLatencyRow', () => {
+  it('reads as metrics_absent when every sample lacks metrics outside deterministic mode', () => {
+    const original = process.env['DETERMINISTIC']
+
+    delete process.env['DETERMINISTIC']
+
+    try {
+      const scenario = {
+        id: 'simple-execution',
+        agentId: 'simple-agent',
+        measures: '',
+        measuredRuns: 250
+      }
+      const cell = findCell('hono', 'bun')
+      const row = buildLatencyRow(
+        scenario,
+        cell,
+        [{ requestLatencyMs: 5, ok: true }],
+        {
+          resource: { cpuPercent: 0, memoryMb: 0, heapMb: 0, startupTimeMs: 0 },
+          metricNames: [
+            'total_latency',
+            'framework_overhead',
+            'runtime_time',
+            'memory',
+            'cpu'
+          ],
+          streaming: false
+        }
+      )
+
+      expect(row.status).toBe('unavailable')
+      expect(row.reason).toBe('metrics_absent')
+    } finally {
+      if (original === undefined) {
+        delete process.env['DETERMINISTIC']
+      } else {
+        process.env['DETERMINISTIC'] = original
+      }
+    }
   })
 })

@@ -579,7 +579,7 @@ interface LatencyRowOptions {
   streaming: boolean
 }
 
-function buildLatencyRow(
+export function buildLatencyRow(
   scenario: ScenarioDefinition,
   cell: Cell,
   samples: readonly (UnaryIteration | StreamIteration)[],
