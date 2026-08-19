@@ -7,6 +7,9 @@
   "type": "commonjs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "dependencies": {
+    "@arl/benchmark-runner": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "catalog:"
   }
