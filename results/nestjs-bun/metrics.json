@@ -1,0 +1,696 @@
+{
+  "cell": "nestjs-bun",
+  "framework": "nestjs",
+  "runtime": "bun",
+  "runtimeVersion": "1.1.38",
+  "llmMode": "replay",
+  "startedAt": "2026-08-19T14:48:45.416Z",
+  "startupTimeMs": 517.72051,
+  "interleavedWith": [
+    "nestjs-node",
+    "hono-node",
+    "nestjs-bun",
+    "hono-bun"
+  ],
+  "host": {
+    "cpu": "AMD Ryzen 7 5800X 8-Core Processor",
+    "cores": {
+      "physical": 8,
+      "logical": 16
+    },
+    "memoryGb": 31.22991943359375,
+    "os": "linux",
+    "kernel": "6.8.0-136-generic",
+    "nodeVersion": "24.14.0",
+    "bunVersion": "1.1.38"
+  },
+  "scenarios": [
+    {
+      "scenario": "simple-execution",
+      "framework": "nestjs",
+      "runtime": "bun",
+      "runtimeVersion": "",
+      "llmMode": "replay",
+      "status": "ok",
+      "warmupRuns": 50,
+      "runs": 250,
+      "significanceTested": true,
+      "errorCount": 0,
+      "latencyMs": {
+        "mean": 4.9156370479999865,
+        "p50": 5.200229999999465,
+        "p95": 7.07716100000016,
+        "p99": 7.528852999999799,
+        "stdev": 1.549647389544707,
+        "runs": 250
+      },
+      "frameworkOverheadMs": {
+        "mean": 2.7716859040000026,
+        "p50": 2.940458000000035,
+        "p95": 4.1471730000002935,
+        "p99": 4.5204359999997905,
+        "stdev": 1.03445028976351,
+        "runs": 250
+      },
+      "executionDurationMs": {
+        "mean": 2.1439511439999843,
+        "p50": 2.258671999999933,
+        "p95": 2.9648870000000898,
+        "p99": 3.3955799999998817,
+        "stdev": 0.5768506236936403,
+        "runs": 250
+      },
+      "resource": {
+        "cpuPercent": 57.34024179620971,
+        "memoryMb": 153.12890625,
+        "peakMemoryMb": 153.12890625,
+        "startupTimeMs": 0
+      },
+      "llm": {
+        "inputTokens": 6,
+        "outputTokens": 8,
+        "totalTokens": 14,
+        "estimatedCost": 0,
+        "timeToFirstToken": 0
+      },
+      "scenarioMetrics": {
+        "total_latency": {
+          "mean": 4.9156370479999865,
+          "p50": 5.200229999999465,
+          "p95": 7.07716100000016,
+          "p99": 7.528852999999799,
+          "stdev": 1.549647389544707,
+          "runs": 250
+        },
+        "framework_overhead": {
+          "mean": 2.7716859040000026,
+          "p50": 2.940458000000035,
+          "p95": 4.1471730000002935,
+          "p99": 4.5204359999997905,
+          "stdev": 1.03445028976351,
+          "runs": 250
+        },
+        "runtime_time": {
+          "mean": 2.1439511439999843,
+          "p50": 2.258671999999933,
+          "p95": 2.9648870000000898,
+          "p99": 3.3955799999998817,
+          "stdev": 0.5768506236936403,
+          "runs": 250
+        },
+        "memory": 153.12890625,
+        "cpu": 57.34024179620971
+      }
+    },
+    {
+      "scenario": "streaming",
+      "framework": "nestjs",
+      "runtime": "bun",
+      "runtimeVersion": "",
+      "llmMode": "replay",
+      "status": "ok",
+      "warmupRuns": 50,
+      "runs": 250,
+      "significanceTested": true,
+      "errorCount": 0,
+      "latencyMs": {
+        "mean": 4.073419991999999,
+        "p50": 4.432155000000421,
+        "p95": 5.4917310000000725,
+        "p99": 6.367437000000791,
+        "stdev": 1.1732511141175923,
+        "runs": 250
+      },
+      "executionDurationMs": {
+        "mean": 1.9223363000000244,
+        "p50": 2.093222000001333,
+        "p95": 2.505533999999898,
+        "p99": 2.7569650000004913,
+        "stdev": 0.4204790953273073,
+        "runs": 250
+      },
+      "resource": {
+        "cpuPercent": 50.845771144282295,
+        "memoryMb": 159.06640625,
+        "peakMemoryMb": 159.06640625,
+        "startupTimeMs": 0
+      },
+      "llm": {
+        "inputTokens": 6,
+        "outputTokens": 8,
+        "totalTokens": 14,
+        "estimatedCost": 0,
+        "timeToFirstToken": 4.019241544000018
+      },
+      "scenarioMetrics": {
+        "time_to_first_event": {
+          "mean": 4.00253371599998,
+          "p50": 4.378225000000384,
+          "p95": 5.380721000000449,
+          "p99": 6.2719560000005,
+          "stdev": 1.1586224686971427,
+          "runs": 250
+        },
+        "time_to_first_token": {
+          "mean": 4.019241544000018,
+          "p50": 4.390725000001112,
+          "p95": 5.402541000000383,
+          "p99": 6.295866000000387,
+          "stdev": 1.162259209746726,
+          "runs": 250
+        },
+        "token_throughput": {
+          "mean": 2181.1261359649434,
+          "p50": 1800.331531051353,
+          "p95": 4245.788708325124,
+          "p99": 4654.491293191129,
+          "stdev": 824.6072850130482,
+          "runs": 250
+        },
+        "connection_duration": {
+          "mean": 4.073419991999999,
+          "p50": 4.432155000000421,
+          "p95": 5.4917310000000725,
+          "p99": 6.367437000000791,
+          "stdev": 1.1732511141175923,
+          "runs": 250
+        },
+        "dropped_events": 0
+      }
+    },
+    {
+      "scenario": "tool-calling",
+      "framework": "nestjs",
+      "runtime": "bun",
+      "runtimeVersion": "",
+      "llmMode": "replay",
+      "status": "ok",
+      "warmupRuns": 50,
+      "runs": 250,
+      "significanceTested": true,
+      "errorCount": 0,
+      "latencyMs": {
+        "mean": 4.892086495999997,
+        "p50": 5.023579999999129,
+        "p95": 5.819813999998587,
+        "p99": 7.281251999998858,
+        "stdev": 0.8440579360954927,
+        "runs": 250
+      },
+      "frameworkOverheadMs": {
+        "mean": 2.2953358880000088,
+        "p50": 2.324553999998898,
+        "p95": 2.8407660000011674,
+        "p99": 3.511319999999614,
+        "stdev": 0.4739430345310858,
+        "runs": 250
+      },
+      "executionDurationMs": {
+        "mean": 2.5967506079999874,
+        "p50": 2.732745999999679,
+        "p95": 3.077957999999853,
+        "p99": 3.304309999999532,
+        "stdev": 0.44994794555084644,
+        "runs": 250
+      },
+      "resource": {
+        "cpuPercent": 48.025889967640936,
+        "memoryMb": 162.8984375,
+        "peakMemoryMb": 162.8984375,
+        "startupTimeMs": 0
+      },
+      "llm": {
+        "inputTokens": 8,
+        "outputTokens": 12,
+        "totalTokens": 20,
+        "estimatedCost": 0,
+        "timeToFirstToken": 0
+      },
+      "scenarioMetrics": {
+        "total_duration": {
+          "mean": 4.892086495999997,
+          "p50": 5.023579999999129,
+          "p95": 5.819813999998587,
+          "p99": 7.281251999998858,
+          "stdev": 0.8440579360954927,
+          "runs": 250
+        },
+        "tool_execution_time": {
+          "mean": 0.13647656000001007,
+          "p50": 0.14195200000176555,
+          "p95": 0.1693409999988944,
+          "p99": 0.19254100000216567,
+          "stdev": 0.02504887140628643,
+          "runs": 250
+        },
+        "event_count": {
+          "mean": 26,
+          "p50": 26,
+          "p95": 26,
+          "p99": 26,
+          "stdev": 0,
+          "runs": 250
+        },
+        "error_rate": 0
+      }
+    },
+    {
+      "scenario": "multi-step-workflow",
+      "framework": "nestjs",
+      "runtime": "bun",
+      "runtimeVersion": "",
+      "llmMode": "replay",
+      "status": "ok",
+      "warmupRuns": 50,
+      "runs": 250,
+      "significanceTested": true,
+      "errorCount": 0,
+      "latencyMs": {
+        "mean": 4.649090759999992,
+        "p50": 4.794228000002477,
+        "p95": 5.458601999998791,
+        "p99": 6.336236999999528,
+        "stdev": 0.713951407739351,
+        "runs": 250
+      },
+      "frameworkOverheadMs": {
+        "mean": 2.053241223999852,
+        "p50": 2.0950009999978647,
+        "p95": 2.5706950000021607,
+        "p99": 3.058947999998054,
+        "stdev": 0.3396623341082502,
+        "runs": 250
+      },
+      "executionDurationMs": {
+        "mean": 2.5958495360001397,
+        "p50": 2.7239259999987553,
+        "p95": 3.0771380000005593,
+        "p99": 3.9266629999983707,
+        "stdev": 0.4388315742166345,
+        "runs": 250
+      },
+      "resource": {
+        "cpuPercent": 47.110675808031175,
+        "memoryMb": 163.62890625,
+        "peakMemoryMb": 165.890625,
+        "startupTimeMs": 0
+      },
+      "llm": {
+        "inputTokens": 15,
+        "outputTokens": 19,
+        "totalTokens": 34,
+        "estimatedCost": 0,
+        "timeToFirstToken": 0
+      },
+      "scenarioMetrics": {
+        "node_transition_latency": {
+          "mean": 0.17453043599993542,
+          "p50": 0.18127100000128848,
+          "p95": 0.21604999999908614,
+          "p99": 0.26923200000237557,
+          "stdev": 0.03180852490385843,
+          "runs": 250
+        },
+        "state_update_latency": {
+          "mean": 2.397427616000037,
+          "p50": 2.5180059999984223,
+          "p95": 2.8519469999991998,
+          "p99": 3.6364919999978156,
+          "stdev": 0.4049196945395658,
+          "runs": 250
+        },
+        "total_time": {
+          "mean": 2.5958495360001397,
+          "p50": 2.7239259999987553,
+          "p95": 3.0771380000005593,
+          "p99": 3.9266629999983707,
+          "stdev": 0.4388315742166345,
+          "runs": 250
+        }
+      }
+    },
+    {
+      "scenario": "concurrent-executions",
+      "variant": "1-concurrent",
+      "framework": "nestjs",
+      "runtime": "bun",
+      "runtimeVersion": "",
+      "llmMode": "replay",
+      "status": "ok",
+      "warmupRuns": 0,
+      "runs": 3,
+      "significanceTested": false,
+      "errorCount": 0,
+      "resource": {
+        "cpuPercent": 38.92658852560171,
+        "memoryMb": 195.18359375,
+        "peakMemoryMb": 216.38671875,
+        "startupTimeMs": 0
+      },
+      "scenarioMetrics": {
+        "rps": 1243.8033333333333,
+        "mean_latency": 0.06333333333333334,
+        "p95_latency": 1,
+        "p99_latency": 1,
+        "error_rate": 0,
+        "memory_growth": 195.18359375
+      }
+    },
+    {
+      "scenario": "concurrent-executions",
+      "variant": "10-concurrent",
+      "framework": "nestjs",
+      "runtime": "bun",
+      "runtimeVersion": "",
+      "llmMode": "replay",
+      "status": "ok",
+      "warmupRuns": 0,
+      "runs": 3,
+      "significanceTested": false,
+      "errorCount": 0,
+      "resource": {
+        "cpuPercent": 33.051759834368525,
+        "memoryMb": 203.2421875,
+        "peakMemoryMb": 216.38671875,
+        "startupTimeMs": 0
+      },
+      "scenarioMetrics": {
+        "rps": 1284.64,
+        "mean_latency": 7.243333333333333,
+        "p95_latency": 14,
+        "p99_latency": 14.666666666666666,
+        "error_rate": 0,
+        "memory_growth": 203.2421875
+      }
+    },
+    {
+      "scenario": "concurrent-executions",
+      "variant": "50-concurrent",
+      "framework": "nestjs",
+      "runtime": "bun",
+      "runtimeVersion": "",
+      "llmMode": "replay",
+      "status": "ok",
+      "warmupRuns": 0,
+      "runs": 3,
+      "significanceTested": false,
+      "errorCount": 0,
+      "resource": {
+        "cpuPercent": 31.09155498143065,
+        "memoryMb": 211.98046875,
+        "peakMemoryMb": 216.38671875,
+        "startupTimeMs": 0
+      },
+      "scenarioMetrics": {
+        "rps": 1268.0066666666667,
+        "mean_latency": 38.87666666666667,
+        "p95_latency": 45,
+        "p99_latency": 69.66666666666667,
+        "error_rate": 0,
+        "memory_growth": 211.98046875
+      }
+    },
+    {
+      "scenario": "concurrent-executions",
+      "variant": "100-concurrent",
+      "framework": "nestjs",
+      "runtime": "bun",
+      "runtimeVersion": "",
+      "llmMode": "replay",
+      "status": "ok",
+      "warmupRuns": 0,
+      "runs": 3,
+      "significanceTested": false,
+      "errorCount": 0,
+      "resource": {
+        "cpuPercent": 30.31477191020211,
+        "memoryMb": 212.1328125,
+        "peakMemoryMb": 233.30078125,
+        "startupTimeMs": 0
+      },
+      "scenarioMetrics": {
+        "rps": 1218.1866666666665,
+        "mean_latency": 81.29666666666667,
+        "p95_latency": 89,
+        "p99_latency": 93.33333333333333,
+        "error_rate": 0,
+        "memory_growth": 212.1328125
+      }
+    },
+    {
+      "scenario": "long-context",
+      "framework": "nestjs",
+      "runtime": "bun",
+      "runtimeVersion": "",
+      "llmMode": "replay",
+      "status": "ok",
+      "warmupRuns": 50,
+      "runs": 3,
+      "significanceTested": false,
+      "errorCount": 0,
+      "latencyMs": {
+        "mean": 3.063247666694224,
+        "p50": 3.4101889999583364,
+        "p95": 3.4284100000513718,
+        "p99": 3.4284100000513718,
+        "stdev": 0.6167671564072457,
+        "runs": 3
+      },
+      "frameworkOverheadMs": {
+        "mean": 1.5871690000252177,
+        "p50": 1.9248799999477342,
+        "p95": 2.028472000034526,
+        "p99": 2.028472000034526,
+        "stdev": 0.6766313137062393,
+        "runs": 3
+      },
+      "executionDurationMs": {
+        "mean": 1.4760786666690062,
+        "p50": 1.4853090000106022,
+        "p95": 1.5429889999795705,
+        "p99": 1.5429889999795705,
+        "stdev": 0.07197080267567955,
+        "runs": 3
+      },
+      "resource": {
+        "cpuPercent": 28.462618134181795,
+        "memoryMb": 214.09765625,
+        "peakMemoryMb": 233.30078125,
+        "startupTimeMs": 0
+      },
+      "llm": {
+        "inputTokens": 5000,
+        "outputTokens": 5,
+        "totalTokens": 5005,
+        "estimatedCost": 0,
+        "timeToFirstToken": 0
+      },
+      "scenarioMetrics": {
+        "duration": {
+          "mean": 1.4760786666690062,
+          "p50": 1.4853090000106022,
+          "p95": 1.5429889999795705,
+          "p99": 1.5429889999795705,
+          "stdev": 0.07197080267567955,
+          "runs": 3
+        },
+        "memory": 214.09765625,
+        "token_processing_time": {
+          "mean": 1.4577480000055705,
+          "p50": 1.4634380000643432,
+          "p95": 1.5300189999397844,
+          "p99": 1.5300189999397844,
+          "stdev": 0.07527745695779851,
+          "runs": 3
+        },
+        "streaming_stability": true
+      },
+      "variant": "5000-tokens"
+    },
+    {
+      "scenario": "long-context",
+      "framework": "nestjs",
+      "runtime": "bun",
+      "runtimeVersion": "",
+      "llmMode": "replay",
+      "status": "ok",
+      "warmupRuns": 50,
+      "runs": 3,
+      "significanceTested": false,
+      "errorCount": 0,
+      "latencyMs": {
+        "mean": 4.832928333353872,
+        "p50": 4.80277800001204,
+        "p95": 4.964818999986164,
+        "p99": 4.964818999986164,
+        "stdev": 0.11969813274104975,
+        "runs": 3
+      },
+      "frameworkOverheadMs": {
+        "mean": 2.224706666660495,
+        "p50": 2.199862999957986,
+        "p95": 2.3279140000231564,
+        "p99": 2.3279140000231564,
+        "stdev": 0.09330012242082088,
+        "runs": 3
+      },
+      "executionDurationMs": {
+        "mean": 2.608221666693377,
+        "p50": 2.584845000063069,
+        "p95": 2.764956000028178,
+        "p99": 2.764956000028178,
+        "stdev": 0.1464520178377816,
+        "runs": 3
+      },
+      "resource": {
+        "cpuPercent": 28.474544605324613,
+        "memoryMb": 219.578125,
+        "peakMemoryMb": 233.30078125,
+        "startupTimeMs": 0
+      },
+      "llm": {
+        "inputTokens": 20000,
+        "outputTokens": 5,
+        "totalTokens": 20005,
+        "estimatedCost": 0,
+        "timeToFirstToken": 0
+      },
+      "scenarioMetrics": {
+        "duration": {
+          "mean": 2.608221666693377,
+          "p50": 2.584845000063069,
+          "p95": 2.764956000028178,
+          "p99": 2.764956000028178,
+          "stdev": 0.1464520178377816,
+          "runs": 3
+        },
+        "memory": 219.578125,
+        "token_processing_time": {
+          "mean": 2.5776150000359244,
+          "p50": 2.55428500007838,
+          "p95": 2.7308460000203922,
+          "p99": 2.7308460000203922,
+          "stdev": 0.1430005210869071,
+          "runs": 3
+        },
+        "streaming_stability": true
+      },
+      "variant": "20000-tokens"
+    },
+    {
+      "scenario": "long-context",
+      "framework": "nestjs",
+      "runtime": "bun",
+      "runtimeVersion": "",
+      "llmMode": "replay",
+      "status": "ok",
+      "warmupRuns": 50,
+      "runs": 3,
+      "significanceTested": false,
+      "errorCount": 0,
+      "latencyMs": {
+        "mean": 6.986536999970364,
+        "p50": 7.711253999965265,
+        "p95": 7.715774999931455,
+        "p99": 7.715774999931455,
+        "stdev": 1.2591639949914963,
+        "runs": 3
+      },
+      "frameworkOverheadMs": {
+        "mean": 2.9233163332489007,
+        "p50": 2.765764999901876,
+        "p95": 3.328188999905251,
+        "p99": 3.328188999905251,
+        "stdev": 0.3534912592658775,
+        "runs": 3
+      },
+      "executionDurationMs": {
+        "mean": 4.063220666721463,
+        "p50": 4.387586000026204,
+        "p95": 4.9454890000633895,
+        "p99": 4.9454890000633895,
+        "stdev": 1.0815671701177452,
+        "runs": 3
+      },
+      "resource": {
+        "cpuPercent": 28.48122485471618,
+        "memoryMb": 240.07421875,
+        "peakMemoryMb": 240.07421875,
+        "startupTimeMs": 0
+      },
+      "llm": {
+        "inputTokens": 50000,
+        "outputTokens": 5,
+        "totalTokens": 50005,
+        "estimatedCost": 0,
+        "timeToFirstToken": 0
+      },
+      "scenarioMetrics": {
+        "duration": {
+          "mean": 4.063220666721463,
+          "p50": 4.387586000026204,
+          "p95": 4.9454890000633895,
+          "p99": 4.9454890000633895,
+          "stdev": 1.0815671701177452,
+          "runs": 3
+        },
+        "memory": 240.07421875,
+        "token_processing_time": {
+          "mean": 4.038467333380443,
+          "p50": 4.357756000012159,
+          "p95": 4.923349000047892,
+          "p99": 4.923349000047892,
+          "stdev": 1.0805061333100898,
+          "runs": 3
+        },
+        "streaming_stability": true
+      },
+      "variant": "50000-tokens"
+    },
+    {
+      "scenario": "multiple-sessions",
+      "framework": "nestjs",
+      "runtime": "bun",
+      "runtimeVersion": "",
+      "llmMode": "replay",
+      "status": "ok",
+      "warmupRuns": 50,
+      "runs": 250,
+      "significanceTested": true,
+      "errorCount": 0,
+      "latencyMs": {
+        "mean": 4.216839863997884,
+        "p50": 4.146413000067696,
+        "p95": 5.397891000029631,
+        "p99": 6.004114000010304,
+        "stdev": 0.7631276073267885,
+        "runs": 250
+      },
+      "resource": {
+        "cpuPercent": 28.548467549742334,
+        "memoryMb": 238.1328125,
+        "peakMemoryMb": 239.5078125,
+        "startupTimeMs": 0
+      },
+      "scenarioMetrics": {
+        "session_isolation": true,
+        "memory_lookup_latency": {
+          "mean": 4.216839863997884,
+          "p50": 4.146413000067696,
+          "p95": 5.397891000029631,
+          "p99": 6.004114000010304,
+          "stdev": 0.7631276073267885,
+          "runs": 250
+        },
+        "persistence_performance": {
+          "mean": 4.216839863997884,
+          "p50": 4.146413000067696,
+          "p95": 5.397891000029631,
+          "p99": 6.004114000010304,
+          "stdev": 0.7631276073267885,
+          "runs": 250
+        }
+      }
+    }
+  ]
+}
