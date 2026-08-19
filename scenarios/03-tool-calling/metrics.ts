@@ -1,6 +1,6 @@
 /**
- * The primary metrics this scenario reports. Collected from the event stream
- * the client sees.
+ * The primary metrics this scenario reports. Collected from the runner's own
+ * clock, from the tool events in the unary response, and from `errorCount`.
  */
 export const metrics = [
   'total_duration',

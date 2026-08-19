@@ -1,6 +1,6 @@
 /**
- * The primary metrics this scenario reports. Collected from the event stream
- * the client sees.
+ * The primary metrics this scenario reports. Collected by comparing the two
+ * sessions' responses and from the runner's own clock.
  */
 export const metrics = [
   'session_isolation',

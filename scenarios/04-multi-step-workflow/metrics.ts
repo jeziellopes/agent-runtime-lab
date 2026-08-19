@@ -1,6 +1,6 @@
 /**
- * The primary metrics this scenario reports. Collected from the event stream
- * the client sees.
+ * The primary metrics this scenario reports. Collected from `ExecutionResult`
+ * timing and node-level accounting, and from the runner's own clock.
  */
 export const metrics = [
   'node_transition_latency',
