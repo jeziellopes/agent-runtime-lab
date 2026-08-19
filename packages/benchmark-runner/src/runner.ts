@@ -385,7 +385,7 @@ interface StreamIteration extends UnaryIteration {
   droppedEvents: number
 }
 
-interface FrameAccumulator {
+export interface FrameAccumulator {
   firstEventAt?: number
   firstTokenAt?: number
   lastId: number
@@ -461,7 +461,7 @@ async function streamOnce(
   }
 }
 
-function readFrame(frame: string, acc: FrameAccumulator): void {
+export function readFrame(frame: string, acc: FrameAccumulator): void {
   const now = performance.now()
 
   acc.firstEventAt ??= now

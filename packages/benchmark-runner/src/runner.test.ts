@@ -1,17 +1,30 @@
+import { chmod, mkdtemp, rm } from 'node:fs/promises'
+import { createServer } from 'node:net'
+
 import { findCell } from '@arl/contracts'
-import { afterEach, describe, expect, it } from 'vitest'
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  describe,
+  expect,
+  it,
+  vi
+} from 'vitest'
 
 import { spawnCell, stopCell } from './process.js'
 import {
   buildConcurrencyRow,
   buildLatencyRow,
   driveConcurrency,
+  readFrame,
   resolveMatrix,
   resolveScenarios,
   run
 } from './runner.js'
 
 import type { SpawnedCell } from './process.js'
+import type { FrameAccumulator } from './runner.js'
 
 function processAlive(pid: number): boolean {
   try {
@@ -22,6 +35,46 @@ function processAlive(pid: number): boolean {
     return false
   }
 }
+
+function portIsFree(port: number): Promise<boolean> {
+  return new Promise(resolve => {
+    const server = createServer()
+
+    server.once('error', () => {
+      resolve(false)
+    })
+    server.listen(port, () => {
+      server.close(() => {
+        resolve(true)
+      })
+    })
+  })
+}
+
+/**
+ * `/tmp` directly, rather than `os.tmpdir()`: this host's `TMPDIR` points at
+ * a FUSE mount where `chmod` is a no-op, which would make a permission
+ * failure untestable.
+ */
+async function scratchResultsDir(): Promise<string> {
+  return mkdtemp('/tmp/arl-')
+}
+
+/**
+ * Every live `run()` call below that does not need its own scratch
+ * directory writes here, never to the committed `results/` at the repo
+ * root: that directory holds the published comparison, and a stray write
+ * from a test run would silently overwrite it.
+ */
+let resultsDir: string
+
+beforeAll(async () => {
+  resultsDir = await scratchResultsDir()
+})
+
+afterAll(async () => {
+  await rm(resultsDir, { recursive: true, force: true })
+})
 
 describe('resolving the matrix', () => {
   it('restricts to one cell when framework and runtime are both named', () => {
@@ -92,7 +145,8 @@ describe('running the pipeline against a live cell', () => {
       const results = await run({
         scenario: 'simple-execution',
         framework: 'hono',
-        runtime: 'bun'
+        runtime: 'bun',
+        resultsDir
       })
 
       expect(results).toHaveLength(1)
@@ -108,7 +162,8 @@ describe('running the pipeline against a live cell', () => {
       const results = await run({
         scenario: 'simple-execution',
         framework: 'hono',
-        runtime: 'bun'
+        runtime: 'bun',
+        resultsDir
       })
       const [row] = results[0]?.scenarios ?? []
 
@@ -123,7 +178,8 @@ describe('running the pipeline against a live cell', () => {
       const results = await run({
         scenario: 'streaming',
         framework: 'hono',
-        runtime: 'bun'
+        runtime: 'bun',
+        resultsDir
       })
       const [row] = results[0]?.scenarios ?? []
 
@@ -135,7 +191,8 @@ describe('running the pipeline against a live cell', () => {
       const results = await run({
         scenario: 'long-context',
         framework: 'hono',
-        runtime: 'bun'
+        runtime: 'bun',
+        resultsDir
       })
       const rows = results[0]?.scenarios ?? []
 
@@ -154,7 +211,8 @@ describe('running the pipeline against a live cell', () => {
       const results = await run({
         scenario: 'multiple-sessions',
         framework: 'hono',
-        runtime: 'bun'
+        runtime: 'bun',
+        resultsDir
       })
       const [row] = results[0]?.scenarios ?? []
 
@@ -169,7 +227,8 @@ describe('running the pipeline against a live cell', () => {
       const results = await run({
         scenario: 'multi-step-workflow',
         framework: 'hono',
-        runtime: 'bun'
+        runtime: 'bun',
+        resultsDir
       })
       const [row] = results[0]?.scenarios ?? []
 
@@ -186,7 +245,8 @@ describe('running the pipeline against a live cell', () => {
       const results = await run({
         scenario: 'tool-calling',
         framework: 'hono',
-        runtime: 'bun'
+        runtime: 'bun',
+        resultsDir
       })
       const [row] = results[0]?.scenarios ?? []
 
@@ -218,7 +278,8 @@ describe('running the pipeline against a live cell', () => {
       const results = await run({
         scenario: 'simple-execution',
         framework: 'hono',
-        runtime: 'bun'
+        runtime: 'bun',
+        resultsDir
       })
       const [row] = results[0]?.scenarios ?? []
 
@@ -292,7 +353,12 @@ describe('buildConcurrencyRow', () => {
       measures: '',
       measuredRuns: 3
     }
-    const resource = { cpuPercent: 0, memoryMb: 0, heapMb: 0, startupTimeMs: 0 }
+    const resource = {
+      cpuPercent: 0,
+      memoryMb: 0,
+      peakMemoryMb: 0,
+      startupTimeMs: 0
+    }
 
     expect(() =>
       buildConcurrencyRow(scenario, cell, {
@@ -324,7 +390,12 @@ describe('buildLatencyRow', () => {
         cell,
         [{ requestLatencyMs: 5, ok: true }],
         {
-          resource: { cpuPercent: 0, memoryMb: 0, heapMb: 0, startupTimeMs: 0 },
+          resource: {
+            cpuPercent: 0,
+            memoryMb: 0,
+            peakMemoryMb: 0,
+            startupTimeMs: 0
+          },
           metricNames: [
             'total_latency',
             'framework_overhead',
@@ -345,5 +416,106 @@ describe('buildLatencyRow', () => {
         process.env['DETERMINISTIC'] = original
       }
     }
+  })
+})
+
+describe('cleanup when the run throws', () => {
+  it('stops the process it spawned even when writing results fails', async () => {
+    const scratchDir = await scratchResultsDir()
+
+    await chmod(scratchDir, 0o555)
+
+    try {
+      await expect(
+        run({
+          scenario: 'simple-execution',
+          framework: 'hono',
+          runtime: 'bun',
+          resultsDir: scratchDir
+        })
+      ).rejects.toThrow()
+    } finally {
+      await chmod(scratchDir, 0o755)
+      await rm(scratchDir, { recursive: true, force: true })
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 300))
+    await expect(portIsFree(findCell('hono', 'bun').port)).resolves.toBe(true)
+  }, 30_000)
+})
+
+describe('interleaving cells within a round', () => {
+  it('drives every warmup and measured round in CELLS declaration order', async () => {
+    const seenPorts: number[] = []
+    const realFetch = globalThis.fetch
+    const spy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async (input, init) => {
+        const url = new URL(
+          typeof input === 'string' ? input : input.toString()
+        )
+
+        if (/^\/agents\/.+\/execute$/.test(url.pathname)) {
+          seenPorts.push(Number(url.port))
+        }
+
+        return realFetch(input, init)
+      })
+
+    try {
+      await run({
+        scenario: 'simple-execution',
+        runtime: 'bun',
+        resultsDir
+      })
+    } finally {
+      spy.mockRestore()
+    }
+
+    const cellOrder = [
+      findCell('nestjs', 'bun').port,
+      findCell('hono', 'bun').port
+    ]
+
+    expect(seenPorts).toHaveLength(300 * cellOrder.length)
+
+    for (let round = 0; round < 300; round += 1) {
+      expect(
+        seenPorts.slice(
+          round * cellOrder.length,
+          (round + 1) * cellOrder.length
+        )
+      ).toEqual(cellOrder)
+    }
+  }, 30_000)
+})
+
+describe('reading an SSE frame', () => {
+  it('counts no drop across a contiguous id sequence', () => {
+    const acc: FrameAccumulator = { lastId: 0, droppedEvents: 0 }
+
+    readFrame('id: 1\nevent: llm.token\ndata: {"type":"llm.token"}', acc)
+    readFrame('id: 2\nevent: llm.token\ndata: {"type":"llm.token"}', acc)
+
+    expect(acc.droppedEvents).toBe(0)
+  })
+
+  it('counts the exact gap when an id is skipped', () => {
+    const acc: FrameAccumulator = { lastId: 0, droppedEvents: 0 }
+
+    readFrame('id: 1\ndata: {"type":"llm.token"}', acc)
+    readFrame('id: 4\ndata: {"type":"llm.token"}', acc)
+
+    expect(acc.droppedEvents).toBe(2)
+  })
+
+  it('accumulates the gap across more than one skip', () => {
+    const acc: FrameAccumulator = { lastId: 0, droppedEvents: 0 }
+
+    readFrame('id: 1\ndata: {"type":"llm.token"}', acc)
+    readFrame('id: 3\ndata: {"type":"llm.token"}', acc)
+    readFrame('id: 6\ndata: {"type":"llm.token"}', acc)
+
+    expect(acc.droppedEvents).toBe(3)
   })
 })
