@@ -26,7 +26,8 @@ const CONFIG: RuntimeConfig = {
   timeoutMs: 30_000,
   llmMode: 'replay',
   maxRetries: 3,
-  deterministic: true
+  deterministic: true,
+  fixtureSet: 'contract'
 }
 
 const GOLDENS = join(

@@ -10,7 +10,8 @@ describe('loading the runtime config', () => {
       timeoutMs: 30_000,
       llmMode: 'replay',
       maxRetries: 3,
-      deterministic: false
+      deterministic: false,
+      fixtureSet: 'contract'
     })
   })
 
@@ -22,7 +23,8 @@ describe('loading the runtime config', () => {
         TIMEOUT_MS: '900',
         LLM_MODE: 'live',
         MAX_RETRIES: '1',
-        DETERMINISTIC: 'true'
+        DETERMINISTIC: 'true',
+        FIXTURE_SET: 'benchmark'
       })
     ).toEqual({
       defaultModel: 'claude-sonnet-5',
@@ -30,7 +32,8 @@ describe('loading the runtime config', () => {
       timeoutMs: 900,
       llmMode: 'live',
       maxRetries: 1,
-      deterministic: true
+      deterministic: true,
+      fixtureSet: 'benchmark'
     })
   })
 

@@ -11,9 +11,6 @@ import type {
   RuntimeConfig
 } from '@arl/contracts'
 
-/** The only authored set. The contract suite and the benchmark both read it. */
-export const CONTRACT_FIXTURES = 'contract'
-
 /**
  * What every cell's composition root calls, and the whole of what it does.
  *
@@ -53,5 +50,5 @@ export function createRuntime(
 function providerFor(config: RuntimeConfig): LLMProvider {
   return config.llmMode === 'live'
     ? new AnthropicProvider()
-    : new ReplayLLMProvider(CONTRACT_FIXTURES)
+    : new ReplayLLMProvider(config.fixtureSet)
 }

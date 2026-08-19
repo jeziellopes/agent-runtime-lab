@@ -21,7 +21,8 @@ export function loadRuntimeConfig(
     timeoutMs: integer(env.TIMEOUT_MS, 30_000),
     llmMode,
     maxRetries: integer(env.MAX_RETRIES, 3),
-    deterministic: env.DETERMINISTIC === 'true'
+    deterministic: env.DETERMINISTIC === 'true',
+    fixtureSet: env.FIXTURE_SET ?? 'contract'
   }
 }
 
