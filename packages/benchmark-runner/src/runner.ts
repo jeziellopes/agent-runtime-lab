@@ -1037,13 +1037,13 @@ async function buildSessionRow(
   const resource = await sampleResourceUsage(
     ctx.spawned.get(cell.id)?.pid ?? -1
   )
-  const executionDurationMs = distributionOf(
+  const latencyMs = distributionOf(
     samples.map(sample => sample.requestLatencyMs)
   )
   const scenarioMetrics: Record<string, Distribution | number | boolean> = {
     session_isolation: errorCount === 0,
-    memory_lookup_latency: executionDurationMs,
-    persistence_performance: executionDurationMs
+    memory_lookup_latency: latencyMs,
+    persistence_performance: latencyMs
   }
 
   assertKeysMatch(scenario.id, scenarioMetrics, metricNames)
@@ -1059,7 +1059,7 @@ async function buildSessionRow(
     runs: samples.length,
     significanceTested: true,
     errorCount,
-    executionDurationMs,
+    latencyMs,
     resource,
     scenarioMetrics
   }

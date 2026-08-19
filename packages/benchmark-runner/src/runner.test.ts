@@ -161,6 +161,8 @@ describe('running the pipeline against a live cell', () => {
       expect(row?.runs).toBe(250)
       expect(row?.errorCount).toBe(0)
       expect(row?.scenarioMetrics?.['session_isolation']).toBe(true)
+      expect(row?.significanceTested).toBe(true)
+      expect(row?.latencyMs?.runs).toBe(250)
     }, 30_000)
 
     it('resolves the multi-step-workflow fixture and reports no errors', async () => {
