@@ -5,5 +5,5 @@
     "outDir": "dist"
   },
   "include": ["src"],
-  "references": [{ "path": "../benchmark-runner" }]
+  "references": [{ "path": "../contracts" }, { "path": "../benchmark-runner" }]
 }

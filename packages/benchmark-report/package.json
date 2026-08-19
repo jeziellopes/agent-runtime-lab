@@ -8,7 +8,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@arl/benchmark-runner": "workspace:*"
+    "@arl/benchmark-runner": "workspace:*",
+    "@arl/contracts": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "catalog:"
