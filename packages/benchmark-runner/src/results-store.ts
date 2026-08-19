@@ -17,6 +17,8 @@ export interface CellResults {
   runtimeVersion: string
   llmMode: LLMMode
   startedAt: string
+  /** From spawn to the first successful `GET /health`. */
+  startupTimeMs: number
   interleavedWith: readonly string[]
   host: Host
   scenarios: readonly ScenarioResult[]

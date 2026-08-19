@@ -33,6 +33,7 @@ function cellResults(overrides: Partial<CellResults> = {}): CellResults {
     runtimeVersion: '24.4.1',
     llmMode: 'replay',
     startedAt: '2026-08-18T00:00:00.000Z',
+    startupTimeMs: 842,
     interleavedWith: ['hono-node'],
     host: {
       cpu: 'AMD Ryzen 7 5800X',
@@ -71,6 +72,14 @@ describe('results on disk', () => {
     expect(read.host.cores.logical).toBeGreaterThan(0)
     expect(read.host.memoryGb).toBeGreaterThan(0)
     expect(read.runtimeVersion).toBe('24.4.1')
+  })
+
+  it('writes the interval from spawn to the first successful health check', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'arl-'))
+
+    await writeResults(dir, cellResults())
+
+    expect((await readResults(dir, 'hono-node')).startupTimeMs).toBe(842)
   })
 
   it('throws results_unreadable on a missing file', async () => {
