@@ -5,5 +5,5 @@ export const definition: ScenarioDefinition = {
   id: 'multiple-sessions',
   agentId: 'simple-agent',
   measures: 'State isolation',
-  measuredRuns: 3
+  measuredRuns: 250
 }
