@@ -12,8 +12,13 @@ async function main(): Promise<void> {
   process.stdout.write('report written\n')
 }
 
-function flag(argv: readonly string[], name: string): string | undefined {
-  return argv[argv.indexOf(name) + 1]
+export function flag(
+  argv: readonly string[],
+  name: string
+): string | undefined {
+  const index = argv.indexOf(name)
+
+  return index === -1 ? undefined : argv[index + 1]
 }
 
 main().catch((error: unknown) => {
