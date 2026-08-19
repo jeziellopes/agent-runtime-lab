@@ -19,7 +19,7 @@
     "test": "vitest run --coverage",
     "start": "node scripts/start.mjs",
     "contract-test": "node packages/contract-tests/dist/cli.js",
-    "benchmark": "node packages/benchmark-runner/dist/cli.js",
+    "benchmark": "node scripts/benchmark.mjs",
     "prepare": "husky"
   },
   "lint-staged": {
