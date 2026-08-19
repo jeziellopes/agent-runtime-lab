@@ -12,6 +12,8 @@ export interface RuntimeConfig {
   timeoutMs: number
   llmMode: LLMMode
   maxRetries: number
+  /** The directory under `packages/llm/fixtures/` the replay provider reads. */
+  fixtureSet: string
 
   /**
    * Execution ids come from a per-process counter, event timestamps are the
