@@ -265,6 +265,19 @@ describe('POST /agents/:id/execute', () => {
 
     expect(response.status).toBe(200)
   })
+
+  it('accepts a body past the body-parser default of 100kb', async () => {
+    const prompt = 'lorem '.repeat(20_000).trim()
+    const base = await cell(
+      createRuntime({ ...CONFIG, fixtureSet: 'benchmark' }, REFERENCE_AGENTS)
+    )
+
+    const response = await post(base, '/agents/simple-agent/execute', {
+      input: { prompt }
+    })
+
+    expect(response.status).toBe(200)
+  })
 })
 
 describe('the error wire', () => {

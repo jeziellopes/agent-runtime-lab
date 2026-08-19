@@ -20,8 +20,13 @@ export async function createNestApp(
 
   /* Every body is parsed as JSON whatever the request claimed. The header is
      not part of the contract, and a body that silently became `{}` would be
-     reported back as a missing prompt. */
-  app.useBodyParser('json', { type: () => true })
+     reported back as a missing prompt.
+
+     `limit` is set explicitly: body-parser's own default is 100kb, well under
+     the ~300kb a 50000-token long-context prompt serializes to, and Hono
+     imposes no such ceiling. Left unset, the two adapters would reject the
+     same request differently for a reason no scenario is measuring. */
+  app.useBodyParser('json', { type: () => true, limit: '2mb' })
 
   // Express emits `x-powered-by` with different casing and in a different
   // position under Node and under Bun. Disabling it removes the divergence.
