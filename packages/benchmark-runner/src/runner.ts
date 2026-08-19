@@ -34,6 +34,8 @@ export interface RunOptions {
   framework?: string
   runtime?: string
   host?: string
+  /** Where `metrics.json` is written per cell. Defaults to `results`. */
+  resultsDir?: string
 }
 
 /** What every driver below needs to reach a live cell. */
@@ -54,6 +56,7 @@ export async function run(options: RunOptions): Promise<CellResults[]> {
   const matrix = resolveMatrix(options)
   const scenarios = resolveScenarios(options.scenario)
   const host = options.host ?? '127.0.0.1'
+  const resultsDir = options.resultsDir ?? RESULTS_DIR
   const startedAt = new Date().toISOString()
   const { spawned, unavailable } = await spawnMatrix(matrix, host)
   const ctx: DriveContext = { host, spawned }
@@ -71,7 +74,7 @@ export async function run(options: RunOptions): Promise<CellResults[]> {
       }
     }
 
-    return await writeAll(matrix, rows, startedAt, spawned)
+    return await writeAll({ matrix, rows, startedAt, spawned, resultsDir })
   } finally {
     for (const cell of spawned.values()) {
       stopCell(cell)
@@ -106,12 +109,16 @@ async function spawnMatrix(
   return { spawned, unavailable }
 }
 
-async function writeAll(
-  matrix: readonly Cell[],
-  rows: ReadonlyMap<string, ScenarioResult[]>,
-  startedAt: string,
+interface WriteAllOptions {
+  matrix: readonly Cell[]
+  rows: ReadonlyMap<string, ScenarioResult[]>
+  startedAt: string
   spawned: ReadonlyMap<string, SpawnedCell>
-): Promise<CellResults[]> {
+  resultsDir: string
+}
+
+async function writeAll(options: WriteAllOptions): Promise<CellResults[]> {
+  const { matrix, rows, startedAt, spawned, resultsDir } = options
   const hostBlock = captureHost()
   const interleavedWith = matrix.map(cell => cell.id)
   const results: CellResults[] = []
@@ -131,7 +138,7 @@ async function writeAll(
       scenarios: [...(rows.get(cell.id) ?? [])]
     }
 
-    await writeResults(RESULTS_DIR, cellResults)
+    await writeResults(resultsDir, cellResults)
     results.push(cellResults)
   }
 
