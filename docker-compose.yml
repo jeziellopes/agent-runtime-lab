@@ -71,12 +71,24 @@ services:
       retries: 12
 
   # The suite imports zero framework packages and runs once per cell against a
-  # base URL. It must be green on all four.
+  # base URL. It must be green on all four. --all defaults every cell to
+  # 127.0.0.1, which only reaches a sibling on the host's own network; each
+  # cell here is its own container, reachable by service name instead, so
+  # this runs the suite once per cell with an explicit --host.
   contract-tests:
     build:
       context: .
       dockerfile: docker/node.Dockerfile
-    command: ['node', 'packages/contract-tests/dist/cli.js', '--all']
+    command:
+      - sh
+      - -c
+      - >
+        ec=0;
+        node packages/contract-tests/dist/cli.js --framework nestjs --runtime node --host nestjs-node || ec=1;
+        node packages/contract-tests/dist/cli.js --framework hono --runtime node --host hono-node || ec=1;
+        node packages/contract-tests/dist/cli.js --framework nestjs --runtime bun --host nestjs-bun || ec=1;
+        node packages/contract-tests/dist/cli.js --framework hono --runtime bun --host hono-bun || ec=1;
+        exit $$ec
     depends_on:
       nestjs-node:
         condition: service_healthy
