@@ -1,0 +1,12 @@
+{
+  "agentId": "simple-agent",
+  "model": "authored",
+  "prompt": "What did I just ask you?",
+  "calls": [
+    {
+      "node": "llm",
+      "tokens": ["I", " have", " no", " earlier", " question", " recorded", " in", " this", " session."],
+      "usage": { "inputTokens": 5, "outputTokens": 9, "totalTokens": 14 }
+    }
+  ]
+}

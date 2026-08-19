@@ -1,0 +1,22 @@
+{
+  "agentId": "multi-step-agent",
+  "model": "authored",
+  "prompt": "Compare event-driven and request-response architectures.",
+  "calls": [
+    {
+      "node": "planner",
+      "tokens": ["First", " outline", " both", " architectural", " styles", " clearly."],
+      "usage": { "inputTokens": 8, "outputTokens": 6, "totalTokens": 14 }
+    },
+    {
+      "node": "research",
+      "tokens": ["Event-driven", " systems", " react", " to", " asynchronous", " messages."],
+      "usage": { "inputTokens": 8, "outputTokens": 6, "totalTokens": 14 }
+    },
+    {
+      "node": "analysis",
+      "tokens": ["Request-response", " trades", " decoupling", " for", " simpler", " call", " tracing."],
+      "usage": { "inputTokens": 8, "outputTokens": 7, "totalTokens": 15 }
+    }
+  ]
+}
