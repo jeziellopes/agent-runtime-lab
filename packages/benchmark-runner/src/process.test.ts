@@ -12,13 +12,20 @@ describe('sampling resource usage', () => {
     expect(usage.memoryMb).toBeGreaterThan(0)
   })
 
+  it('reports peak memory as at least current memory, in the same order of magnitude', async () => {
+    const usage = await sampleResourceUsage(process.pid)
+
+    expect(usage.peakMemoryMb).toBeGreaterThanOrEqual(usage.memoryMb)
+    expect(usage.peakMemoryMb).toBeLessThan(usage.memoryMb * 10)
+  })
+
   it('reports zeros for a pid that does not exist', async () => {
     const usage = await sampleResourceUsage(999_999_999)
 
     expect(usage).toEqual({
       cpuPercent: 0,
       memoryMb: 0,
-      heapMb: 0,
+      peakMemoryMb: 0,
       startupTimeMs: 0
     })
   })

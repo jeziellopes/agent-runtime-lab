@@ -156,10 +156,13 @@ async function childPid(
 }
 
 /**
- * `cpu`, `memory` and `heap` from `/proc/<pid>/stat` and `/proc/<pid>/status`.
- * A pid that has already exited, or a non-Linux host, reads as all zeros
- * rather than throwing: a resource sample is never load-bearing enough to
- * fail a measured round over.
+ * `cpu`, `memory` and peak memory from `/proc/<pid>/stat` and
+ * `/proc/<pid>/status`. Peak memory reads `VmHWM`, the high-water mark of
+ * resident memory: `VmData`, a virtual address-space reservation rather than
+ * memory in use, reads as tens of gigabytes on Bun's engine and is not a
+ * heap figure for either runtime. A pid that has already exited, or a
+ * non-Linux host, reads as all zeros rather than throwing: a resource
+ * sample is never load-bearing enough to fail a measured round over.
  */
 export async function sampleResourceUsage(
   pid: number
@@ -174,11 +177,11 @@ export async function sampleResourceUsage(
     return {
       cpuPercent: cpuPercentOf(stat, uptime),
       memoryMb: statusFieldKb(status, 'VmRSS') / 1024,
-      heapMb: statusFieldKb(status, 'VmData') / 1024,
+      peakMemoryMb: statusFieldKb(status, 'VmHWM') / 1024,
       startupTimeMs: 0
     }
   } catch {
-    return { cpuPercent: 0, memoryMb: 0, heapMb: 0, startupTimeMs: 0 }
+    return { cpuPercent: 0, memoryMb: 0, peakMemoryMb: 0, startupTimeMs: 0 }
   }
 }
 

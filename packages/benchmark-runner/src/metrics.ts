@@ -31,7 +31,8 @@ export interface LLMMetrics {
 export interface ResourceMetrics {
   cpuPercent: number
   memoryMb: number
-  heapMb: number
+  /** Peak resident memory since the process started, not since this scenario. */
+  peakMemoryMb: number
   startupTimeMs: number
 }
 
