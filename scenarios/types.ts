@@ -16,4 +16,10 @@ export interface ScenarioWorkload {
   streaming?: boolean
   sessions?: number
   syntheticTokens?: readonly number[]
+  /**
+   * One prompt per entry of `syntheticTokens`, positionally paired. The
+   * benchmark fixture set carries one fixture per prompt, each declaring the
+   * `usage.inputTokens` that entry names.
+   */
+  syntheticPrompts?: readonly string[]
 }
