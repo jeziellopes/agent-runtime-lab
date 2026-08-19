@@ -64,7 +64,15 @@ export default defineConfig({
         'packages/contract-tests/src/expected.ts',
         'packages/contract-tests/src/goldens.ts',
         'packages/contract-tests/src/headers.ts',
-        'packages/contract-tests/src/sse.ts'
+        'packages/contract-tests/src/sse.ts',
+        'packages/benchmark-runner/src/errors.ts',
+        'packages/benchmark-runner/src/host.ts',
+        'packages/benchmark-runner/src/metrics.ts',
+        'packages/benchmark-runner/src/results-store.ts',
+        'packages/benchmark-runner/src/statistics.ts',
+        'packages/benchmark-report/src/comparison.ts',
+        'packages/benchmark-report/src/report.ts',
+        'scenarios/index.ts'
       ],
       thresholds: {
         lines: 100,
