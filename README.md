@@ -3,7 +3,7 @@
 What does your backend framework actually cost you
 when you build an AI agent runtime?
 
-NestJS vs Hono, Node vs Bun — one runtime core,
+NestJS vs Hono, Node vs Bun: one runtime core,
 four deployments, and a contract suite proving the
 only thing that changed was the framework.
 
@@ -21,7 +21,7 @@ anyone reproducing this gets.
 
 One AI agent runtime core, exposed through two backend framework adapters and
 benchmarked across two JavaScript runtimes. A framework benchmark whose cells
-are quietly different programs measures nothing — that is the ordinary failure
+are quietly different programs measures nothing: that is the ordinary failure
 of the genre. An isolated runtime core with no measurement attached demonstrates
 a pattern but answers no question.
 
@@ -31,7 +31,7 @@ is the hinge between them, because it is what proves the cells are identical
 except for the variable under test.
 
 **Stack:** TypeScript, pnpm workspaces, LangGraph, NestJS and Hono adapters,
-Node LTS and Bun — _because_ **NestJS and Hono sit at opposite ends of the
+Node LTS and Bun, _because_ **NestJS and Hono sit at opposite ends of the
 TypeScript backend spectrum: decorator-driven DI container versus functional
 Web-Standards composition. If a runtime core survives both without change, it
 will survive anything between them.**
@@ -58,7 +58,7 @@ from the runtime effect and exposes any interaction between them.
 
 ## The hard part
 
-**The framework-agnostic contract suite** — `packages/contract-tests/src/suite.ts`.
+**The framework-agnostic contract suite**: `packages/contract-tests/src/suite.ts`.
 
 One suite, importing zero framework packages, run once per cell against a base
 URL, asserting that every cell produces identical HTTP responses, identical SSE
@@ -67,7 +67,7 @@ equivalent" from an assertion into something that can fail.
 
 It is the artifact the audience opens first, and **it is built before either
 adapter is finished**. Written afterwards, a contract suite degrades
-into a description of whatever the adapters already happen to do — precisely the
+into a description of whatever the adapters already happen to do, precisely the
 assertion it exists to replace.
 
 That ordering is why `packages/contracts` and `packages/contract-tests`
@@ -79,27 +79,27 @@ a suite that could already fail them.
 Doc comments in the source mark which layer a file belongs to (`L2.`, `L4.` and
 so on). The numbering is this:
 
-| Layer | Owns                                                             | Where                              |
-| ----- | ---------------------------------------------------------------- | ---------------------------------- |
-| L1    | HTTP: routing, parsing, serialization, SSE transport, auth seam  | `adapters/nestjs`, `adapters/hono` |
-| L2    | Execution lifecycle, event emission, execution state             | `packages/runtime-core`            |
-| L3    | The execution model — agent definitions, context, workflow start | `packages/agent-engine`            |
-| L4    | Graph execution — nodes, edges, state transitions                | `packages/graph-runtime`           |
-| L5    | Tools, registered rather than imported                           | `packages/tools`                   |
-| L6    | Conversation history, execution state, persistent context        | `packages/memory`                  |
-| L7    | Model providers behind one interface; replay is the default      | `packages/llm`                     |
+| Layer | Owns                                                            | Where                              |
+| ----- | --------------------------------------------------------------- | ---------------------------------- |
+| L1    | HTTP: routing, parsing, serialization, SSE transport, auth seam | `adapters/nestjs`, `adapters/hono` |
+| L2    | Execution lifecycle, event emission, execution state            | `packages/runtime-core`            |
+| L3    | The execution model: agent definitions, context, workflow start | `packages/agent-engine`            |
+| L4    | Graph execution: nodes, edges, state transitions                | `packages/graph-runtime`           |
+| L5    | Tools, registered rather than imported                          | `packages/tools`                   |
+| L6    | Conversation history, execution state, persistent context       | `packages/memory`                  |
+| L7    | Model providers behind one interface; replay is the default     | `packages/llm`                     |
 
 L1 may not contain agent logic, prompts, workflow definitions or tool
-implementations — that constraint is what makes the four cells comparable. The
+implementations: that constraint is what makes the four cells comparable. The
 remaining four packages are cross-cutting: `contracts` and `events` are the
 shared vocabulary, `contract-tests` is the equivalence gate, and
 `benchmark-runner` / `benchmark-report` sit outside the stack entirely.
 
 ## Build order
 
-1. `packages/contracts` — done: the domain model, the seven-state lifecycle and
+1. `packages/contracts`: done, the domain model, the seven-state lifecycle and
    the twelve events are real types with tests.
-2. `packages/contract-tests` — done: the equivalence gate, built before either
+2. `packages/contract-tests`: done, the equivalence gate, built before either
    adapter.
 3. The adapters, then the runtime beneath them: done.
 4. `packages/benchmark-runner`, then `benchmark-report`: done.
@@ -146,7 +146,7 @@ is `id, event, data` over POST.
 
 | Stubbed                                                | Stands in for                                                       |
 | ------------------------------------------------------ | ------------------------------------------------------------------- |
-| `packages/llm/src/providers/replay/replay-provider.ts` | a live LLM — and it is the **default**, not the fallback            |
+| `packages/llm/src/providers/replay/replay-provider.ts` | a live LLM, and it is the **default**, not the fallback             |
 | `packages/tools/src/search/search-tool.ts`             | a real search API; canned results, no network, no key               |
 | `adapters/nestjs/src/middleware/auth.middleware.ts`    | production authorization; an empty slot that proves the seam exists |
 | `adapters/hono/src/http/middleware/auth.ts`            | the same seam, in the other adapter                                 |
