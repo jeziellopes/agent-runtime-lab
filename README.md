@@ -11,6 +11,12 @@ only thing that changed was the framework.
 > run against every cell, and the comparison report is published with its
 > limitations stated.
 
+![A clean clone: `docker compose up` brings up all four cells and the contract suite PASSes on each, then all seven scenarios run live against every cell, then `pnpm benchmark report` regenerates the comparison from that run](assets/demo.gif)
+
+A clean clone, `docker compose up`, all four cells proving they are
+equivalent, then every scenario run live and compared: the same path
+anyone reproducing this gets.
+
 ## What this is
 
 One AI agent runtime core, exposed through two backend framework adapters and
@@ -49,13 +55,6 @@ switches to a real provider for re-recording and live verification.
 
 A factorial design, not a single-variable one: it separates the framework effect
 from the runtime effect and exposes any interaction between them.
-
-<!-- asciinema: `docker compose up`, the contract suite passing on every cell,
-     then a benchmark run. 60-90 seconds, embedded above the fold. Recorded once
-     the suite is green — the isolation first, the numbers second. -->
-
-_No results yet. This is a scaffold; `results/` is empty by design, and a bare
-number with no run count is not a result._
 
 ## The hard part
 
