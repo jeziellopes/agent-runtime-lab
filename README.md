@@ -7,9 +7,9 @@ NestJS vs Hono, Node vs Bun — one runtime core,
 four deployments, and a contract suite proving the
 only thing that changed was the framework.
 
-> **Scaffold.** Every surface item below exists as a file, routes, and answers.
-> None of them does the real thing yet. The domain model and the four-cell
-> matrix are real; the handlers return `501`.
+> All four cells pass the contract suite, all seven benchmark scenarios have
+> run against every cell, and the comparison report is published with its
+> limitations stated.
 
 ## What this is
 
@@ -32,8 +32,9 @@ will survive anything between them.**
 
 **Deploys to:** nowhere. There is no live deployment. `docker compose up` from a
 clean clone brings up every cell and prints the contract suite result; the
-report and results ship as committed artifacts plus a GitHub Pages page. That
-makes the bring-up a build requirement, not a nice-to-have.
+report and results ship as committed artifacts under `results/`. A GitHub
+Pages page is the planned home for them once this repo has a remote to
+publish from. That makes the bring-up a build requirement, not a nice-to-have.
 
 **Data:** replay-primary. Recorded LLM token streams, committed as fixtures. The
 replay provider is the default for every benchmark and every test; a flag
@@ -70,8 +71,9 @@ adapter is finished**. Written afterwards, a contract suite degrades
 into a description of whatever the adapters already happen to do — precisely the
 assertion it exists to replace.
 
-That ordering is why this scaffold has a populated `packages/contracts` and
-`packages/contract-tests` and two adapters that answer `501`.
+That ordering is why `packages/contracts` and `packages/contract-tests`
+existed before either adapter did, and why both adapters were built against
+a suite that could already fail them.
 
 ## The seven layers
 
@@ -98,9 +100,10 @@ shared vocabulary, `contract-tests` is the equivalence gate, and
 
 1. `packages/contracts` — done: the domain model, the seven-state lifecycle and
    the twelve events are real types with tests.
-2. `packages/contract-tests` — the equivalence gate, before either adapter.
-3. The adapters, then the runtime beneath them.
-4. `packages/benchmark-runner`, then `benchmark-report`.
+2. `packages/contract-tests` — done: the equivalence gate, built before either
+   adapter.
+3. The adapters, then the runtime beneath them: done.
+4. `packages/benchmark-runner`, then `benchmark-report`: done.
 
 ## The surface, enumerated
 
@@ -178,7 +181,7 @@ and used only to re-record fixtures.
 2. All 7 benchmark scenarios have executed against every cell.
 3. The comparison report is published with its own limitations stated.
 
-After that: no features. Only fixes to things that break the contract suite.
+From here: no features. Only fixes to things that break the contract suite.
 
 ## Licence
 
