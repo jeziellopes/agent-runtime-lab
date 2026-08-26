@@ -16,6 +16,9 @@ catalogs:
       specifier: ^4.4.3
       version: 4.4.3
 
+overrides:
+  nanoid: '>=3.3.18'
+
 importers:
 
   .:
@@ -1421,9 +1424,9 @@ packages:
     resolution: {integrity: sha512-71ippSywq5Yb7/tVYyGbkBggbU8H3u5Rz56fH60jGFgr8uHwxs+aSKeqmluIVzM0m0kB7xQjKS6qPfd0b2ZoqQ==}
     hasBin: true
 
-  nanoid@3.3.17:
-    resolution: {integrity: sha512-xQLf0A3HOMlgHq0n247/LRuAOYmB7dXJ/DvAxGvsSBij45XtBSmQycu+F8ODbHwns/XyFZagyL1+J0Offw1E0g==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+  nanoid@6.0.1:
+    resolution: {integrity: sha512-3wVS3i51pE2pi1k5FFL/95BGfVS0kSsvDVuGXHOtxox/TywUmtgq+3qiTOTbs9J7KfHaXPiN171k/A6dBnaXFw==}
+    engines: {node: ^22 || ^24 || >=26}
     hasBin: true
 
   natural-compare@1.4.0:
@@ -2952,7 +2955,7 @@ snapshots:
 
   mustache@4.2.0: {}
 
-  nanoid@3.3.17: {}
+  nanoid@6.0.1: {}
 
   natural-compare@1.4.0: {}
 
@@ -3031,7 +3034,7 @@ snapshots:
 
   postcss@8.5.26:
     dependencies:
-      nanoid: 3.3.17
+      nanoid: 6.0.1
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
