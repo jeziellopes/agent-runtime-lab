@@ -34,6 +34,10 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - if: matrix.check == 'test'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.3.14'
+      - if: matrix.check == 'test'
         run: pnpm build
       - run: pnpm ${{ matrix.check }}
 
