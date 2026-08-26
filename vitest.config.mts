@@ -71,6 +71,7 @@ export default defineConfig({
         'packages/benchmark-runner/src/results-store.ts',
         'packages/benchmark-runner/src/statistics.ts',
         'packages/benchmark-report/src/comparison.ts',
+        'packages/benchmark-report/src/index-html.ts',
         'packages/benchmark-report/src/report.ts',
         'scenarios/index.ts'
       ],
