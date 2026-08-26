@@ -33,6 +33,8 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - if: matrix.check == 'test'
+        run: pnpm build
       - run: pnpm ${{ matrix.check }}
 
   audit:
