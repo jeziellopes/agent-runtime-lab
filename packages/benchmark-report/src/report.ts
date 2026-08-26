@@ -6,6 +6,7 @@ import { CELLS } from '@arl/contracts'
 import { readResults } from '@arl/benchmark-runner'
 
 import { assertHostsAgree, buildComparison } from './comparison.js'
+import { renderIndexHtml } from './index-html.js'
 
 import type { CellResults, ScenarioResult } from '@arl/benchmark-runner'
 import type { Comparison, Pairing } from './comparison.js'
@@ -33,7 +34,13 @@ export async function generateReport(options: ReportOptions): Promise<void> {
     await writeCellReport(options.outDir, result)
   }
 
-  await writeComparison(options.outDir, buildComparison(results))
+  const comparison = buildComparison(results)
+
+  await writeComparison(options.outDir, comparison)
+  await writeFile(
+    join(options.outDir, 'index.html'),
+    renderIndexHtml(results, comparison)
+  )
 }
 
 async function readAvailable(resultsDir: string): Promise<CellResults[]> {

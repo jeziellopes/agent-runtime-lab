@@ -163,4 +163,22 @@ describe('generating the report', () => {
       code: 'hosts_disagree'
     })
   })
+
+  it('writes index.html alongside comparison.json and comparison.md, from the repository results', async () => {
+    const outDir = mkdtempSync(join(tmpdir(), 'arl-'))
+
+    await generateReport({
+      resultsDir: join(__dirname, '../../../results'),
+      outDir
+    })
+
+    expect(existsSync(join(outDir, 'comparison.json'))).toBe(true)
+    expect(existsSync(join(outDir, 'comparison.md'))).toBe(true)
+
+    const html = readFileSync(join(outDir, 'index.html'), 'utf8')
+
+    for (const id of ['nestjs-node', 'hono-node', 'nestjs-bun', 'hono-bun']) {
+      expect(html).toContain(id)
+    }
+  })
 })
