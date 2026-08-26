@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Framework Overhead</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f1f3f5;
+    --paper-raised: #ffffff;
+    --ink: #14171c;
+    --ink-soft: #52606d;
+    --ink-faint: #7c8a97;
+    --border: #d7dce1;
+    --border-soft: #e6e9ec;
+    --chrome: #3e5c76;
+    --chrome-soft: #e7ecf1;
+
+    --nestjs-node: #a8431c;
+    --nestjs-bun: #d68a3f;
+    --hono-node: #0b6e77;
+    --hono-bun: #2fa79e;
+
+    --nestjs-node-bg: rgb(168 67 28 / 0.12);
+    --nestjs-bun-bg: rgb(214 138 63 / 0.14);
+    --hono-node-bg: rgb(11 110 119 / 0.12);
+    --hono-bun-bg: rgb(47 167 158 / 0.14);
+
+    --font-display: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0f1216;
+      --paper-raised: #171b21;
+      --ink: #e7eaee;
+      --ink-soft: #9aa4b2;
+      --ink-faint: #6b7480;
+      --border: #262c34;
+      --border-soft: #1d232b;
+      --chrome: #8fb4d9;
+      --chrome-soft: #1b2530;
+
+      --nestjs-node: #dd7d47;
+      --nestjs-bun: #eab06b;
+      --hono-node: #37b3ba;
+      --hono-bun: #6fd6cb;
+
+      --nestjs-node-bg: rgb(221 125 71 / 0.16);
+      --nestjs-bun-bg: rgb(234 176 107 / 0.14);
+      --hono-node-bg: rgb(55 179 186 / 0.16);
+      --hono-bun-bg: rgb(111 214 203 / 0.14);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --paper: #0f1216;
+    --paper-raised: #171b21;
+    --ink: #e7eaee;
+    --ink-soft: #9aa4b2;
+    --ink-faint: #6b7480;
+    --border: #262c34;
+    --border-soft: #1d232b;
+    --chrome: #8fb4d9;
+    --chrome-soft: #1b2530;
+
+    --nestjs-node: #dd7d47;
+    --nestjs-bun: #eab06b;
+    --hono-node: #37b3ba;
+    --hono-bun: #6fd6cb;
+
+    --nestjs-node-bg: rgb(221 125 71 / 0.16);
+    --nestjs-bun-bg: rgb(234 176 107 / 0.14);
+    --hono-node-bg: rgb(55 179 186 / 0.16);
+    --hono-bun-bg: rgb(111 214 203 / 0.14);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  main {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 2.75rem 1.75rem 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3.25rem;
+  }
+
+  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--chrome);
+  }
+
+  a { color: var(--chrome); }
+
+  header {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2rem;
+  }
+
+  header h1 {
+    font-size: clamp(2rem, 1.6rem + 1.6vw, 2.7rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  header .standfirst {
+    max-width: 66ch;
+    color: var(--ink-soft);
+    font-size: 1.02rem;
+  }
+
+  .nameplate {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.6rem;
+    margin-top: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+  }
+
+  .nameplate b { color: var(--ink-soft); font-weight: 600; }
+
+  section { display: flex; flex-direction: column; gap: 1.15rem; }
+
+  .section-head { display: flex; flex-direction: column; gap: 0.35rem; }
+  .section-head h2 { font-size: 1.32rem; font-weight: 600; }
+  .section-head p { margin: 0; max-width: 70ch; color: var(--ink-soft); font-size: 0.93rem; }
+
+  .notice {
+    background: var(--paper-raised);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.3rem 1.5rem;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+
+  .axis-legend {
+    max-width: 420px;
+    display: grid;
+    grid-template-columns: auto 1fr 1fr;
+    gap: 0.55rem 1rem;
+    background: var(--paper-raised);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.1rem 1.3rem;
+    align-items: center;
+  }
+
+  .axis-legend .corner { font-size: 0.7rem; color: var(--ink-faint); }
+  .axis-legend .col-head, .axis-legend .row-head {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  .axis-legend .col-head { text-align: center; }
+
+  .swatch-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.6rem;
+    border-radius: 7px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .swatch-cell .dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; flex: none; }
+
+  .cell-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .cell-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--border);
+    border-left-width: 4px;
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .cell-card h3 { font-family: var(--font-mono); font-size: 1rem; font-weight: 600; }
+
+  .cell-card dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 0.15rem 0.6rem;
+    font-size: 0.82rem;
+  }
+  .cell-card dt { color: var(--ink-faint); }
+  .cell-card dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-soft);
+    text-align: right;
+  }
+
+  .cell-nestjs-node { border-left-color: var(--nestjs-node); }
+  .cell-nestjs-bun { border-left-color: var(--nestjs-bun); }
+  .cell-hono-node { border-left-color: var(--hono-node); }
+  .cell-hono-bun { border-left-color: var(--hono-bun); }
+
+  .panel-pair {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 1.1rem;
+  }
+
+  .panel {
+    background: var(--paper-raised);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem 1.35rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .panel-title {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.65rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .panel-title .vs { color: var(--ink-faint); font-weight: 400; }
+
+  .cmp-row {
+    display: grid;
+    grid-template-columns: 9.5rem 1fr;
+    gap: 0.2rem 1rem;
+    padding: 0.7rem 0;
+    border-top: 1px solid var(--border-soft);
+    align-items: center;
+  }
+  .cmp-row:first-of-type { border-top: none; }
+
+  .cmp-label { font-size: 0.83rem; color: var(--ink-soft); padding-top: 0.15rem; }
+
+  .cmp-bars { display: flex; flex-direction: column; gap: 0.3rem; }
+
+  .cmp-bar-track {
+    position: relative;
+    height: 1.15rem;
+    background: var(--chrome-soft);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+  }
+
+  .cmp-bar { height: 100%; border-radius: 3px 0 0 3px; min-width: 2px; }
+
+  .cmp-value {
+    margin-left: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .cmp-meta {
+    grid-column: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 0.3rem;
+    font-size: 0.76rem;
+  }
+
+  .floor { font-family: var(--font-mono); color: var(--ink-faint); }
+
+  .pill {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .pill-neutral { background: var(--chrome-soft); color: var(--ink-soft); }
+  .pill-nestjs-node { background: var(--nestjs-node-bg); color: var(--nestjs-node); }
+  .pill-nestjs-bun { background: var(--nestjs-bun-bg); color: var(--nestjs-bun); }
+  .pill-hono-node { background: var(--hono-node-bg); color: var(--hono-node); }
+  .pill-hono-bun { background: var(--hono-bun-bg); color: var(--hono-bun); }
+
+  .conc-grid, .lc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+    gap: 1rem;
+  }
+
+  .conc-card, .lc-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.2rem 1.2rem;
+  }
+
+  .conc-card .level, .lc-card .tokens {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--chrome);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.7rem;
+    display: block;
+  }
+
+  .metric-block + .metric-block { margin-top: 0.9rem; }
+  .metric-block .metric-name {
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.35rem;
+    display: block;
+  }
+
+  .mini-row {
+    display: grid;
+    grid-template-columns: 4.6rem 1fr 3.4rem;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.74rem;
+    padding: 0.16rem 0;
+  }
+  .mini-row .mini-label { font-family: var(--font-mono); color: var(--ink-soft); }
+  .mini-row .mini-value {
+    font-family: var(--font-mono);
+    text-align: right;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .mini-track { height: 0.55rem; background: var(--chrome-soft); border-radius: 2px; overflow: hidden; }
+  .mini-bar { height: 100%; }
+
+  .stability-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.74rem;
+    padding: 0.16rem 0;
+  }
+  .stability-row .mini-label { font-family: var(--font-mono); color: var(--ink-soft); }
+  .stability-row .mini-value {
+    font-family: var(--font-mono);
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .limitations {
+    background: var(--paper-raised);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.3rem 1.5rem;
+  }
+
+  .limitations ul {
+    margin: 0.6rem 0 0;
+    padding-left: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding-top: 1.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--ink-faint);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.4rem;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cmp-bar, .mini-bar { transition: width 0.5s ease; }
+  }
+</style>
+</head>
+<body>
+<main>
+<header>
+<span class="eyebrow">agent-runtime-lab &middot; benchmark comparison</span>
+<h1>Framework Overhead</h1>
+<p class="standfirst">
+One agent runtime core, exposed through two HTTP adapters, NestJS and
+Hono, each run under both Node and Bun. Every scenario replays the same
+recorded token stream, so what differs between cells is the framework
+and the runtime, not the model.
+<code>framework_overhead = request_latency &minus; execution_duration</code>.
+</p>
+<div class="nameplate">
+<span><b>Host</b> AMD Ryzen 7 5800X 8-Core Processor &middot; 8c/16t &middot; 31&nbsp;GB RAM &middot; linux 6.8.0-136-generic</span>
+<span><b>Node</b> 24.14.0</span>
+<span><b>Bun</b> 1.1.38</span>
+<span><b>LLM mode</b> replay</span>
+</div>
+</header>
+<section>
+<div class="section-head"><h2>The test matrix</h2></div>
+<div class="axis-legend">
+<span class="corner">&nbsp;</span>
+<span class="col-head">Node</span>
+<span class="col-head">Bun</span>
+<span class="row-head">NestJS</span>
+<span class="swatch-cell" style="background:var(--nestjs-node-bg); color:var(--nestjs-node);"><span class="dot" style="background:var(--nestjs-node);"></span>nestjs-node</span>
+<span class="swatch-cell" style="background:var(--nestjs-bun-bg); color:var(--nestjs-bun);"><span class="dot" style="background:var(--nestjs-bun);"></span>nestjs-bun</span>
+<span class="row-head">Hono</span>
+<span class="swatch-cell" style="background:var(--hono-node-bg); color:var(--hono-node);"><span class="dot" style="background:var(--hono-node);"></span>hono-node</span>
+<span class="swatch-cell" style="background:var(--hono-bun-bg); color:var(--hono-bun);"><span class="dot" style="background:var(--hono-bun);"></span>hono-bun</span>
+</div>
+</section>
+<section>
+<div class="section-head">
+<h2>The four cells</h2>
+<p>Startup comes from a fresh boot. Latency and overhead come from the
+simple-execution scenario, the cheapest apples-to-apples row. Peak
+memory is the resident high-water mark since boot, not since any one
+scenario.</p>
+</div>
+<div class="cell-grid"><div class="cell-card cell-nestjs-node">
+<h3>nestjs-node</h3>
+<dl>
+<dt>Startup</dt><dd>333&nbsp;ms</dd>
+<dt>Peak memory</dt><dd>174&nbsp;MB</dd>
+<dt>Latency</dt><dd>3.325&nbsp;ms</dd>
+<dt>Overhead</dt><dd>0.903&nbsp;ms</dd>
+</dl>
+</div>
+<div class="cell-card cell-hono-node">
+<h3>hono-node</h3>
+<dl>
+<dt>Startup</dt><dd>222&nbsp;ms</dd>
+<dt>Peak memory</dt><dd>148&nbsp;MB</dd>
+<dt>Latency</dt><dd>3.215&nbsp;ms</dd>
+<dt>Overhead</dt><dd>0.758&nbsp;ms</dd>
+</dl>
+</div>
+<div class="cell-card cell-nestjs-bun">
+<h3>nestjs-bun</h3>
+<dl>
+<dt>Startup</dt><dd>518&nbsp;ms</dd>
+<dt>Peak memory</dt><dd>153&nbsp;MB</dd>
+<dt>Latency</dt><dd>4.916&nbsp;ms</dd>
+<dt>Overhead</dt><dd>2.772&nbsp;ms</dd>
+</dl>
+</div>
+<div class="cell-card cell-hono-bun">
+<h3>hono-bun</h3>
+<dl>
+<dt>Startup</dt><dd>316&nbsp;ms</dd>
+<dt>Peak memory</dt><dd>115&nbsp;MB</dd>
+<dt>Latency</dt><dd>3.980&nbsp;ms</dd>
+<dt>Overhead</dt><dd>1.841&nbsp;ms</dd>
+</dl>
+</div></div>
+</section>
+<section>
+<div class="section-head">
+<h2>Framework effect</h2>
+<p>Runtime held fixed. 250 measured runs per row (50 warmup). Resolution floor is 1.96&times;SE: a gap smaller than the floor prints as no measurable difference, never a coin-flip winner.</p>
+</div>
+<div class="panel-pair"><div class="panel">
+<div class="panel-title">nestjs-node <span class="vs">vs</span> hono-node</div>
+<div class="cmp-row">
+<div class="cmp-label">simple-execution</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:69.3%; background:var(--nestjs-node);"></div><span class="cmp-value">3.325&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:67.0%; background:var(--hono-node);"></div><span class="cmp-value">3.215&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.154</span><span class="pill pill-neutral">no measurable difference</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">streaming</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:63.4%; background:var(--nestjs-node);"></div><span class="cmp-value">3.042&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:65.0%; background:var(--hono-node);"></div><span class="cmp-value">3.119&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.118</span><span class="pill pill-neutral">no measurable difference</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">tool-calling</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:87.0%; background:var(--nestjs-node);"></div><span class="cmp-value">4.170&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:86.4%; background:var(--hono-node);"></div><span class="cmp-value">4.143&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.135</span><span class="pill pill-neutral">no measurable difference</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">multi-step-workflow</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:82.3%; background:var(--nestjs-node);"></div><span class="cmp-value">3.947&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:79.0%; background:var(--hono-node);"></div><span class="cmp-value">3.790&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.097</span><span class="pill pill-hono-node">hono-node faster by 0.157ms</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">multiple-sessions</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:73.8%; background:var(--nestjs-node);"></div><span class="cmp-value">3.537&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:69.3%; background:var(--hono-node);"></div><span class="cmp-value">3.323&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.087</span><span class="pill pill-hono-node">hono-node faster by 0.214ms</span></div>
+</div>
+</div>
+<div class="panel">
+<div class="panel-title">nestjs-bun <span class="vs">vs</span> hono-bun</div>
+<div class="cmp-row">
+<div class="cmp-label">simple-execution</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:87.0%; background:var(--nestjs-bun);"></div><span class="cmp-value">4.916&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:70.4%; background:var(--hono-bun);"></div><span class="cmp-value">3.980&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.243</span><span class="pill pill-hono-bun">hono-bun faster by 0.935ms</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">streaming</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:72.1%; background:var(--nestjs-bun);"></div><span class="cmp-value">4.073&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:63.4%; background:var(--hono-bun);"></div><span class="cmp-value">3.583&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.186</span><span class="pill pill-hono-bun">hono-bun faster by 0.491ms</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">tool-calling</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:86.5%; background:var(--nestjs-bun);"></div><span class="cmp-value">4.892&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:75.6%; background:var(--hono-bun);"></div><span class="cmp-value">4.275&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.139</span><span class="pill pill-hono-bun">hono-bun faster by 0.618ms</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">multi-step-workflow</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:82.2%; background:var(--nestjs-bun);"></div><span class="cmp-value">4.649&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:71.5%; background:var(--hono-bun);"></div><span class="cmp-value">4.042&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.121</span><span class="pill pill-hono-bun">hono-bun faster by 0.607ms</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">multiple-sessions</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:74.6%; background:var(--nestjs-bun);"></div><span class="cmp-value">4.217&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:61.6%; background:var(--hono-bun);"></div><span class="cmp-value">3.484&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.128</span><span class="pill pill-hono-bun">hono-bun faster by 0.733ms</span></div>
+</div>
+</div></div>
+</section>
+<section>
+<div class="section-head">
+<h2>Runtime effect</h2>
+<p>Framework held fixed. Same rows, same floor rule, just the other axis of the matrix.</p>
+</div>
+<div class="panel-pair"><div class="panel">
+<div class="panel-title">nestjs-node <span class="vs">vs</span> nestjs-bun</div>
+<div class="cmp-row">
+<div class="cmp-label">simple-execution</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:58.8%; background:var(--nestjs-node);"></div><span class="cmp-value">3.325&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:87.0%; background:var(--nestjs-bun);"></div><span class="cmp-value">4.916&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.223</span><span class="pill pill-nestjs-node">nestjs-node faster by 1.591ms</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">streaming</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:53.8%; background:var(--nestjs-node);"></div><span class="cmp-value">3.042&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:72.1%; background:var(--nestjs-bun);"></div><span class="cmp-value">4.073&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.167</span><span class="pill pill-nestjs-node">nestjs-node faster by 1.031ms</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">tool-calling</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:73.8%; background:var(--nestjs-node);"></div><span class="cmp-value">4.170&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:86.5%; background:var(--nestjs-bun);"></div><span class="cmp-value">4.892&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.144</span><span class="pill pill-nestjs-node">nestjs-node faster by 0.722ms</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">multi-step-workflow</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:69.8%; background:var(--nestjs-node);"></div><span class="cmp-value">3.947&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:82.2%; background:var(--nestjs-bun);"></div><span class="cmp-value">4.649&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.113</span><span class="pill pill-nestjs-node">nestjs-node faster by 0.703ms</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">multiple-sessions</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:62.6%; background:var(--nestjs-node);"></div><span class="cmp-value">3.537&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:74.6%; background:var(--nestjs-bun);"></div><span class="cmp-value">4.217&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.112</span><span class="pill pill-nestjs-node">nestjs-node faster by 0.680ms</span></div>
+</div>
+</div>
+<div class="panel">
+<div class="panel-title">hono-node <span class="vs">vs</span> hono-bun</div>
+<div class="cmp-row">
+<div class="cmp-label">simple-execution</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:65.4%; background:var(--hono-node);"></div><span class="cmp-value">3.215&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:81.0%; background:var(--hono-bun);"></div><span class="cmp-value">3.980&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.182</span><span class="pill pill-hono-node">hono-node faster by 0.765ms</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">streaming</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:63.5%; background:var(--hono-node);"></div><span class="cmp-value">3.119&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:72.9%; background:var(--hono-bun);"></div><span class="cmp-value">3.583&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.145</span><span class="pill pill-hono-node">hono-node faster by 0.464ms</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">tool-calling</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:84.3%; background:var(--hono-node);"></div><span class="cmp-value">4.143&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:87.0%; background:var(--hono-bun);"></div><span class="cmp-value">4.275&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.129</span><span class="pill pill-hono-node">hono-node faster by 0.131ms</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">multi-step-workflow</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:77.1%; background:var(--hono-node);"></div><span class="cmp-value">3.790&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:82.2%; background:var(--hono-bun);"></div><span class="cmp-value">4.042&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.106</span><span class="pill pill-hono-node">hono-node faster by 0.252ms</span></div>
+</div>
+<div class="cmp-row">
+<div class="cmp-label">multiple-sessions</div>
+<div class="cmp-bars">
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:67.6%; background:var(--hono-node);"></div><span class="cmp-value">3.323&nbsp;ms</span></div>
+<div class="cmp-bar-track"><div class="cmp-bar" style="width:70.9%; background:var(--hono-bun);"></div><span class="cmp-value">3.484&nbsp;ms</span></div>
+</div>
+<div class="cmp-meta"><span class="floor">floor 0.107</span><span class="pill pill-hono-node">hono-node faster by 0.160ms</span></div>
+</div>
+</div></div>
+</section>
+<section>
+<div class="section-head">
+<h2>Concurrency</h2>
+<p>Driven against a live cell: 3 runs per
+level, per cell. Not significance-tested, and not comparable to the
+scenarios above: it measures its own latency and cannot read execution
+duration, so it reports throughput, not overhead.</p>
+</div>
+<div class="conc-grid"><div class="conc-card">
+<span class="level">1-concurrent</span>
+<div class="metric-block">
+<span class="metric-name">rps</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:63.3%; background:var(--nestjs-node);"></div></div><span class="mini-value">1035.43</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:63.9%; background:var(--hono-node);"></div></div><span class="mini-value">1046.04</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:76.0%; background:var(--nestjs-bun);"></div></div><span class="mini-value">1243.80</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--hono-bun);"></div></div><span class="mini-value">1422.67</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">mean latency</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:69.6%; background:var(--nestjs-node);"></div></div><span class="mini-value">0.133</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--hono-node);"></div></div><span class="mini-value">0.167</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:33.0%; background:var(--nestjs-bun);"></div></div><span class="mini-value">0.063</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:27.8%; background:var(--hono-bun);"></div></div><span class="mini-value">0.053</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">p95 latency</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">1</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--hono-node);"></div></div><span class="mini-value">1</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-bun);"></div></div><span class="mini-value">1</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--hono-bun);"></div></div><span class="mini-value">1</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">p99 latency</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">2</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--hono-node);"></div></div><span class="mini-value">2</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:43.5%; background:var(--nestjs-bun);"></div></div><span class="mini-value">1</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:43.5%; background:var(--hono-bun);"></div></div><span class="mini-value">1</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">error rate</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">0</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--hono-node);"></div></div><span class="mini-value">0</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--nestjs-bun);"></div></div><span class="mini-value">0</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--hono-bun);"></div></div><span class="mini-value">0</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">memory growth</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">323.32</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:76.3%; background:var(--hono-node);"></div></div><span class="mini-value">283.84</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:52.5%; background:var(--nestjs-bun);"></div></div><span class="mini-value">195.18</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:43.6%; background:var(--hono-bun);"></div></div><span class="mini-value">162.20</span></div>
+</div>
+</div>
+<div class="conc-card">
+<span class="level">10-concurrent</span>
+<div class="metric-block">
+<span class="metric-name">rps</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:63.7%; background:var(--nestjs-node);"></div></div><span class="mini-value">1042.34</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:64.9%; background:var(--hono-node);"></div></div><span class="mini-value">1061.25</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:78.5%; background:var(--nestjs-bun);"></div></div><span class="mini-value">1284.64</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--hono-bun);"></div></div><span class="mini-value">1423.00</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">mean latency</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">9.197</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:84.8%; background:var(--hono-node);"></div></div><span class="mini-value">8.963</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:68.5%; background:var(--nestjs-bun);"></div></div><span class="mini-value">7.243</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:61.1%; background:var(--hono-bun);"></div></div><span class="mini-value">6.467</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">p95 latency</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">16.67</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:85.2%; background:var(--hono-node);"></div></div><span class="mini-value">16.33</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:73.0%; background:var(--nestjs-bun);"></div></div><span class="mini-value">14</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:67.8%; background:var(--hono-bun);"></div></div><span class="mini-value">13</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">p99 latency</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">19.33</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:84.0%; background:var(--hono-node);"></div></div><span class="mini-value">18.67</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:66.0%; background:var(--nestjs-bun);"></div></div><span class="mini-value">14.67</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:58.5%; background:var(--hono-bun);"></div></div><span class="mini-value">13</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">error rate</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">0</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--hono-node);"></div></div><span class="mini-value">0</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--nestjs-bun);"></div></div><span class="mini-value">0</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--hono-bun);"></div></div><span class="mini-value">0</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">memory growth</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">340.65</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:79.2%; background:var(--hono-node);"></div></div><span class="mini-value">310.11</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:51.9%; background:var(--nestjs-bun);"></div></div><span class="mini-value">203.24</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:44.6%; background:var(--hono-bun);"></div></div><span class="mini-value">174.60</span></div>
+</div>
+</div>
+<div class="conc-card">
+<span class="level">50-concurrent</span>
+<div class="metric-block">
+<span class="metric-name">rps</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:63.3%; background:var(--nestjs-node);"></div></div><span class="mini-value">1049.10</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:64.9%; background:var(--hono-node);"></div></div><span class="mini-value">1075.58</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:76.5%; background:var(--nestjs-bun);"></div></div><span class="mini-value">1268.01</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--hono-bun);"></div></div><span class="mini-value">1440.98</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">mean latency</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">47.08</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:84.8%; background:var(--hono-node);"></div></div><span class="mini-value">45.90</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:71.8%; background:var(--nestjs-bun);"></div></div><span class="mini-value">38.88</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:63.1%; background:var(--hono-bun);"></div></div><span class="mini-value">34.16</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">p95 latency</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">52.67</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:85.3%; background:var(--hono-node);"></div></div><span class="mini-value">51.67</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:74.3%; background:var(--nestjs-bun);"></div></div><span class="mini-value">45</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:63.3%; background:var(--hono-bun);"></div></div><span class="mini-value">38.33</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">p99 latency</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:84.9%; background:var(--nestjs-node);"></div></div><span class="mini-value">68</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:81.1%; background:var(--hono-node);"></div></div><span class="mini-value">65</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-bun);"></div></div><span class="mini-value">69.67</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:83.2%; background:var(--hono-bun);"></div></div><span class="mini-value">66.67</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">error rate</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">0</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--hono-node);"></div></div><span class="mini-value">0</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--nestjs-bun);"></div></div><span class="mini-value">0</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--hono-bun);"></div></div><span class="mini-value">0</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">memory growth</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">383.11</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:80.2%; background:var(--hono-node);"></div></div><span class="mini-value">353.56</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:48.1%; background:var(--nestjs-bun);"></div></div><span class="mini-value">211.98</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:38.5%; background:var(--hono-bun);"></div></div><span class="mini-value">169.83</span></div>
+</div>
+</div>
+<div class="conc-card">
+<span class="level">100-concurrent</span>
+<div class="metric-block">
+<span class="metric-name">rps</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:65.6%; background:var(--nestjs-node);"></div></div><span class="mini-value">1025.09</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:68.9%; background:var(--hono-node);"></div></div><span class="mini-value">1077.04</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:77.9%; background:var(--nestjs-bun);"></div></div><span class="mini-value">1218.19</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--hono-bun);"></div></div><span class="mini-value">1359.61</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">mean latency</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">96.68</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:82.7%; background:var(--hono-node);"></div></div><span class="mini-value">91.98</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:73.1%; background:var(--nestjs-bun);"></div></div><span class="mini-value">81.30</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:65.5%; background:var(--hono-bun);"></div></div><span class="mini-value">72.83</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">p95 latency</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">107.33</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:79.1%; background:var(--hono-node);"></div></div><span class="mini-value">97.67</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:72.1%; background:var(--nestjs-bun);"></div></div><span class="mini-value">89</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:63.7%; background:var(--hono-bun);"></div></div><span class="mini-value">78.67</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">p99 latency</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">114.67</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:75.8%; background:var(--hono-node);"></div></div><span class="mini-value">100</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:70.8%; background:var(--nestjs-bun);"></div></div><span class="mini-value">93.33</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:61.9%; background:var(--hono-bun);"></div></div><span class="mini-value">81.67</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">error rate</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">0</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--hono-node);"></div></div><span class="mini-value">0</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--nestjs-bun);"></div></div><span class="mini-value">0</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:1.0%; background:var(--hono-bun);"></div></div><span class="mini-value">0</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">memory growth</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">388.52</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:79.2%; background:var(--hono-node);"></div></div><span class="mini-value">353.99</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:47.5%; background:var(--nestjs-bun);"></div></div><span class="mini-value">212.13</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:41.2%; background:var(--hono-bun);"></div></div><span class="mini-value">184.28</span></div>
+</div>
+</div></div>
+</section>
+<section>
+<div class="section-head">
+<h2>Long context</h2>
+<p>Synthetic prompts, 3 measured runs each.
+Not significance-tested: the small sample makes these directional,
+especially at the highest token counts.</p>
+</div>
+<div class="lc-grid"><div class="lc-card">
+<span class="tokens">5000-tokens</span>
+<div class="metric-block">
+<span class="metric-name">duration</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:86.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">1.636</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:85.0%; background:var(--hono-node);"></div></div><span class="mini-value">1.617</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:77.6%; background:var(--nestjs-bun);"></div></div><span class="mini-value">1.476</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--hono-bun);"></div></div><span class="mini-value">1.655</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">token processing time</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">1.622</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:85.7%; background:var(--hono-node);"></div></div><span class="mini-value">1.599</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:78.1%; background:var(--nestjs-bun);"></div></div><span class="mini-value">1.458</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:86.4%; background:var(--hono-bun);"></div></div><span class="mini-value">1.611</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">memory</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">388.59</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:79.3%; background:var(--hono-node);"></div></div><span class="mini-value">354.17</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:47.9%; background:var(--nestjs-bun);"></div></div><span class="mini-value">214.10</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:41.4%; background:var(--hono-bun);"></div></div><span class="mini-value">185.11</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">Streaming stability</span>
+<div class="stability-row"><span class="mini-label">nestjs-node</span><span class="mini-value">stable</span></div>
+<div class="stability-row"><span class="mini-label">hono-node</span><span class="mini-value">stable</span></div>
+<div class="stability-row"><span class="mini-label">nestjs-bun</span><span class="mini-value">stable</span></div>
+<div class="stability-row"><span class="mini-label">hono-bun</span><span class="mini-value">stable</span></div>
+</div>
+</div>
+<div class="lc-card">
+<span class="tokens">20000-tokens</span>
+<div class="metric-block">
+<span class="metric-name">duration</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">2.742</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:74.1%; background:var(--hono-node);"></div></div><span class="mini-value">2.337</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:82.7%; background:var(--nestjs-bun);"></div></div><span class="mini-value">2.608</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:71.1%; background:var(--hono-bun);"></div></div><span class="mini-value">2.241</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">token processing time</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">2.726</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:74.0%; background:var(--hono-node);"></div></div><span class="mini-value">2.320</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:82.2%; background:var(--nestjs-bun);"></div></div><span class="mini-value">2.578</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:70.6%; background:var(--hono-bun);"></div></div><span class="mini-value">2.213</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">memory</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">390.92</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:81.2%; background:var(--hono-node);"></div></div><span class="mini-value">364.94</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:48.8%; background:var(--nestjs-bun);"></div></div><span class="mini-value">219.58</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:41.8%; background:var(--hono-bun);"></div></div><span class="mini-value">188.05</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">Streaming stability</span>
+<div class="stability-row"><span class="mini-label">nestjs-node</span><span class="mini-value">stable</span></div>
+<div class="stability-row"><span class="mini-label">hono-node</span><span class="mini-value">stable</span></div>
+<div class="stability-row"><span class="mini-label">nestjs-bun</span><span class="mini-value">stable</span></div>
+<div class="stability-row"><span class="mini-label">hono-bun</span><span class="mini-value">stable</span></div>
+</div>
+</div>
+<div class="lc-card">
+<span class="tokens">50000-tokens</span>
+<div class="metric-block">
+<span class="metric-name">duration</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:72.9%; background:var(--nestjs-node);"></div></div><span class="mini-value">4.965</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--hono-node);"></div></div><span class="mini-value">5.922</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:59.7%; background:var(--nestjs-bun);"></div></div><span class="mini-value">4.063</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:63.4%; background:var(--hono-bun);"></div></div><span class="mini-value">4.317</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">token processing time</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:73.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">4.949</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--hono-node);"></div></div><span class="mini-value">5.892</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:59.6%; background:var(--nestjs-bun);"></div></div><span class="mini-value">4.038</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:63.3%; background:var(--hono-bun);"></div></div><span class="mini-value">4.292</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">memory</span>
+<div class="mini-row"><span class="mini-label">nestjs-node</span><div class="mini-track"><div class="mini-bar" style="width:87.0%; background:var(--nestjs-node);"></div></div><span class="mini-value">466.99</span></div>
+<div class="mini-row"><span class="mini-label">hono-node</span><div class="mini-track"><div class="mini-bar" style="width:75.6%; background:var(--hono-node);"></div></div><span class="mini-value">406.01</span></div>
+<div class="mini-row"><span class="mini-label">nestjs-bun</span><div class="mini-track"><div class="mini-bar" style="width:44.7%; background:var(--nestjs-bun);"></div></div><span class="mini-value">240.07</span></div>
+<div class="mini-row"><span class="mini-label">hono-bun</span><div class="mini-track"><div class="mini-bar" style="width:37.9%; background:var(--hono-bun);"></div></div><span class="mini-value">203.50</span></div>
+</div>
+<div class="metric-block">
+<span class="metric-name">Streaming stability</span>
+<div class="stability-row"><span class="mini-label">nestjs-node</span><span class="mini-value">stable</span></div>
+<div class="stability-row"><span class="mini-label">hono-node</span><span class="mini-value">stable</span></div>
+<div class="stability-row"><span class="mini-label">nestjs-bun</span><span class="mini-value">stable</span></div>
+<div class="stability-row"><span class="mini-label">hono-bun</span><span class="mini-value">stable</span></div>
+</div>
+</div></div>
+</section>
+<section>
+<div class="limitations">
+<span class="eyebrow">Limitations</span>
+<ul><li>Replay removes real provider latency.</li>
+<li>The NestJS adapter bypasses @Sse(), so Nest's own SSE serializer is not measured.</li>
+<li>Three cells are resident and idle during every measurement.</li>
+<li>Scenario 05's latency comes from autocannon and is not comparable to scenarios 01 through 04.</li>
+<li>Any cell needing workarounds has them disclosed as confounds.</li>
+<li>The benchmark evaluates this architecture only.</li></ul>
+</div>
+</section>
+<footer>
+<span>Source: results/comparison.json &middot; results/&lt;cell&gt;/metrics.json</span>
+<span>Full percentile detail (p50/p95/p99) lives in each cell's report.md</span>
+</footer>
+</main>
+</body>
+</html>
