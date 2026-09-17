@@ -104,8 +104,11 @@ describe('a call that holds between tokens', () => {
 
     await collect(replayTokens(held, undefined))
 
+    // setTimeout has no sub-millisecond floor guarantee, so a loaded runner
+    // can land fractionally under the declared wait; tolerate that jitter
+    // without tolerating a hold that isn't happening at all.
     expect(performance.now() - startedAt).toBeGreaterThanOrEqual(
-      40 * call.tokens.length
+      40 * call.tokens.length - 2
     )
   })
 
