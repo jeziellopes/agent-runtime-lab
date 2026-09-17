@@ -51,6 +51,26 @@ function portIsFree(port: number): Promise<boolean> {
   })
 }
 
+/** A killed process can hold its port past a single check on a loaded runner. */
+async function waitForPortFree(
+  port: number,
+  timeoutMs: number
+): Promise<boolean> {
+  const deadline = performance.now() + timeoutMs
+
+  for (;;) {
+    if (await portIsFree(port)) {
+      return true
+    }
+
+    if (performance.now() >= deadline) {
+      return false
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 50))
+  }
+}
+
 /**
  * `/tmp` directly, rather than `os.tmpdir()`: this host's `TMPDIR` points at
  * a FUSE mount where `chmod` is a no-op, which would make a permission
@@ -439,8 +459,9 @@ describe('cleanup when the run throws', () => {
       await rm(scratchDir, { recursive: true, force: true })
     }
 
-    await new Promise(resolve => setTimeout(resolve, 300))
-    await expect(portIsFree(findCell('hono', 'bun').port)).resolves.toBe(true)
+    await expect(
+      waitForPortFree(findCell('hono', 'bun').port, 5_000)
+    ).resolves.toBe(true)
   }, 30_000)
 })
 
