@@ -34,9 +34,9 @@ describe('sampling resource usage', () => {
 describe('spawning and stopping a cell', () => {
   let spawned: SpawnedCell | undefined
 
-  afterEach(() => {
+  afterEach(async () => {
     if (spawned !== undefined) {
-      stopCell(spawned)
+      await stopCell(spawned)
       spawned = undefined
     }
   })
@@ -52,10 +52,8 @@ describe('spawning and stopping a cell', () => {
     spawned = await spawnCell(findCell('hono', 'node'), '127.0.0.1')
     const { pid, groupPid } = spawned
 
-    stopCell(spawned)
+    await stopCell(spawned)
     spawned = undefined
-
-    await new Promise(resolve => setTimeout(resolve, 500))
 
     expect(() => process.kill(pid, 0)).toThrow()
     expect(() => process.kill(groupPid, 0)).toThrow()

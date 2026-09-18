@@ -76,9 +76,7 @@ export async function run(options: RunOptions): Promise<CellResults[]> {
 
     return await writeAll({ matrix, rows, startedAt, spawned, resultsDir })
   } finally {
-    for (const cell of spawned.values()) {
-      stopCell(cell)
-    }
+    await Promise.all([...spawned.values()].map(cell => stopCell(cell)))
   }
 }
 

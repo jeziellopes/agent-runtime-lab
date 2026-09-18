@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process'
 import { readFile } from 'node:fs/promises'
+import { createServer } from 'node:net'
 
 import { baseUrl } from '@arl/contracts'
 
@@ -10,6 +11,8 @@ import type { ResourceMetrics } from './metrics.js'
 
 const HEALTH_TIMEOUT_MS = 30_000
 const HEALTH_POLL_MS = 100
+const STOP_POLL_MS = 50
+const STOP_TIMEOUT_MS = 5_000
 const CLOCK_TICKS_PER_SECOND = 100
 
 export interface SpawnedCell {
@@ -90,13 +93,65 @@ export function spawnCell(
   })
 }
 
-/** Signals the whole process group, so the framework process is stopped too. */
-export function stopCell(spawned: SpawnedCell): void {
+/**
+ * Signals the whole process group, so the framework process is stopped too,
+ * then waits for both the group and the cell's port to release. A SIGTERM is
+ * async: the framework process can hold its port past the signal on a loaded
+ * runner, and the next spawn would otherwise measure that stale process
+ * (its health check answers before the fresh one binds). Returning only
+ * once the port is free makes stop a real boundary, not a fire-and-forget.
+ */
+export async function stopCell(
+  spawned: SpawnedCell,
+  stopTimeoutMs = STOP_TIMEOUT_MS
+): Promise<void> {
   try {
     process.kill(-spawned.groupPid, 'SIGTERM')
   } catch {
     /* Already exited: nothing left to stop. */
   }
+
+  const deadline = performance.now() + stopTimeoutMs
+
+  for (;;) {
+    if (
+      !processAlive(spawned.groupPid) &&
+      (await portIsFree(spawned.cell.port))
+    ) {
+      return
+    }
+
+    if (performance.now() >= deadline) {
+      return
+    }
+
+    await new Promise(resolve => setTimeout(resolve, STOP_POLL_MS))
+  }
+}
+
+function processAlive(pid: number): boolean {
+  try {
+    process.kill(pid, 0)
+
+    return true
+  } catch {
+    return false
+  }
+}
+
+function portIsFree(port: number): Promise<boolean> {
+  return new Promise(resolve => {
+    const server = createServer()
+
+    server.once('error', () => {
+      resolve(false)
+    })
+    server.listen(port, () => {
+      server.close(() => {
+        resolve(true)
+      })
+    })
+  })
 }
 
 async function waitForHealth(

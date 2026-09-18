@@ -312,9 +312,9 @@ describe('running the pipeline against a live cell', () => {
 describe('driving concurrency directly', () => {
   let spawned: SpawnedCell | undefined
 
-  afterEach(() => {
+  afterEach(async () => {
     if (spawned !== undefined) {
-      stopCell(spawned)
+      await stopCell(spawned)
       spawned = undefined
     }
   })
