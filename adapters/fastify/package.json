@@ -1,0 +1,21 @@
+{
+  "name": "@arl/adapter-fastify",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Fastify adapter: plugin-based composition on the Node http response, written by hand.",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@arl/agents": "workspace:*",
+    "@arl/contracts": "workspace:*",
+    "@arl/events": "workspace:*",
+    "@arl/runtime-core": "workspace:*",
+    "fastify": "5.12.5",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:"
+  }
+}

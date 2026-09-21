@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../../agents" },
+    { "path": "../../packages/contracts" },
+    { "path": "../../packages/events" },
+    { "path": "../../packages/runtime-core" }
+  ]
+}
