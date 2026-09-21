@@ -72,7 +72,15 @@ export default defineConfig([
         {
           patterns: [
             {
-              group: ['@nestjs/*', 'hono', 'hono/*', '@hono/*', 'express'],
+              group: [
+                '@nestjs/*',
+                'hono',
+                'hono/*',
+                '@hono/*',
+                'fastify',
+                '@fastify/*',
+                'express'
+              ],
               message:
                 'packages/ is framework-independent. Framework code belongs in adapters/.'
             }

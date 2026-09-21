@@ -16,6 +16,12 @@ export default defineConfig({
       // without a running cell; `suite.ts` asserts against one, and its own
       // coverage is what a suite run reports.
       include: [
+        'adapters/fastify/src/http/app.ts',
+        'adapters/fastify/src/http/error-mapping.ts',
+        'adapters/fastify/src/http/middleware/auth.ts',
+        'adapters/fastify/src/http/parse-request.ts',
+        'adapters/fastify/src/http/routes/*.ts',
+        'adapters/fastify/src/sse/frame-writer.ts',
         'adapters/hono/src/http/app.ts',
         'adapters/hono/src/http/error-mapping.ts',
         'adapters/hono/src/http/middleware/auth.ts',

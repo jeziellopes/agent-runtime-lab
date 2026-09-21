@@ -15,6 +15,7 @@
     { "path": "./agents" },
     { "path": "./scenarios" },
     { "path": "./adapters/nestjs" },
-    { "path": "./adapters/hono" }
+    { "path": "./adapters/hono" },
+    { "path": "./adapters/fastify" }
   ]
 }
