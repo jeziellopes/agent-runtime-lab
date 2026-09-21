@@ -1,7 +1,6 @@
-# 1.3.14 exactly: Bun has no LTS line and no release-branch policy, so the
-# version that was tested is the only version known to work, and it is the
-# version LangGraph was verified on.
-FROM oven/bun:1.3.14-slim
+# 1.4.2 exactly: Bun has no LTS line and no release-branch policy, so the
+# version that was tested is the only version known to work.
+FROM oven/bun:1.4.2-slim
 
 # A real Node, not Bun's shebang-compatibility shim: pnpm 11.10.0 imports
 # node:sqlite, which that shim does not provide, so `bun install --global
