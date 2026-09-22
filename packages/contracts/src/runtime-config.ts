@@ -1,7 +1,7 @@
 export type LLMMode = 'replay' | 'live'
 
 /**
- * Framework-independent and identical across all four cells.
+ * Framework-independent and identical across every cell.
  *
  * `llmMode` defaults to `replay`. `live` is opt-in and used only to re-record
  * fixtures and verify against a real model.

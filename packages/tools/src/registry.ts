@@ -30,7 +30,7 @@ export class InMemoryToolRegistry implements ToolRegistry {
     return this.tools.get(name) ?? null
   }
 
-  /** Sorted by name, so the order is the same in all four cells. */
+  /** Sorted by name, so the order is the same in every cell. */
   list(): readonly Tool[] {
     return [...this.tools.values()].sort((left, right) =>
       left.name.localeCompare(right.name)

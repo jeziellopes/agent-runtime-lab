@@ -2,7 +2,7 @@ import type { LLMMode, RuntimeConfig } from '@arl/contracts'
 
 /**
  * The only module that reads `process.env`. Adapters must not read it: the
- * configuration is framework-independent and identical across all four cells.
+ * configuration is framework-independent and identical across every cell.
  *
  * `llmMode` defaults to `replay`. Day-to-day development needs no API key, and
  * `defaultModel` names what that mode replays rather than an empty placeholder.

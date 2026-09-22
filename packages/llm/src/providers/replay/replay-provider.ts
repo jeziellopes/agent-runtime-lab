@@ -62,7 +62,7 @@ export class ReplayLLMProvider implements LLMProvider {
 
   /**
    * Whitespace-separated non-empty runs. A word count rather than a tokenizer:
-   * it has to be deterministic and identical in all four cells, and under
+   * it has to be deterministic and identical in every cell, and under
    * replay the input count is synthetic regardless.
    */
   countTokens(messages: Message[]): Promise<number> {

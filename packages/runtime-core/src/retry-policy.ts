@@ -5,7 +5,7 @@ const CEILING_MS = 2000
 
 /**
  * Provider retry, backoff and rate-limit handling belong here. Adapters must
- * not implement their own, and all four cells run this policy unchanged.
+ * not implement their own, and every cell runs this policy unchanged.
  *
  * Putting retry in the adapter would make it a framework variable and bias
  * every latency number the study reports.

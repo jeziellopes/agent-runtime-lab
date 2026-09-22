@@ -16,7 +16,7 @@ export class SseParseError extends Error {}
 /**
  * The wire format is fixed: `id`, then `event`, then `data`, then a blank line.
  * A parse that accepted fields in any order would hide a divergence in the one
- * thing both adapters must write identically.
+ * thing every adapter must write identically.
  */
 export function parseFrames(raw: string): ParsedFrame[] {
   return raw

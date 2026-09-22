@@ -40,7 +40,7 @@ export class InMemoryAgentRegistry implements AgentRegistry {
     return this.definitions.get(id) ?? null
   }
 
-  /** Sorted by id, so `GET /agents` answers the same way in all four cells. */
+  /** Sorted by id, so `GET /agents` answers the same way in every cell. */
   list(): readonly AgentDefinition[] {
     return [...this.definitions.values()].sort((left, right) =>
       left.id.localeCompare(right.id)

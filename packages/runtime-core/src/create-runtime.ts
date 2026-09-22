@@ -14,7 +14,7 @@ import type {
 /**
  * What every cell's composition root calls, and the whole of what it does.
  *
- * One function rather than four wirings: the four cells differ in their HTTP
+ * One function rather than one wiring per cell: the cells differ in their HTTP
  * framework and their JavaScript runtime, and a runtime assembled differently
  * per cell would put an authored difference inside the thing being measured.
  */

@@ -95,7 +95,7 @@ export type EmittedEvent = WithoutTimestamp<RuntimeEvent>
  *     event: <RuntimeEvent.type>
  *     data: <the serialized RuntimeEvent>
  *
- * Field order is part of the contract. Neither adapter delegates framing to its
+ * Field order is part of the contract. No adapter delegates framing to its
  * framework, and the contract suite asserts the bytes.
  */
 export interface SseFrame {

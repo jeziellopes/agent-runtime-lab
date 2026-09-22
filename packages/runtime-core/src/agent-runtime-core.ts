@@ -129,7 +129,7 @@ export class AgentRuntimeCore implements AgentRuntime {
     return Promise.resolve([...this.engine.agents()])
   }
 
-  /** Identical across all four cells. */
+  /** Identical across every cell. */
   get runtimeConfig(): RuntimeConfig {
     return this.config
   }
@@ -351,7 +351,7 @@ function newTally(): Tally {
 
 /**
  * Counts what the graph produced. The lifecycle events either side of it are
- * the runtime's own and constant across all four cells, so including them would
+ * the runtime's own and constant across every cell, so including them would
  * add the same number everywhere and tell the comparison nothing.
  */
 function account(tally: Tally, event: EmittedEvent): void {

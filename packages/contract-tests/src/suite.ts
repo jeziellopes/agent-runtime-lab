@@ -47,7 +47,7 @@ export interface ContractReport {
 
 /**
  * Everything the suite asserts. The first six are the endpoint surface; the
- * rest are the ways two adapters diverge by default.
+ * rest are the ways adapters diverge by default.
  */
 export const CONTRACT_ASSERTIONS = [
   'health.response',

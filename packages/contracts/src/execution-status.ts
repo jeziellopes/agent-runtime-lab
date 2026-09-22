@@ -11,7 +11,7 @@
  * Every state has an observable trigger.
  *
  * The values are the wire form: an `Execution` serialises as
- * `{ "status": "completed" }`, and all four cells must agree on that string.
+ * `{ "status": "completed" }`, and every cell must agree on that string.
  */
 export const ExecutionStatus = {
   CREATED: 'created',
