@@ -103,17 +103,28 @@ describe('resolving the matrix', () => {
     ])
   })
 
+  it('resolves all six with no restriction', () => {
+    expect(resolveMatrix({})).toHaveLength(6)
+  })
+
   it('restricts to the two cells sharing a framework', () => {
     expect(resolveMatrix({ framework: 'nestjs' }).map(cell => cell.id)).toEqual(
       ['nestjs-node', 'nestjs-bun']
     )
   })
 
-  it('restricts to the two cells sharing a runtime', () => {
+  it('restricts to the three cells sharing a runtime', () => {
     expect(resolveMatrix({ runtime: 'bun' }).map(cell => cell.id)).toEqual([
       'nestjs-bun',
-      'hono-bun'
+      'hono-bun',
+      'fastify-bun'
     ])
+  })
+
+  it('accepts fastify as a framework', () => {
+    expect(
+      resolveMatrix({ framework: 'fastify' }).map(cell => cell.id)
+    ).toEqual(['fastify-node', 'fastify-bun'])
   })
 
   it('throws cell_unknown for an unrecognised framework', () => {
@@ -495,7 +506,8 @@ describe('interleaving cells within a round', () => {
 
     const cellOrder = [
       findCell('nestjs', 'bun').port,
-      findCell('hono', 'bun').port
+      findCell('hono', 'bun').port,
+      findCell('fastify', 'bun').port
     ]
 
     expect(seenPorts).toHaveLength(300 * cellOrder.length)

@@ -163,11 +163,13 @@ function validatedFramework(value: string | undefined): Framework | undefined {
     return undefined
   }
 
-  if (value !== 'nestjs' && value !== 'hono') {
+  const framework = CELLS.find(cell => cell.framework === value)?.framework
+
+  if (framework === undefined) {
     throw new BenchmarkError('cell_unknown', `no such framework: ${value}`)
   }
 
-  return value
+  return framework
 }
 
 function validatedRuntime(value: string | undefined): JsRuntime | undefined {
