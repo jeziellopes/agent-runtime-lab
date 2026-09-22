@@ -1,4 +1,4 @@
-# `docker compose up` from a clean clone brings up all four cells and then
+# `docker compose up` from a clean clone brings up all six cells and then
 # prints the contract suite result.
 #
 # Every cell runs deterministic: the suite compares golden SSE bytes, and those
@@ -70,8 +70,40 @@ services:
       interval: 5s
       retries: 12
 
+  fastify-node:
+    build:
+      context: .
+      dockerfile: docker/node.Dockerfile
+    environment:
+      ENTRY: adapters/fastify/dist/server.js
+      PORT: 3004
+      LLM_MODE: replay
+      DETERMINISTIC: 'true'
+    ports:
+      - '3004:3004'
+    healthcheck:
+      test: ['CMD', 'node', '-e', "fetch('http://127.0.0.1:3004/health')"]
+      interval: 5s
+      retries: 12
+
+  fastify-bun:
+    build:
+      context: .
+      dockerfile: docker/bun.Dockerfile
+    environment:
+      ENTRY: adapters/fastify/dist/server.js
+      PORT: 3005
+      LLM_MODE: replay
+      DETERMINISTIC: 'true'
+    ports:
+      - '3005:3005'
+    healthcheck:
+      test: ['CMD', 'bun', '-e', "fetch('http://127.0.0.1:3005/health')"]
+      interval: 5s
+      retries: 12
+
   # The suite imports zero framework packages and runs once per cell against a
-  # base URL. It must be green on all four. --all defaults every cell to
+  # base URL. It must be green on all six. --all defaults every cell to
   # 127.0.0.1, which only reaches a sibling on the host's own network; each
   # cell here is its own container, reachable by service name instead, so
   # this runs the suite once per cell with an explicit --host.
@@ -88,6 +120,8 @@ services:
         node packages/contract-tests/dist/cli.js --framework hono --runtime node --host hono-node || ec=1;
         node packages/contract-tests/dist/cli.js --framework nestjs --runtime bun --host nestjs-bun || ec=1;
         node packages/contract-tests/dist/cli.js --framework hono --runtime bun --host hono-bun || ec=1;
+        node packages/contract-tests/dist/cli.js --framework fastify --runtime node --host fastify-node || ec=1;
+        node packages/contract-tests/dist/cli.js --framework fastify --runtime bun --host fastify-bun || ec=1;
         exit $$ec
     depends_on:
       nestjs-node:
@@ -97,4 +131,8 @@ services:
       nestjs-bun:
         condition: service_healthy
       hono-bun:
+        condition: service_healthy
+      fastify-node:
+        condition: service_healthy
+      fastify-bun:
         condition: service_healthy
