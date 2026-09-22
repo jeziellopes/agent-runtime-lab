@@ -1,5 +1,7 @@
 import { spawn } from 'node:child_process'
 
+import { renderBanner } from './banner.mjs'
+
 /**
  * `pnpm benchmark run [scenario] [flags]`, `pnpm benchmark report [flags]`.
  *
@@ -21,6 +23,8 @@ if (!entry) {
   )
   process.exit(1)
 }
+
+process.stdout.write(renderBanner())
 
 spawn('node', [entry, ...rest], { stdio: 'inherit' }).on('exit', code =>
   process.exit(code ?? 0)

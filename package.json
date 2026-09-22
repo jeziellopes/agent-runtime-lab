@@ -20,6 +20,7 @@
     "start": "node scripts/start.mjs",
     "contract-test": "node packages/contract-tests/dist/cli.js",
     "benchmark": "node scripts/benchmark.mjs",
+    "banner": "node scripts/banner.mjs",
     "prepare": "husky"
   },
   "lint-staged": {
