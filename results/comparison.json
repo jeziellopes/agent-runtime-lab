@@ -10,37 +10,37 @@
           "scenario": "simple-execution",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 3.32483349999999,
-          "meanB": 3.215071587999986,
-          "resolutionFloorMs": 0.15354111306331356,
+          "meanA": 2.8977172799999935,
+          "meanB": 2.8247571240000218,
+          "resolutionFloorMs": 0.13773632514760462,
           "verdict": "no measurable difference"
         },
         {
           "scenario": "streaming",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 3.0420547160000315,
-          "meanB": 3.1191327879999955,
-          "resolutionFloorMs": 0.1181133840009196,
-          "verdict": "no measurable difference"
+          "meanA": 3.2512131360000347,
+          "meanB": 3.4046157079999757,
+          "resolutionFloorMs": 0.12434605634320418,
+          "verdict": "nestjs-node faster by 0.153ms"
         },
         {
           "scenario": "tool-calling",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 4.170024795999918,
-          "meanB": 4.143256360000021,
-          "resolutionFloorMs": 0.1349621486546508,
-          "verdict": "no measurable difference"
+          "meanA": 3.8850582199999772,
+          "meanB": 3.7523418960000345,
+          "resolutionFloorMs": 0.12110353452207899,
+          "verdict": "hono-node faster by 0.133ms"
         },
         {
           "scenario": "multi-step-workflow",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 3.9465890680000446,
-          "meanB": 3.7895261199998784,
-          "resolutionFloorMs": 0.09685910808024752,
-          "verdict": "hono-node faster by 0.157ms"
+          "meanA": 3.7340577079998476,
+          "meanB": 3.6839310160001912,
+          "resolutionFloorMs": 0.17432315234543236,
+          "verdict": "no measurable difference"
         },
         {
           "scenario": "concurrent-executions",
@@ -95,10 +95,214 @@
           "scenario": "multiple-sessions",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 3.5370532479984687,
-          "meanB": 3.32316436799895,
-          "resolutionFloorMs": 0.08730954378988566,
-          "verdict": "hono-node faster by 0.214ms"
+          "meanA": 5.062445143999997,
+          "meanB": 4.130437191995326,
+          "resolutionFloorMs": 0.18492396051347362,
+          "verdict": "hono-node faster by 0.932ms"
+        }
+      ]
+    },
+    {
+      "name": "nestjs-node vs fastify-node",
+      "variable": "framework",
+      "cellA": "nestjs-node",
+      "cellB": "fastify-node",
+      "rows": [
+        {
+          "scenario": "simple-execution",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 2.8977172799999935,
+          "meanB": 2.9187365080000074,
+          "resolutionFloorMs": 0.1345634560026253,
+          "verdict": "no measurable difference"
+        },
+        {
+          "scenario": "streaming",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 3.2512131360000347,
+          "meanB": 3.2073822880000007,
+          "resolutionFloorMs": 0.11243813232334193,
+          "verdict": "no measurable difference"
+        },
+        {
+          "scenario": "tool-calling",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 3.8850582199999772,
+          "meanB": 3.8381201959999816,
+          "resolutionFloorMs": 0.12314644186461396,
+          "verdict": "no measurable difference"
+        },
+        {
+          "scenario": "multi-step-workflow",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 3.7340577079998476,
+          "meanB": 3.726751724000089,
+          "resolutionFloorMs": 0.16600950015956473,
+          "verdict": "no measurable difference"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "1-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "10-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "50-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "100-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "long-context",
+          "variant": "5000-tokens",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "long-context",
+          "variant": "20000-tokens",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "long-context",
+          "variant": "50000-tokens",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "multiple-sessions",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 5.062445143999997,
+          "meanB": 4.141802195998374,
+          "resolutionFloorMs": 0.1982834660188566,
+          "verdict": "fastify-node faster by 0.921ms"
+        }
+      ]
+    },
+    {
+      "name": "hono-node vs fastify-node",
+      "variable": "framework",
+      "cellA": "hono-node",
+      "cellB": "fastify-node",
+      "rows": [
+        {
+          "scenario": "simple-execution",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 2.8247571240000218,
+          "meanB": 2.9187365080000074,
+          "resolutionFloorMs": 0.14178987741973437,
+          "verdict": "no measurable difference"
+        },
+        {
+          "scenario": "streaming",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 3.4046157079999757,
+          "meanB": 3.2073822880000007,
+          "resolutionFloorMs": 0.12160421559946505,
+          "verdict": "fastify-node faster by 0.197ms"
+        },
+        {
+          "scenario": "tool-calling",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 3.7523418960000345,
+          "meanB": 3.8381201959999816,
+          "resolutionFloorMs": 0.12230935660404064,
+          "verdict": "no measurable difference"
+        },
+        {
+          "scenario": "multi-step-workflow",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 3.6839310160001912,
+          "meanB": 3.726751724000089,
+          "resolutionFloorMs": 0.16190303981623652,
+          "verdict": "no measurable difference"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "1-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "10-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "50-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "100-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "long-context",
+          "variant": "5000-tokens",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "long-context",
+          "variant": "20000-tokens",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "long-context",
+          "variant": "50000-tokens",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "multiple-sessions",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 4.130437191995326,
+          "meanB": 4.141802195998374,
+          "resolutionFloorMs": 0.17392147053045715,
+          "verdict": "no measurable difference"
         }
       ]
     },
@@ -112,37 +316,37 @@
           "scenario": "simple-execution",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 4.9156370479999865,
-          "meanB": 3.98025746,
-          "resolutionFloorMs": 0.24303158202223646,
-          "verdict": "hono-bun faster by 0.935ms"
+          "meanA": 2.1287071240000106,
+          "meanB": 2.115705323999995,
+          "resolutionFloorMs": 0.09135748847873476,
+          "verdict": "no measurable difference"
         },
         {
           "scenario": "streaming",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 4.073419991999999,
-          "meanB": 3.5827604560000252,
-          "resolutionFloorMs": 0.1863727249947841,
-          "verdict": "hono-bun faster by 0.491ms"
+          "meanA": 2.660433215999994,
+          "meanB": 2.1971512039999723,
+          "resolutionFloorMs": 0.09056293836881477,
+          "verdict": "hono-bun faster by 0.463ms"
         },
         {
           "scenario": "tool-calling",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 4.892086495999997,
-          "meanB": 4.274529404000015,
-          "resolutionFloorMs": 0.1386830319796464,
-          "verdict": "hono-bun faster by 0.618ms"
+          "meanA": 3.1011015679998892,
+          "meanB": 2.544842880000026,
+          "resolutionFloorMs": 0.11469048283578887,
+          "verdict": "hono-bun faster by 0.556ms"
         },
         {
           "scenario": "multi-step-workflow",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 4.649090759999992,
-          "meanB": 4.041900168000008,
-          "resolutionFloorMs": 0.12136217083890469,
-          "verdict": "hono-bun faster by 0.607ms"
+          "meanA": 2.8358763160000233,
+          "meanB": 2.3048638880000363,
+          "resolutionFloorMs": 0.08997186341561464,
+          "verdict": "hono-bun faster by 0.531ms"
         },
         {
           "scenario": "concurrent-executions",
@@ -197,10 +401,214 @@
           "scenario": "multiple-sessions",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 4.216839863997884,
-          "meanB": 3.483622672003694,
-          "resolutionFloorMs": 0.12797140644170013,
-          "verdict": "hono-bun faster by 0.733ms"
+          "meanA": 3.487622591998428,
+          "meanB": 2.8226507120053284,
+          "resolutionFloorMs": 0.12445477440479985,
+          "verdict": "hono-bun faster by 0.665ms"
+        }
+      ]
+    },
+    {
+      "name": "nestjs-bun vs fastify-bun",
+      "variable": "framework",
+      "cellA": "nestjs-bun",
+      "cellB": "fastify-bun",
+      "rows": [
+        {
+          "scenario": "simple-execution",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 2.1287071240000106,
+          "meanB": 2.084270016000003,
+          "resolutionFloorMs": 0.08545596028363782,
+          "verdict": "no measurable difference"
+        },
+        {
+          "scenario": "streaming",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 2.660433215999994,
+          "meanB": 2.5607056600000324,
+          "resolutionFloorMs": 0.09754542375233209,
+          "verdict": "fastify-bun faster by 0.100ms"
+        },
+        {
+          "scenario": "tool-calling",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 3.1011015679998892,
+          "meanB": 3.016187955999987,
+          "resolutionFloorMs": 0.11737132410416434,
+          "verdict": "no measurable difference"
+        },
+        {
+          "scenario": "multi-step-workflow",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 2.8358763160000233,
+          "meanB": 2.70727369200009,
+          "resolutionFloorMs": 0.10590932893316893,
+          "verdict": "fastify-bun faster by 0.129ms"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "1-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "10-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "50-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "100-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "long-context",
+          "variant": "5000-tokens",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "long-context",
+          "variant": "20000-tokens",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "long-context",
+          "variant": "50000-tokens",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "multiple-sessions",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 3.487622591998428,
+          "meanB": 3.410724164001178,
+          "resolutionFloorMs": 0.13815982270722632,
+          "verdict": "no measurable difference"
+        }
+      ]
+    },
+    {
+      "name": "hono-bun vs fastify-bun",
+      "variable": "framework",
+      "cellA": "hono-bun",
+      "cellB": "fastify-bun",
+      "rows": [
+        {
+          "scenario": "simple-execution",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 2.115705323999995,
+          "meanB": 2.084270016000003,
+          "resolutionFloorMs": 0.09025044124896368,
+          "verdict": "no measurable difference"
+        },
+        {
+          "scenario": "streaming",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 2.1971512039999723,
+          "meanB": 2.5607056600000324,
+          "resolutionFloorMs": 0.07540521451320105,
+          "verdict": "hono-bun faster by 0.364ms"
+        },
+        {
+          "scenario": "tool-calling",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 2.544842880000026,
+          "meanB": 3.016187955999987,
+          "resolutionFloorMs": 0.0911774959040609,
+          "verdict": "hono-bun faster by 0.471ms"
+        },
+        {
+          "scenario": "multi-step-workflow",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 2.3048638880000363,
+          "meanB": 2.70727369200009,
+          "resolutionFloorMs": 0.10121733766126748,
+          "verdict": "hono-bun faster by 0.402ms"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "1-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "10-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "50-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "100-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "long-context",
+          "variant": "5000-tokens",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "long-context",
+          "variant": "20000-tokens",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "long-context",
+          "variant": "50000-tokens",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "multiple-sessions",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 2.8226507120053284,
+          "meanB": 3.410724164001178,
+          "resolutionFloorMs": 0.11921678755946376,
+          "verdict": "hono-bun faster by 0.588ms"
         }
       ]
     },
@@ -214,37 +622,37 @@
           "scenario": "simple-execution",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 3.32483349999999,
-          "meanB": 4.9156370479999865,
-          "resolutionFloorMs": 0.22253190993123018,
-          "verdict": "nestjs-node faster by 1.591ms"
+          "meanA": 2.8977172799999935,
+          "meanB": 2.1287071240000106,
+          "resolutionFloorMs": 0.11063005767272752,
+          "verdict": "nestjs-bun faster by 0.769ms"
         },
         {
           "scenario": "streaming",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 3.0420547160000315,
-          "meanB": 4.073419991999999,
-          "resolutionFloorMs": 0.16670135895560775,
-          "verdict": "nestjs-node faster by 1.031ms"
+          "meanA": 3.2512131360000347,
+          "meanB": 2.660433215999994,
+          "resolutionFloorMs": 0.11257774913840965,
+          "verdict": "nestjs-bun faster by 0.591ms"
         },
         {
           "scenario": "tool-calling",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 4.170024795999918,
-          "meanB": 4.892086495999997,
-          "resolutionFloorMs": 0.14404511966107533,
-          "verdict": "nestjs-node faster by 0.722ms"
+          "meanA": 3.8850582199999772,
+          "meanB": 3.1011015679998892,
+          "resolutionFloorMs": 0.12939886460185201,
+          "verdict": "nestjs-bun faster by 0.784ms"
         },
         {
           "scenario": "multi-step-workflow",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 3.9465890680000446,
-          "meanB": 4.649090759999992,
-          "resolutionFloorMs": 0.11304472772565163,
-          "verdict": "nestjs-node faster by 0.703ms"
+          "meanA": 3.7340577079998476,
+          "meanB": 2.8358763160000233,
+          "resolutionFloorMs": 0.1428318837015332,
+          "verdict": "nestjs-bun faster by 0.898ms"
         },
         {
           "scenario": "concurrent-executions",
@@ -299,10 +707,10 @@
           "scenario": "multiple-sessions",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 3.5370532479984687,
-          "meanB": 4.216839863997884,
-          "resolutionFloorMs": 0.11200555546896263,
-          "verdict": "nestjs-node faster by 0.680ms"
+          "meanA": 5.062445143999997,
+          "meanB": 3.487622591998428,
+          "resolutionFloorMs": 0.1783662120520681,
+          "verdict": "nestjs-bun faster by 1.575ms"
         }
       ]
     },
@@ -316,37 +724,37 @@
           "scenario": "simple-execution",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 3.215071587999986,
-          "meanB": 3.98025746,
-          "resolutionFloorMs": 0.18198563768416215,
-          "verdict": "hono-node faster by 0.765ms"
+          "meanA": 2.8247571240000218,
+          "meanB": 2.115705323999995,
+          "resolutionFloorMs": 0.12279444737298913,
+          "verdict": "hono-bun faster by 0.709ms"
         },
         {
           "scenario": "streaming",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 3.1191327879999955,
-          "meanB": 3.5827604560000252,
-          "resolutionFloorMs": 0.14455525249704257,
-          "verdict": "hono-node faster by 0.464ms"
+          "meanA": 3.4046157079999757,
+          "meanB": 2.1971512039999723,
+          "resolutionFloorMs": 0.1048324278695784,
+          "verdict": "hono-bun faster by 1.207ms"
         },
         {
           "scenario": "tool-calling",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 4.143256360000021,
-          "meanB": 4.274529404000015,
-          "resolutionFloorMs": 0.12922371465940055,
-          "verdict": "hono-node faster by 0.131ms"
+          "meanA": 3.7523418960000345,
+          "meanB": 2.544842880000026,
+          "resolutionFloorMs": 0.1052421339891886,
+          "verdict": "hono-bun faster by 1.207ms"
         },
         {
           "scenario": "multi-step-workflow",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 3.7895261199998784,
-          "meanB": 4.041900168000008,
-          "resolutionFloorMs": 0.10644882743490341,
-          "verdict": "hono-node faster by 0.252ms"
+          "meanA": 3.6839310160001912,
+          "meanB": 2.3048638880000363,
+          "resolutionFloorMs": 0.13447137482898924,
+          "verdict": "hono-bun faster by 1.379ms"
         },
         {
           "scenario": "concurrent-executions",
@@ -401,10 +809,112 @@
           "scenario": "multiple-sessions",
           "significanceTested": true,
           "runs": 250,
-          "meanA": 3.32316436799895,
-          "meanB": 3.483622672003694,
-          "resolutionFloorMs": 0.10702519725538423,
-          "verdict": "hono-node faster by 0.160ms"
+          "meanA": 4.130437191995326,
+          "meanB": 2.8226507120053284,
+          "resolutionFloorMs": 0.13368379274367947,
+          "verdict": "hono-bun faster by 1.308ms"
+        }
+      ]
+    },
+    {
+      "name": "fastify-node vs fastify-bun",
+      "variable": "runtime",
+      "cellA": "fastify-node",
+      "cellB": "fastify-bun",
+      "rows": [
+        {
+          "scenario": "simple-execution",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 2.9187365080000074,
+          "meanB": 2.084270016000003,
+          "resolutionFloorMs": 0.1147651305000702,
+          "verdict": "fastify-bun faster by 0.834ms"
+        },
+        {
+          "scenario": "streaming",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 3.2073822880000007,
+          "meanB": 2.5607056600000324,
+          "resolutionFloorMs": 0.09738425793891274,
+          "verdict": "fastify-bun faster by 0.647ms"
+        },
+        {
+          "scenario": "tool-calling",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 3.8381201959999816,
+          "meanB": 3.016187955999987,
+          "resolutionFloorMs": 0.11044006386104231,
+          "verdict": "fastify-bun faster by 0.822ms"
+        },
+        {
+          "scenario": "multi-step-workflow",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 3.726751724000089,
+          "meanB": 2.70727369200009,
+          "resolutionFloorMs": 0.1355543916535882,
+          "verdict": "fastify-bun faster by 1.019ms"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "1-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "10-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "50-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "concurrent-executions",
+          "variant": "100-concurrent",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "long-context",
+          "variant": "5000-tokens",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "long-context",
+          "variant": "20000-tokens",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "long-context",
+          "variant": "50000-tokens",
+          "significanceTested": false,
+          "runs": 3,
+          "verdict": "not tested"
+        },
+        {
+          "scenario": "multiple-sessions",
+          "significanceTested": true,
+          "runs": 250,
+          "meanA": 4.141802195998374,
+          "meanB": 3.410724164001178,
+          "resolutionFloorMs": 0.16306429377745438,
+          "verdict": "fastify-bun faster by 0.731ms"
         }
       ]
     }
@@ -412,7 +922,8 @@
   "limitations": [
     "Replay removes real provider latency.",
     "The NestJS adapter bypasses @Sse(), so Nest's own SSE serializer is not measured.",
-    "Three cells are resident and idle during every measurement.",
+    "5 cells are resident and idle during every measurement.",
+    "The Fastify adapter writes SSE frames on the raw response, so Fastify's own reply serialization is not measured.",
     "Scenario 05's latency comes from autocannon and is not comparable to scenarios 01 through 04.",
     "Any cell needing workarounds has them disclosed as confounds.",
     "The benchmark evaluates this architecture only."
