@@ -41,7 +41,7 @@ const HOST = {
 
 function cell(id: string, overrides: Partial<CellResults> = {}): CellResults {
   const [framework, runtime] = id.split('-') as [
-    'nestjs' | 'hono',
+    'nestjs' | 'hono' | 'fastify',
     'node' | 'bun'
   ]
 
@@ -53,35 +53,86 @@ function cell(id: string, overrides: Partial<CellResults> = {}): CellResults {
     llmMode: 'replay',
     startedAt: '2026-08-18T00:00:00.000Z',
     startupTimeMs: 842,
-    interleavedWith: ['nestjs-node', 'hono-node', 'nestjs-bun', 'hono-bun'],
+    interleavedWith: [
+      'nestjs-node',
+      'hono-node',
+      'nestjs-bun',
+      'hono-bun',
+      'fastify-node',
+      'fastify-bun'
+    ],
     host: HOST,
     scenarios: [okRow()],
     ...overrides
   }
 }
 
-const FOUR_CELLS: readonly CellResults[] = [
+const SIX_CELLS: readonly CellResults[] = [
   cell('nestjs-node'),
   cell('hono-node'),
   cell('nestjs-bun'),
-  cell('hono-bun')
+  cell('hono-bun'),
+  cell('fastify-node'),
+  cell('fastify-bun')
 ]
 
-describe('the four-cell comparison', () => {
-  it('contains exactly four pairings, two framework and two runtime', () => {
-    const comparison = buildComparison(FOUR_CELLS)
+describe('the six-cell comparison', () => {
+  it('contains nine pairings, six framework and three runtime', () => {
+    const comparison = buildComparison(SIX_CELLS)
 
-    expect(comparison.pairings).toHaveLength(4)
+    expect(comparison.pairings).toHaveLength(9)
     expect(
       comparison.pairings.filter(p => p.variable === 'framework')
-    ).toHaveLength(2)
+    ).toHaveLength(6)
     expect(
       comparison.pairings.filter(p => p.variable === 'runtime')
-    ).toHaveLength(2)
+    ).toHaveLength(3)
+  })
+
+  it('pairs every two frameworks under each runtime and every two runtimes under each framework', () => {
+    const comparison = buildComparison(SIX_CELLS)
+
+    expect(comparison.pairings.map(p => p.name)).toEqual([
+      'nestjs-node vs hono-node',
+      'nestjs-node vs fastify-node',
+      'hono-node vs fastify-node',
+      'nestjs-bun vs hono-bun',
+      'nestjs-bun vs fastify-bun',
+      'hono-bun vs fastify-bun',
+      'nestjs-node vs nestjs-bun',
+      'hono-node vs hono-bun',
+      'fastify-node vs fastify-bun'
+    ])
+  })
+
+  it('holds one variable fixed in every pairing', () => {
+    for (const pairing of buildComparison(SIX_CELLS).pairings) {
+      const [frameworkA, runtimeA] = pairing.cellA.split('-')
+      const [frameworkB, runtimeB] = pairing.cellB.split('-')
+
+      expect(pairing.variable === 'framework' ? runtimeA : frameworkA).toBe(
+        pairing.variable === 'framework' ? runtimeB : frameworkB
+      )
+      expect(pairing.variable === 'framework' ? frameworkA : runtimeA).not.toBe(
+        pairing.variable === 'framework' ? frameworkB : runtimeB
+      )
+    }
+  })
+
+  it('fills the Fastify pairings with rows like any other', () => {
+    const pairing = buildComparison(SIX_CELLS).pairings.find(
+      p => p.name === 'hono-bun vs fastify-bun'
+    )
+
+    expect(pairing?.rows.length).toBeGreaterThan(0)
+    expect(pairing?.rows[0]).toMatchObject({
+      scenario: 'simple-execution',
+      significanceTested: true
+    })
   })
 
   it('holds the runtime fixed in a framework pairing', () => {
-    const comparison = buildComparison(FOUR_CELLS)
+    const comparison = buildComparison(SIX_CELLS)
     const pairing = comparison.pairings.find(
       p => p.name === 'nestjs-node vs hono-node'
     )
@@ -90,7 +141,7 @@ describe('the four-cell comparison', () => {
   })
 
   it('holds the framework fixed in a runtime pairing', () => {
-    const comparison = buildComparison(FOUR_CELLS)
+    const comparison = buildComparison(SIX_CELLS)
     const pairing = comparison.pairings.find(
       p => p.name === 'nestjs-node vs nestjs-bun'
     )
@@ -274,7 +325,7 @@ describe('the four-cell comparison', () => {
   })
 
   it('carries the run count on every row', () => {
-    const comparison = buildComparison(FOUR_CELLS)
+    const comparison = buildComparison(SIX_CELLS)
 
     for (const pairing of comparison.pairings) {
       for (const row of pairing.rows) {
@@ -283,15 +334,27 @@ describe('the four-cell comparison', () => {
     }
   })
 
-  it('names all six limitations', () => {
-    const comparison = buildComparison(FOUR_CELLS)
+  it('names all seven limitations', () => {
+    const comparison = buildComparison(SIX_CELLS)
 
     expect(comparison.limitations).toEqual(LIMITATIONS)
-    expect(comparison.limitations).toHaveLength(6)
+    expect(comparison.limitations).toHaveLength(7)
+  })
+
+  it('says the Fastify adapter writes its own SSE frames', () => {
+    expect(LIMITATIONS).toContain(
+      "The Fastify adapter writes SSE frames on the raw response, so Fastify's own reply serialization is not measured."
+    )
+  })
+
+  it('counts the resident cells from the matrix, not from a constant', () => {
+    expect(LIMITATIONS).toContain(
+      '5 cells are resident and idle during every measurement.'
+    )
   })
 
   it('carries the estimated cost column only when a row is live', () => {
-    expect(buildComparison(FOUR_CELLS).estimatedCostColumn).toBe(false)
+    expect(buildComparison(SIX_CELLS).estimatedCostColumn).toBe(false)
 
     const live = [
       cell('nestjs-node', { scenarios: [okRow({ llmMode: 'live' })] }),
@@ -304,7 +367,7 @@ describe('the four-cell comparison', () => {
 
 describe('agreeing hosts', () => {
   it('does not throw when every host block matches', () => {
-    expect(() => assertHostsAgree(FOUR_CELLS)).not.toThrow()
+    expect(() => assertHostsAgree(SIX_CELLS)).not.toThrow()
   })
 
   it('does not throw when there are no results to compare', () => {

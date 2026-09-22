@@ -1,3 +1,4 @@
+import { CELLS, findCell } from '@arl/contracts'
 import {
   BenchmarkError,
   differsSignificantly,
@@ -14,7 +15,8 @@ import type {
 export const LIMITATIONS: readonly string[] = [
   'Replay removes real provider latency.',
   "The NestJS adapter bypasses @Sse(), so Nest's own SSE serializer is not measured.",
-  'Three cells are resident and idle during every measurement.',
+  `${String(CELLS.length - 1)} cells are resident and idle during every measurement.`,
+  "The Fastify adapter writes SSE frames on the raw response, so Fastify's own reply serialization is not measured.",
   "Scenario 05's latency comes from autocannon and is not comparable to scenarios 01 through 04.",
   'Any cell needing workarounds has them disclosed as confounds.',
   'The benchmark evaluates this architecture only.'
@@ -45,17 +47,35 @@ export interface Comparison {
   estimatedCostColumn: boolean
 }
 
-/** `nestjs-node/hono-node` and `nestjs-bun/hono-bun` hold the runtime fixed. */
-const FRAMEWORK_PAIRS: readonly [string, string][] = [
-  ['nestjs-node', 'hono-node'],
-  ['nestjs-bun', 'hono-bun']
-]
+const FRAMEWORKS = [...new Set(CELLS.map(cell => cell.framework))]
+const RUNTIMES = [...new Set(CELLS.map(cell => cell.runtime))]
 
-/** `nestjs-node/nestjs-bun` and `hono-node/hono-bun` hold the framework fixed. */
-const RUNTIME_PAIRS: readonly [string, string][] = [
-  ['nestjs-node', 'nestjs-bun'],
-  ['hono-node', 'hono-bun']
-]
+/**
+ * Every pair of frameworks under each runtime, like `nestjs-node/hono-node`:
+ * the runtime is held fixed.
+ */
+const FRAMEWORK_PAIRS: readonly [string, string][] = RUNTIMES.flatMap(runtime =>
+  FRAMEWORKS.flatMap((a, index) =>
+    FRAMEWORKS.slice(index + 1).map((b): [string, string] => [
+      findCell(a, runtime).id,
+      findCell(b, runtime).id
+    ])
+  )
+)
+
+/**
+ * Every pair of runtimes under each framework, like `nestjs-node/nestjs-bun`:
+ * the framework is held fixed.
+ */
+const RUNTIME_PAIRS: readonly [string, string][] = FRAMEWORKS.flatMap(
+  framework =>
+    RUNTIMES.flatMap((a, index) =>
+      RUNTIMES.slice(index + 1).map((b): [string, string] => [
+        findCell(framework, a).id,
+        findCell(framework, b).id
+      ])
+    )
+)
 
 /**
  * Two results files whose `host` blocks differ describe two different
