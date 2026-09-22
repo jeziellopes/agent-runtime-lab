@@ -4,17 +4,24 @@ import { describe, expect, it } from 'vitest'
 import { flag, selected } from './cli.js'
 
 describe('selecting cells', () => {
-  it('resolves all four for --all', () => {
+  it('resolves all six for --all', () => {
     expect(selected(['--all'])).toEqual(CELLS)
+    expect(CELLS).toHaveLength(6)
   })
 
-  it('resolves all four for an empty argv', () => {
+  it('resolves all six for an empty argv', () => {
     expect(selected([])).toEqual(CELLS)
   })
 
   it('resolves the one cell named by --framework and --runtime', () => {
     expect(selected(['--framework', 'hono', '--runtime', 'bun'])).toEqual([
       findCell('hono', 'bun')
+    ])
+  })
+
+  it('resolves a Fastify cell by name', () => {
+    expect(selected(['--framework', 'fastify', '--runtime', 'node'])).toEqual([
+      findCell('fastify', 'node')
     ])
   })
 })
