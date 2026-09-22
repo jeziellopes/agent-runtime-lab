@@ -30,6 +30,16 @@ const CELLS = {
     command: 'bun',
     entry: 'adapters/hono/dist/server.bun.js',
     port: 3003
+  },
+  'fastify/node': {
+    command: 'node',
+    entry: 'adapters/fastify/dist/server.js',
+    port: 3004
+  },
+  'fastify/bun': {
+    command: 'bun',
+    entry: 'adapters/fastify/dist/server.js',
+    port: 3005
   }
 }
 
