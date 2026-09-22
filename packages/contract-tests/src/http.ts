@@ -82,3 +82,58 @@ export function json(body: unknown): RequestInit {
 export function parseJson<T>(response: HttpResponse): T {
   return JSON.parse(response.raw) as T
 }
+
+/**
+ * Reads a stream until `stop` accepts a frame, then drops the connection
+ * without a word to the server: no `DELETE`, no `cancel`. What the server
+ * makes of the hang-up is the caller's question. Resolves with every frame
+ * read, the accepted one last, or fewer if the stream ended first.
+ */
+export async function requestFramesUntil(
+  url: string,
+  init: RequestInit,
+  stop: (frame: string) => boolean
+): Promise<string[]> {
+  const controller = new AbortController()
+  let response: Response
+
+  try {
+    response = await fetch(url, { ...init, signal: controller.signal })
+  } catch (cause) {
+    throw new TransportError(`${init.method ?? 'GET'} ${url}: ${String(cause)}`)
+  }
+
+  const decoder = new TextDecoder()
+  const frames: string[] = []
+  let raw = ''
+  let consumed = 0
+
+  const reader = response.body?.getReader()
+
+  /* Aborting with a read pending would reject it, and an async iterator's
+     cleanup after an early exit rejects too, so the reader is left as it is. */
+  for (
+    let read = await reader?.read();
+    read && !read.done;
+    read = await reader?.read()
+  ) {
+    raw += decoder.decode(read.value, { stream: true })
+
+    for (let end = raw.indexOf('\n\n', consumed); end !== -1;) {
+      const frame = raw.slice(consumed, end)
+
+      frames.push(frame)
+      consumed = end + 2
+
+      if (stop(frame)) {
+        controller.abort()
+
+        return frames
+      }
+
+      end = raw.indexOf('\n\n', consumed)
+    }
+  }
+
+  return frames
+}

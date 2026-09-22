@@ -4,7 +4,13 @@ import { isTerminalEvent } from '@arl/events'
 import { EXPECTED_RUNS, GOLDEN_RUNS } from './expected.js'
 import { loadGoldens } from './goldens.js'
 import { headerValue } from './headers.js'
-import { json, parseJson, request, requestFrames } from './http.js'
+import {
+  json,
+  parseJson,
+  request,
+  requestFrames,
+  requestFramesUntil
+} from './http.js'
 import { eventTypes, idsAreMonotonic, parseFrames } from './sse.js'
 
 import type { Cell, ExecutionResult, RuntimeErrorCode } from '@arl/contracts'
@@ -58,6 +64,7 @@ export const CONTRACT_ASSERTIONS = [
   'error.body.shape',
   'error.midstream.is.event.not.status',
   'cancel.aborts.provider.call',
+  'cancel.on.disconnect',
   'headers.case.insensitive',
   'deterministic.omits.metrics'
 ] as const
@@ -137,6 +144,10 @@ const INDUCIBLE_ERRORS: readonly {
 /** Reserved, like the three `__fail_*__` prompts, and sent by nothing else. */
 const HOLD_PROMPT = '__hold__'
 
+/** What a cell is given to notice a hang-up and cancel what was abandoned. */
+const DISCONNECT_WINDOW_MS = 5_000
+const DISCONNECT_POLL_MS = 100
+
 interface Suite {
   readonly base: string
   readonly goldens: Map<string, string>
@@ -149,11 +160,7 @@ export async function runContractSuite(
   cell: Cell,
   host?: string
 ): Promise<ContractReport> {
-  const suite: Suite = {
-    base: baseUrl(cell, host),
-    goldens: loadGoldens()
-  }
-
+  const suite = suiteFor(cell, host)
   const checks: ContractCheck[] = []
 
   for (const id of CONTRACT_ASSERTIONS) {
@@ -161,6 +168,19 @@ export async function runContractSuite(
   }
 
   return { cell, checks, passed: checks.every(check => check.passed) }
+}
+
+/** Runs one assertion against one cell. */
+export function runContractAssertion(
+  id: ContractAssertion,
+  cell: Cell,
+  host?: string
+): Promise<ContractCheck> {
+  return runCheck(id, CHECKS[id], suiteFor(cell, host))
+}
+
+function suiteFor(cell: Cell, host?: string): Suite {
+  return { base: baseUrl(cell, host), goldens: loadGoldens() }
 }
 
 async function runCheck(
@@ -473,6 +493,47 @@ const CHECKS: Readonly<Record<ContractAssertion, Check>> = {
     )
   },
 
+  /**
+   * Abandons a held stream after its first token, sending nothing else, and
+   * requires the execution to read back as cancelled. `cancel.aborts.provider.call`
+   * cancels by `DELETE`, so it cannot see a cell that ignores a hang-up.
+   */
+  'cancel.on.disconnect': async suite => {
+    const frames = await requestFramesUntil(
+      `${suite.base}/agents/simple-agent/stream`,
+      json({ input: { prompt: HOLD_PROMPT } }),
+      frame => frame.includes('event: llm.token')
+    )
+    const last = frames[frames.length - 1] ?? ''
+
+    expect(
+      last.includes('event: llm.token'),
+      `stream ended with ${String(frames.length)} frames and no llm.token`
+    )
+
+    const executionId = parseFrames(`${last}\n\n`)[0]?.data.executionId
+
+    expect(executionId !== undefined, 'the llm.token frame named no execution')
+
+    const deadline = Date.now() + DISCONNECT_WINDOW_MS
+    let status = ''
+
+    do {
+      status = await statusOf(suite, String(executionId))
+
+      if (status === ExecutionStatus.CANCELLED) {
+        return
+      }
+
+      await sleep(DISCONNECT_POLL_MS)
+    } while (Date.now() < deadline)
+
+    expect(
+      false,
+      `the execution still read ${status} ${String(DISCONNECT_WINDOW_MS)}ms after the client disconnected, want ${ExecutionStatus.CANCELLED}`
+    )
+  },
+
   'headers.case.insensitive': async suite => {
     const response = await request(`${suite.base}/health`)
     const upper = headerValue(response.headers, 'CONTENT-TYPE')
@@ -506,6 +567,16 @@ const CHECKS: Readonly<Record<ContractAssertion, Check>> = {
       )
     }
   }
+}
+
+async function statusOf(suite: Suite, executionId: string): Promise<string> {
+  const found = await request(`${suite.base}/executions/${executionId}`)
+
+  return String(parseJson<{ status?: string }>(found).status)
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 function run(agentId: string): ExpectedRun {
