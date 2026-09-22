@@ -100,10 +100,12 @@ function renderHeader(results: readonly CellResults[]): string {
     '<span class="eyebrow">agent-runtime-lab &middot; benchmark comparison</span>',
     '<h1>Framework Overhead</h1>',
     '<p class="standfirst">',
-    'One agent runtime core, exposed through two HTTP adapters, NestJS and',
-    'Hono, each run under both Node and Bun. Every scenario replays the same',
-    'recorded token stream, so what differs between cells is the framework',
-    'and the runtime, not the model.',
+    'One agent runtime core, exposed through three HTTP adapters, NestJS,',
+    'Hono and Fastify, each run under both Node and Bun. Every scenario',
+    'replays the same recorded token stream, so what differs between cells is',
+    'the framework and the runtime, not the model.',
+    'The comparison is not a ranking: it tests whether one core serves every',
+    'framework, and reports what each cell costs.',
     '<code>framework_overhead = request_latency &minus; execution_duration</code>.',
     '</p>',
     first === undefined ? '' : renderNameplate(first),
@@ -138,6 +140,9 @@ function renderMatrixLegend(): string {
     '<span class="row-head">Hono</span>',
     renderMatrixCell(findCell('hono', 'node')),
     renderMatrixCell(findCell('hono', 'bun')),
+    '<span class="row-head">Fastify</span>',
+    renderMatrixCell(findCell('fastify', 'node')),
+    renderMatrixCell(findCell('fastify', 'bun')),
     '</div>',
     '</section>'
   ].join('\n')
@@ -157,7 +162,7 @@ function renderCellGrid(results: readonly CellResults[]): string {
   return [
     '<section>',
     '<div class="section-head">',
-    '<h2>The four cells</h2>',
+    '<h2>The six cells</h2>',
     '<p>Startup comes from a fresh boot. Latency and overhead come from the',
     'simple-execution scenario, the cheapest apples-to-apples row. Peak',
     'memory is the resident high-water mark since boot, not since any one',
@@ -580,11 +585,15 @@ const STYLE = `
     --nestjs-bun: #d68a3f;
     --hono-node: #0b6e77;
     --hono-bun: #2fa79e;
+    --fastify-node: #5b3fa8;
+    --fastify-bun: #9a82d6;
 
     --nestjs-node-bg: rgb(168 67 28 / 0.12);
     --nestjs-bun-bg: rgb(214 138 63 / 0.14);
     --hono-node-bg: rgb(11 110 119 / 0.12);
     --hono-bun-bg: rgb(47 167 158 / 0.14);
+    --fastify-node-bg: rgb(91 63 168 / 0.12);
+    --fastify-bun-bg: rgb(154 130 214 / 0.14);
 
     --font-display: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
     --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Consolas, monospace;
@@ -606,11 +615,15 @@ const STYLE = `
       --nestjs-bun: #eab06b;
       --hono-node: #37b3ba;
       --hono-bun: #6fd6cb;
+      --fastify-node: #a08ae6;
+      --fastify-bun: #c6b6f4;
 
       --nestjs-node-bg: rgb(221 125 71 / 0.16);
       --nestjs-bun-bg: rgb(234 176 107 / 0.14);
       --hono-node-bg: rgb(55 179 186 / 0.16);
       --hono-bun-bg: rgb(111 214 203 / 0.14);
+      --fastify-node-bg: rgb(160 138 230 / 0.16);
+      --fastify-bun-bg: rgb(198 182 244 / 0.14);
     }
   }
 
@@ -629,11 +642,15 @@ const STYLE = `
     --nestjs-bun: #eab06b;
     --hono-node: #37b3ba;
     --hono-bun: #6fd6cb;
+    --fastify-node: #a08ae6;
+    --fastify-bun: #c6b6f4;
 
     --nestjs-node-bg: rgb(221 125 71 / 0.16);
     --nestjs-bun-bg: rgb(234 176 107 / 0.14);
     --hono-node-bg: rgb(55 179 186 / 0.16);
     --hono-bun-bg: rgb(111 214 203 / 0.14);
+    --fastify-node-bg: rgb(160 138 230 / 0.16);
+    --fastify-bun-bg: rgb(198 182 244 / 0.14);
   }
 
   * { box-sizing: border-box; }
@@ -792,6 +809,8 @@ const STYLE = `
   .cell-nestjs-bun { border-left-color: var(--nestjs-bun); }
   .cell-hono-node { border-left-color: var(--hono-node); }
   .cell-hono-bun { border-left-color: var(--hono-bun); }
+  .cell-fastify-node { border-left-color: var(--fastify-node); }
+  .cell-fastify-bun { border-left-color: var(--fastify-bun); }
 
   .panel-pair {
     display: grid;
@@ -879,6 +898,8 @@ const STYLE = `
   .pill-nestjs-bun { background: var(--nestjs-bun-bg); color: var(--nestjs-bun); }
   .pill-hono-node { background: var(--hono-node-bg); color: var(--hono-node); }
   .pill-hono-bun { background: var(--hono-bun-bg); color: var(--hono-bun); }
+  .pill-fastify-node { background: var(--fastify-node-bg); color: var(--fastify-node); }
+  .pill-fastify-bun { background: var(--fastify-bun-bg); color: var(--fastify-bun); }
 
   .conc-grid, .lc-grid {
     display: grid;

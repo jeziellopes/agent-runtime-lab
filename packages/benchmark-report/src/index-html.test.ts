@@ -50,7 +50,7 @@ function okRow(overrides: Partial<ScenarioResult> = {}): ScenarioResult {
 
 function cell(id: string, scenarios: ScenarioResult[]): CellResults {
   const [framework, runtime] = id.split('-') as [
-    'nestjs' | 'hono',
+    'nestjs' | 'hono' | 'fastify',
     'node' | 'bun'
   ]
 
@@ -68,11 +68,13 @@ function cell(id: string, scenarios: ScenarioResult[]): CellResults {
   }
 }
 
-const FOUR_CELLS: CellResults[] = [
+const SIX_CELLS: CellResults[] = [
   cell('nestjs-node', [okRow()]),
   cell('hono-node', [okRow({ framework: 'hono' })]),
   cell('nestjs-bun', [okRow({ runtime: 'bun' })]),
-  cell('hono-bun', [okRow({ framework: 'hono', runtime: 'bun' })])
+  cell('hono-bun', [okRow({ framework: 'hono', runtime: 'bun' })]),
+  cell('fastify-node', [okRow({ framework: 'fastify' })]),
+  cell('fastify-bun', [okRow({ framework: 'fastify', runtime: 'bun' })])
 ]
 
 function emptyComparison(): Comparison {
@@ -80,12 +82,71 @@ function emptyComparison(): Comparison {
 }
 
 describe('rendering the results index page', () => {
-  it('names all four cells when every cell reported', () => {
-    const html = renderIndexHtml(FOUR_CELLS, buildComparison(FOUR_CELLS))
+  it('names all six cells when every cell reported', () => {
+    const html = renderIndexHtml(SIX_CELLS, buildComparison(SIX_CELLS))
 
-    for (const id of ['nestjs-node', 'hono-node', 'nestjs-bun', 'hono-bun']) {
+    for (const id of [
+      'nestjs-node',
+      'hono-node',
+      'nestjs-bun',
+      'hono-bun',
+      'fastify-node',
+      'fastify-bun'
+    ]) {
       expect(html).toContain(id)
     }
+  })
+
+  it('renders one card per cell', () => {
+    const html = renderIndexHtml(SIX_CELLS, buildComparison(SIX_CELLS))
+
+    expect(html.match(/<div class="cell-card /g)).toHaveLength(6)
+    expect(html).toContain('<h2>The six cells</h2>')
+  })
+
+  it('lays the legend out as three frameworks against two runtimes', () => {
+    const html = renderIndexHtml(SIX_CELLS, buildComparison(SIX_CELLS))
+
+    for (const row of ['NestJS', 'Hono', 'Fastify']) {
+      expect(html).toContain(`<span class="row-head">${row}</span>`)
+    }
+
+    expect(html.match(/<span class="swatch-cell"/g)).toHaveLength(6)
+  })
+
+  it('defines every Fastify colour once per theme, light and both dark blocks', () => {
+    const html = renderIndexHtml(SIX_CELLS, buildComparison(SIX_CELLS))
+
+    for (const name of [
+      '--fastify-node',
+      '--fastify-node-bg',
+      '--fastify-bun',
+      '--fastify-bun-bg'
+    ]) {
+      expect(html.match(new RegExp(`^\\s+${name}:`, 'gm'))).toHaveLength(3)
+    }
+  })
+
+  it('states that the comparison is not a ranking', () => {
+    const html = renderIndexHtml(SIX_CELLS, buildComparison(SIX_CELLS))
+
+    expect(html).toContain('The comparison is not a ranking')
+  })
+
+  it('colours a Fastify win with its own cell colour', () => {
+    const cells = SIX_CELLS.map(result =>
+      result.cell === 'fastify-node'
+        ? {
+            ...result,
+            scenarios: [
+              okRow({ framework: 'fastify', latencyMs: distribution(1) })
+            ]
+          }
+        : result
+    )
+    const html = renderIndexHtml(cells, buildComparison(cells))
+
+    expect(html).toContain('pill pill-fastify-node')
   })
 
   it('renders "unavailable" for an unavailable scenario, never undefined or NaN', () => {
@@ -397,7 +458,7 @@ describe('rendering the results index page', () => {
   })
 
   it('emits no script tag', () => {
-    const html = renderIndexHtml(FOUR_CELLS, buildComparison(FOUR_CELLS))
+    const html = renderIndexHtml(SIX_CELLS, buildComparison(SIX_CELLS))
 
     expect(html.toLowerCase()).not.toContain('<script')
   })
