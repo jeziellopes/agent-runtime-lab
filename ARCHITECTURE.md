@@ -1,6 +1,6 @@
 # Architecture
 
-Diagrams for the shape described in [README.md](README.md): two deployable
+Diagrams for the shape described in [README.md](README.md): three deployable
 apps built from the same core, and the one request path that has to look
 identical no matter which app served it.
 
@@ -11,48 +11,52 @@ one request path the whole project rests on.
 
 A "container" here is a separately runnable thing, not a Docker container
 specifically (`docker-compose.yml` happens to give each one its own, but
-that's a deployment detail, not this diagram). There are two: an app built
-around `adapter-nestjs`, and an app built around `adapter-hono`. Both bundle
-the exact same L2-L7 core.
+that's a deployment detail, not this diagram). There are three: an app built
+around `adapter-nestjs`, one around `adapter-hono` and one around
+`adapter-fastify`. All bundle the exact same L2-L7 core.
 
 ```mermaid
 C4Container
-    title Container — agent-runtime-lab
+    title Container: agent-runtime-lab
 
     Person(caller, "Caller", "Sends HTTP requests, opens SSE streams")
 
     System_Boundary(system, "agent-runtime-lab") {
         Container(nestjs_app, "adapter-nestjs app", "NestJS, TypeScript", "L1 HTTP/SSE, plus the full framework-blind core (L2-L7), bundled in")
         Container(hono_app, "adapter-hono app", "Hono, TypeScript", "L1 HTTP/SSE, plus the same framework-blind core (L2-L7), bundled in")
+        Container(fastify_app, "adapter-fastify app", "Fastify, TypeScript", "L1 HTTP/SSE, plus the same framework-blind core (L2-L7), bundled in")
         Container(contract_tests, "contract-tests", "Vitest, TypeScript", "Equivalence gate. Zero framework imports.")
     }
 
     Rel(caller, nestjs_app, "HTTP, SSE")
     Rel(caller, hono_app, "HTTP, SSE")
+    Rel(caller, fastify_app, "HTTP, SSE")
     Rel(contract_tests, nestjs_app, "asserts identical responses", "HTTP")
     Rel(contract_tests, hono_app, "asserts identical responses", "HTTP")
+    Rel(contract_tests, fastify_app, "asserts identical responses", "HTTP")
 
     UpdateElementStyle(nestjs_app, $bgColor="#dd7d47", $borderColor="#a8431c", $fontColor="#14171c")
     UpdateElementStyle(hono_app, $bgColor="#37b3ba", $borderColor="#0b6e77", $fontColor="#0f1216")
+    UpdateElementStyle(fastify_app, $bgColor="#a08ae6", $borderColor="#5b3fa8", $fontColor="#14171c")
 ```
 
-Each of these two containers deploys twice, once per JS runtime (Node, Bun),
-for four cells total. The runtime is a deployment-time choice, not a
+Each of these three containers deploys twice, once per JS runtime (Node, Bun),
+for six cells total. The runtime is a deployment-time choice, not a
 different container, it never shows up as a box here. The matrix in the
 README is where that axis lives.
 
 ## Component: inside one app
 
-Zoomed into `adapter-nestjs app`. `adapter-hono app` has the identical
-picture below L1, its L1 component is the only thing that differs, everything
-from `runtime-core` down is the same source in both containers.
+Zoomed into `adapter-nestjs app`. The other two apps have the identical
+picture below L1, their L1 component is the only thing that differs, everything
+from `runtime-core` down is the same source in every container.
 
 ```mermaid
 C4Component
-    title Component — adapter-nestjs app
+    title Component: adapter-nestjs app
 
     Container_Boundary(app, "adapter-nestjs app") {
-        Component(l1, "adapter-nestjs (L1)", "NestJS controllers, middleware", "Routing, parsing, SSE framing, auth seam. The only component that differs between the two apps.")
+        Component(l1, "adapter-nestjs (L1)", "NestJS controllers, middleware", "Routing, parsing, SSE framing, auth seam. The only component that differs between the apps.")
         Component(l2, "runtime-core (L2)", "TypeScript", "Execution lifecycle, event emission, execution state")
         Component(l3, "agent-engine (L3)", "TypeScript", "Agent definitions, context, workflow start")
         Component(l4, "graph-runtime (L4)", "TypeScript", "Nodes, edges, state transitions")
@@ -80,7 +84,7 @@ C4Component
 L1 carries the accent color because it is the one component allowed to vary.
 L2-L7 stay unstyled because none of them may contain agent logic, prompts,
 workflow definitions, or tool implementations that differ by framework, that
-constraint is what makes the two apps' behavior comparable at all.
+constraint is what makes the apps' behavior comparable at all.
 
 ## Sequence: one streamed execution
 

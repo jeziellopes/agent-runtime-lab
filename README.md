@@ -3,38 +3,39 @@
 What does your backend framework actually cost you
 when you build an AI agent runtime?
 
-NestJS vs Hono, Node vs Bun: one runtime core,
-four deployments, and a contract suite proving the
+NestJS vs Hono vs Fastify, Node vs Bun: one runtime core,
+six deployments, and a contract suite proving the
 only thing that changed was the framework.
 
-> All four cells pass the contract suite, all seven benchmark scenarios have
+> All six cells pass the contract suite, all seven benchmark scenarios have
 > run against every cell, and the comparison report is published with its
 > limitations stated.
 
-![A clean clone: `docker compose up` brings up all four cells and the contract suite PASSes on each, then all seven scenarios run live against every cell, then `pnpm benchmark report` regenerates the comparison from that run](assets/demo.gif)
+![A clean clone: `docker compose up` brings up every cell and the contract suite PASSes on each, then all seven scenarios run live against every cell, then `pnpm benchmark report` regenerates the comparison from that run](assets/demo.gif)
 
-A clean clone, `docker compose up`, all four cells proving they are
-equivalent, then every scenario run live and compared: the same path
+A clean clone, `docker compose up`, every cell proving it is
+equivalent to the others, then every scenario run live and compared: the same path
 anyone reproducing this gets.
 
 ## What this is
 
-One AI agent runtime core, exposed through two backend framework adapters and
+One AI agent runtime core, exposed through three backend framework adapters and
 benchmarked across two JavaScript runtimes. A framework benchmark whose cells
 are quietly different programs measures nothing: that is the ordinary failure
 of the genre. An isolated runtime core with no measurement attached demonstrates
 a pattern but answers no question.
 
 This project is the join. The framework-independent architecture is the
-_method_, the measured four-cell answer is the _result_, and the contract suite
+_method_, the measured six-cell answer is the _result_, and the contract suite
 is the hinge between them, because it is what proves the cells are identical
 except for the variable under test.
 
-**Stack:** TypeScript, pnpm workspaces, LangGraph, NestJS and Hono adapters,
-Node LTS and Bun, _because_ **NestJS and Hono sit at opposite ends of the
-TypeScript backend spectrum: decorator-driven DI container versus functional
-Web-Standards composition. If a runtime core survives both without change, it
-will survive anything between them.**
+**Stack:** TypeScript, pnpm workspaces, LangGraph, NestJS, Hono and Fastify
+adapters, Node LTS and Bun, _because_ **NestJS and Hono sit at opposite ends of
+the TypeScript backend spectrum: decorator-driven DI container versus
+functional Web-Standards composition. If a runtime core survives both without
+change, it will survive anything between them. Fastify sits between them, so it
+tests that claim instead of assuming it. The comparison is not a ranking.**
 
 **Deploys to:** nowhere. There is no live deployment. `docker compose up` from a
 clean clone brings up every cell and prints the contract suite result; the
@@ -48,10 +49,11 @@ switches to a real provider for re-recording and live verification.
 
 ## The matrix
 
-|            | Node LTS | Bun    |
-| ---------- | -------- | ------ |
-| **NestJS** | cell 1   | cell 3 |
-| **Hono**   | cell 2   | cell 4 |
+|             | Node LTS | Bun    |
+| ----------- | -------- | ------ |
+| **NestJS**  | cell 1   | cell 3 |
+| **Hono**    | cell 2   | cell 4 |
+| **Fastify** | cell 5   | cell 6 |
 
 A factorial design, not a single-variable one: it separates the framework effect
 from the runtime effect and exposes any interaction between them.
@@ -71,7 +73,7 @@ into a description of whatever the adapters already happen to do, precisely the
 assertion it exists to replace.
 
 That ordering is why `packages/contracts` and `packages/contract-tests`
-existed before either adapter did, and why both adapters were built against
+existed before any adapter did, and why every adapter was built against
 a suite that could already fail them.
 
 ## The seven layers
@@ -79,18 +81,18 @@ a suite that could already fail them.
 Doc comments in the source mark which layer a file belongs to (`L2.`, `L4.` and
 so on). The numbering is this:
 
-| Layer | Owns                                                            | Where                              |
-| ----- | --------------------------------------------------------------- | ---------------------------------- |
-| L1    | HTTP: routing, parsing, serialization, SSE transport, auth seam | `adapters/nestjs`, `adapters/hono` |
-| L2    | Execution lifecycle, event emission, execution state            | `packages/runtime-core`            |
-| L3    | The execution model: agent definitions, context, workflow start | `packages/agent-engine`            |
-| L4    | Graph execution: nodes, edges, state transitions                | `packages/graph-runtime`           |
-| L5    | Tools, registered rather than imported                          | `packages/tools`                   |
-| L6    | Conversation history, execution state, persistent context       | `packages/memory`                  |
-| L7    | Model providers behind one interface; replay is the default     | `packages/llm`                     |
+| Layer | Owns                                                            | Where                                                  |
+| ----- | --------------------------------------------------------------- | ------------------------------------------------------ |
+| L1    | HTTP: routing, parsing, serialization, SSE transport, auth seam | `adapters/nestjs`, `adapters/hono`, `adapters/fastify` |
+| L2    | Execution lifecycle, event emission, execution state            | `packages/runtime-core`                                |
+| L3    | The execution model: agent definitions, context, workflow start | `packages/agent-engine`                                |
+| L4    | Graph execution: nodes, edges, state transitions                | `packages/graph-runtime`                               |
+| L5    | Tools, registered rather than imported                          | `packages/tools`                                       |
+| L6    | Conversation history, execution state, persistent context       | `packages/memory`                                      |
+| L7    | Model providers behind one interface; replay is the default     | `packages/llm`                                         |
 
 L1 may not contain agent logic, prompts, workflow definitions or tool
-implementations: that constraint is what makes the four cells comparable. The
+implementations: that constraint is what makes the six cells comparable. The
 remaining four packages are cross-cutting: `contracts` and `events` are the
 shared vocabulary, `contract-tests` is the equivalence gate, and
 `benchmark-runner` / `benchmark-report` sit outside the stack entirely.
@@ -109,8 +111,8 @@ shared vocabulary, `contract-tests` is the equivalence gate, and
 | Item                     | Count | Where                               |
 | ------------------------ | ----- | ----------------------------------- |
 | HTTP endpoints           | 6     | identical in every cell             |
-| Handlers written         | 12    | 6 x 2 adapters                      |
-| Handlers contract-tested | 24    | 6 x 4 cells                         |
+| Handlers written         | 18    | 6 x 3 adapters                      |
+| Handlers contract-tested | 36    | 6 x 6 cells                         |
 | Packages                 | 11    | `packages/`                         |
 | Reference agents         | 3     | `agents/`                           |
 | Benchmark scenarios      | 7     | `scenarios/`                        |
@@ -125,15 +127,15 @@ GET    /executions/:id          -> Execution
 DELETE /executions/:id          -> cancel
 ```
 
-Neither adapter delegates SSE framing to its framework. NestJS does
+No adapter delegates SSE framing to its framework. NestJS does
 not use `@Sse()`: it emits `event, id, data` over a GET route, and the contract
-is `id, event, data` over POST.
+is `id, event, data` over POST. Fastify writes its frames on the raw response.
 
 ## What this is not
 
 1. **No persistent memory backend.** In-memory store only. Redis, PostgreSQL and
    vector stores remain named, unimplemented interfaces.
-2. **No WebSocket transport.** SSE only, both adapters.
+2. **No WebSocket transport.** SSE only, in every adapter.
 3. **No multi-tenancy.**
 4. **No production authorization.** Auth is an empty middleware seam that proves
    the adapter has the integration point, and does nothing.
@@ -149,7 +151,8 @@ is `id, event, data` over POST.
 | `packages/llm/src/providers/replay/replay-provider.ts` | a live LLM, and it is the **default**, not the fallback             |
 | `packages/tools/src/search/search-tool.ts`             | a real search API; canned results, no network, no key               |
 | `adapters/nestjs/src/middleware/auth.middleware.ts`    | production authorization; an empty slot that proves the seam exists |
-| `adapters/hono/src/http/middleware/auth.ts`            | the same seam, in the other adapter                                 |
+| `adapters/hono/src/http/middleware/auth.ts`            | the same seam, in the second adapter                                |
+| `adapters/fastify/src/http/middleware/auth.ts`         | the same seam, in the third adapter                                 |
 | `scenarios/06-long-context/workload.ts`                | a long-context corpus; synthetic filler, so token counts are exact  |
 | `packages/benchmark-runner/src/results-store.ts`       | a metrics backend; JSON files on disk, no Prometheus, no Grafana    |
 
@@ -176,7 +179,7 @@ and used only to re-record fixtures.
 
 ## Done when
 
-1. The contract test suite is green on **all 4 cells in the matrix**.
+1. The contract test suite is green on **all 6 cells in the matrix**.
 2. All 7 benchmark scenarios have executed against every cell.
 3. The comparison report is published with its own limitations stated.
 
